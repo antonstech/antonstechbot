@@ -8,23 +8,40 @@ import json
 # ä=Ã¼
 # ö=Ã¶
 
-bottoken = {"token": input("Dein Bot Token: ")}
-with open("config.json", "w") as f:
- json.dump(bottoken, f)
-client = commands.Bot(command_prefix=".", intents=discord.Intents.all())
+tokengesetzt = input("Ist dein Token gesetzt? (j/n) ")
+if tokengesetzt == ("j"):
+    print("Noice")
+else:
+    bottoken = {"token": input("Dein Bot Token: ")}
+    with open("config.json", "w") as f:
+        json.dump(bottoken, f)
+
+prefixgesetzt = input("Ist dein Bot Prefix gesetzt? (j/n) ")
+if prefixgesetzt == ("j"):
+    print("Noice")
+else:
+    botprefix = {"prefix": input("Dein Bot Prefix: ")}
+    with open("prefix.json", "w") as f:
+        json.dump(botprefix, f)
+
+with open('./prefix.json', 'r') as f:
+    json_stuff = json.load(f)
+    prefix = json_stuff["prefix"]
+
+client = commands.Bot(command_prefix=prefix, intents=discord.Intents.all())
 
 
 @client.event
 async def on_ready():
-    print("Du bist eingeloggt als {0.user}".format(client))
+    print("Yess der Bot läuft :) || Du bist eingeloggt als {0.user}".format(client))
     client.loop.create_task(status_task())
 
 
 async def status_task():
     while True:
-        await client.change_presence(activity=discord.Game(".help für Hilfe"), status=discord.Status.online)
+        await client.change_presence(activity=discord.Game("SimpleBot by antonstech"), status=discord.Status.online)
         await asyncio.sleep(360)
-        await client.change_presence(activity=discord.Game(".Joint Varo xD"), status=discord.Status.online)
+        await client.change_presence(activity=discord.Game("Moin Meister"), status=discord.Status.online)
         await asyncio.sleep(360)
 
 
