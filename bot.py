@@ -12,15 +12,15 @@ import json
 def start():
     tokengesetzt = input("Ist dein Token gesetzt? (j/n) ")
     if tokengesetzt == "j":
-        print("Noice")
+        pass
     else:
         bottoken = {"token": input("Dein Bot Token: ")}
-        with open("config.json", "w") as f:
+        with open("token.json", "w") as f:
             json.dump(bottoken, f)
 
     prefixgesetzt = input("Ist dein Bot Prefix gesetzt? (j/n) ")
     if prefixgesetzt == "j":
-        print("Noice")
+        pass
     else:
         botprefix = {"prefix": input("Dein Bot Prefix: ")}
         with open("prefix.json", "w") as f:
@@ -39,7 +39,8 @@ start()
 @client.event
 async def on_ready():
     print("Yess der bot läuft :)".format(client))
-    print("Du bist eingeloggt als {0.user} auf discord.py Version {1} auf den Servern: ".format(client, discord.__version__))
+    print("Du bist eingeloggt als {0.user} auf discord.py Version {1}".format(client, discord.__version__))
+    print("Der Bot ist zurzeit auf folgenden Server:")
     for guild in client.guilds:
         print("-" + guild.name)
     client.loop.create_task(status_task())
@@ -78,7 +79,30 @@ async def benutzerinfo(ctx, member: discord.Member):
     await ctx.send(embed=embed)
 
 
-with open('./config.json', 'r') as f:
+@client.command()
+async def ping(ctx):
+    await ctx.send("Der Ping beträgt derzeit " f"{round(client.latency * 1000)}ms")
+
+
+def ist_gepinnt(mess):
+    return not mess.pinned
+
+
+@client.command()
+@commands.has_permissions(manage_messages=True)
+async def clear(ctx, amount=5):
+    await ctx.channel.purge(limit=amount + 1, check=ist_gepinnt)
+
+
+@clear.error
+async def clear_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.channel.send("Du hast keine Berechtigung dazu!")
+
+
+# Clear Funktion Hinzufügen
+
+with open('token.json', 'r') as f:
     json_stuff = json.load(f)
     token = json_stuff["token"]
 
