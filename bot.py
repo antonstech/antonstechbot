@@ -3,6 +3,7 @@ import discord
 import discord.ext
 from discord.ext import commands
 import json
+import requests
 
 
 # Wichs Codierung
@@ -77,6 +78,40 @@ async def benutzerinfo(ctx, member: discord.Member):
     embed.set_thumbnail(url=member.avatar_url)
     embed.set_footer(text='Benutzerinfo')
     await ctx.send(embed=embed)
+
+
+api_key = "7d518678abe248fc7de360ba82f9375b"
+base_url = "http://api.openweathermap.org/data/2.5/weather?"
+
+
+@client.command()
+async def wetter(ctx, *, city: str):
+    city_name = city
+    complete_url = base_url + "appid=" + api_key + "&q=" + city_name
+    response = requests.get(complete_url)
+    x = response.json()
+    channel = ctx.message.channel
+    if x["cod"] != "404":
+        async with channel.typing():
+            y = x["main"]
+            current_temperature = y["temp"]
+            current_temperature_celsiuis = str(round(current_temperature - 273.15))
+            current_pressure = y["pressure"]
+            current_humidity = y["humidity"]
+            z = x["weather"]
+            weather_description = z[0]["description"]
+            embed = discord.Embed(title=f"Wetter in {city_name}",
+                                  color=ctx.guild.me.top_role.color,
+                                  timestamp=ctx.message.created_at, )
+            embed.add_field(name="Beschreibung", value=f"**{weather_description}**", inline=False)
+            embed.add_field(name="Temperatur(C)", value=f"**{current_temperature_celsiuis}°C**", inline=False)
+            embed.add_field(name="Luftfeuchtigkeit(%)", value=f"**{current_humidity}%**", inline=False)
+            embed.add_field(name="Luftdruck(hPa)", value=f"**{current_pressure}hPa**", inline=False)
+            embed.set_thumbnail(url="https://i.ibb.co/CMrsxdX/weather.png")
+            embed.set_footer(text=f"Angefragt von {ctx.author.name}")
+        await ctx.send(embed=embed)
+    else:
+        await ctx.send("Stadt wurde nicht gefunden.")
 
 
 @client.command()
