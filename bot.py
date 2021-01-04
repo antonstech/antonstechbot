@@ -55,6 +55,7 @@ async def status_task():
         await asyncio.sleep(360)
 
 
+# Benutzerinfo
 @client.command()
 async def benutzerinfo(ctx, member: discord.Member):
     embed = discord.Embed(title='Benutzerinfo für {}'.format(member.name),
@@ -80,6 +81,7 @@ async def benutzerinfo(ctx, member: discord.Member):
     await ctx.send(embed=embed)
 
 
+# Wetter Funktion
 api_key = "7d518678abe248fc7de360ba82f9375b"
 base_url = "http://api.openweathermap.org/data/2.5/weather?"
 
@@ -114,11 +116,13 @@ async def wetter(ctx, *, city: str):
         await ctx.send("Stadt wurde nicht gefunden.")
 
 
+# Ping
 @client.command()
 async def ping(ctx):
     await ctx.send("Der Ping beträgt derzeit " f"{round(client.latency * 1000)}ms")
 
 
+# Clear Command
 def ist_gepinnt(mess):
     return not mess.pinned
 
@@ -134,8 +138,6 @@ async def clear_error(ctx, error):
     if isinstance(error, commands.MissingPermissions):
         await ctx.channel.send("Du hast keine Berechtigung dazu!")
 
-
-# Clear Funktion Hinzufügen
 
 with open('token.json', 'r') as f:
     json_stuff = json.load(f)
