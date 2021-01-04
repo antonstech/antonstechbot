@@ -56,65 +56,70 @@ async def status_task():
 
 
 # Benutzerinfo
-@client.command()
-async def benutzerinfo(ctx, member: discord.Member):
-    embed = discord.Embed(title='Benutzerinfo für {}'.format(member.name),
-                          description='Benutzerinfo für {}'.format(
-                              member.mention),
-                          color=0x69E82C)
-    embed.add_field(name='Server beigetreten',
-                    value=member.joined_at.strftime('%d/%m/%Y'),
-                    inline=True)
-    embed.add_field(name='Discord beigetreten',
-                    value=member.created_at.strftime('%d/%m/%Y'),
-                    inline=True)
-    embed.add_field(name=f"Rollen ({len(member.roles)})", value=" ".join([role.mention for role in member.roles]))
+def benutzerinfo():
+    @client.command()
+    async def benutzerinfo(ctx, member: discord.Member):
+        embed = discord.Embed(title='Benutzerinfo für {}'.format(member.name),
+                              description='Benutzerinfo für {}'.format(
+                                  member.mention),
+                              color=0x69E82C)
+        embed.add_field(name='Server beigetreten',
+                        value=member.joined_at.strftime('%d/%m/%Y'),
+                        inline=True)
+        embed.add_field(name='Discord beigetreten',
+                        value=member.created_at.strftime('%d/%m/%Y'),
+                        inline=True)
+        embed.add_field(name=f"Rollen ({len(member.roles)})", value=" ".join([role.mention for role in member.roles]))
 
-    rollen = ''
-    for role in member.roles:
-        if not role.is_default():
-            rollen += '{} \r\n'.format(role.mention)
-    embed.add_field(name='Höchste Rolle', value=member.top_role.mention, inline=True),
-    embed.add_field(name="Benutzer ID", value=member.id, inline=True),
-    embed.set_thumbnail(url=member.avatar_url)
-    embed.set_footer(text='Benutzerinfo')
-    await ctx.send(embed=embed)
-
-
-# Wetter Funktion
-api_key = "7d518678abe248fc7de360ba82f9375b"
-base_url = "http://api.openweathermap.org/data/2.5/weather?"
-
-
-@client.command()
-async def wetter(ctx, *, city: str):
-    city_name = city
-    complete_url = base_url + "appid=" + api_key + "&q=" + city_name
-    response = requests.get(complete_url)
-    x = response.json()
-    channel = ctx.message.channel
-    if x["cod"] != "404":
-        async with channel.typing():
-            y = x["main"]
-            current_temperature = y["temp"]
-            current_temperature_celsiuis = str(round(current_temperature - 273.15))
-            current_pressure = y["pressure"]
-            current_humidity = y["humidity"]
-            z = x["weather"]
-            weather_description = z[0]["description"]
-            embed = discord.Embed(title=f"Wetter in {city_name}",
-                                  color=ctx.guild.me.top_role.color,
-                                  timestamp=ctx.message.created_at, )
-            embed.add_field(name="Beschreibung", value=f"**{weather_description}**", inline=False)
-            embed.add_field(name="Temperatur(C)", value=f"**{current_temperature_celsiuis}°C**", inline=False)
-            embed.add_field(name="Luftfeuchtigkeit(%)", value=f"**{current_humidity}%**", inline=False)
-            embed.add_field(name="Luftdruck(hPa)", value=f"**{current_pressure}hPa**", inline=False)
-            embed.set_thumbnail(url="https://i.ibb.co/CMrsxdX/weather.png")
-            embed.set_footer(text=f"Angefragt von {ctx.author.name}")
+        rollen = ''
+        for role in member.roles:
+            if not role.is_default():
+                rollen += '{} \r\n'.format(role.mention)
+        embed.add_field(name='Höchste Rolle', value=member.top_role.mention, inline=True),
+        embed.add_field(name="Benutzer ID", value=member.id, inline=True),
+        embed.set_thumbnail(url=member.avatar_url)
+        embed.set_footer(text='Benutzerinfo')
         await ctx.send(embed=embed)
-    else:
-        await ctx.send("Stadt wurde nicht gefunden.")
 
+
+benutzerinfo()
+
+
+def wetter():
+    api_key = "7d518678abe248fc7de360ba82f9375b"
+    base_url = "http://api.openweathermap.org/data/2.5/weather?"
+
+    @client.command()
+    async def wetter(ctx, *, city: str):
+        city_name = city
+        complete_url = base_url + "appid=" + api_key + "&q=" + city_name
+        response = requests.get(complete_url)
+        x = response.json()
+        channel = ctx.message.channel
+        if x["cod"] != "404":
+            async with channel.typing():
+                y = x["main"]
+                current_temperature = y["temp"]
+                current_temperature_celsiuis = str(round(current_temperature - 273.15))
+                current_pressure = y["pressure"]
+                current_humidity = y["humidity"]
+                z = x["weather"]
+                weather_description = z[0]["description"]
+                embed = discord.Embed(title=f"Wetter in {city_name}",
+                                      color=ctx.guild.me.top_role.color,
+                                      timestamp=ctx.message.created_at, )
+                embed.add_field(name="Beschreibung", value=f"**{weather_description}**", inline=False)
+                embed.add_field(name="Temperatur(C)", value=f"**{current_temperature_celsiuis}°C**", inline=False)
+                embed.add_field(name="Luftfeuchtigkeit(%)", value=f"**{current_humidity}%**", inline=False)
+                embed.add_field(name="Luftdruck(hPa)", value=f"**{current_pressure}hPa**", inline=False)
+                embed.set_thumbnail(url="https://i.ibb.co/CMrsxdX/weather.png")
+                embed.set_footer(text=f"Angefragt von {ctx.author.name}")
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send("Stadt wurde nicht gefunden.")
+
+
+wetter()
 
 # Ping
 @client.command()
@@ -122,22 +127,72 @@ async def ping(ctx):
     await ctx.send("Der Ping beträgt derzeit " f"{round(client.latency * 1000)}ms")
 
 
-# Clear Command
-def ist_gepinnt(mess):
-    return not mess.pinned
+def clear():
+    def ist_gepinnt(mess):
+        return not mess.pinned
+
+    @client.command()
+    @commands.has_permissions(manage_messages=True)
+    async def clear(ctx, amount=5):
+        await ctx.channel.purge(limit=amount + 1, check=ist_gepinnt)
+
+    @clear.error
+    async def clear_error(ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.channel.send("Du hast keine Berechtigung dazu!")
 
 
-@client.command()
-@commands.has_permissions(manage_messages=True)
-async def clear(ctx, amount=5):
-    await ctx.channel.purge(limit=amount + 1, check=ist_gepinnt)
+clear()
 
 
-@clear.error
-async def clear_error(ctx, error):
-    if isinstance(error, commands.MissingPermissions):
-        await ctx.channel.send("Du hast keine Berechtigung dazu!")
+def hilfe():
+    @client.group(invoke_without_command=True)
+    async def hilfe(ctx):
+        embed = discord.Embed(title="Hilfe",
+                              description="Benutze hilfe (command) für mehr Informationen zu einem Command.",
+                              color=ctx.author.color)
+        embed.add_field(name="Moderation:", value="clear")
+        embed.add_field(name="nützlich:", value="wetter, benutzerinfo , ping")
+        embed.set_footer(text='Bei sonstigen Fragen einfach DCGALAXY#9729 anschreiben')
+        await ctx.send(embed=embed)
 
+    @hilfe.command()
+    async def wetter(ctx):
+        embed = discord.Embed(title="clear",
+                              description="Mit wetter kannst du dir das Wetter so wie einige Infos dazu anzeigen lassen",
+                              color=ctx.author.color)
+        embed.add_field(name="Benutzung:", value="wetter (Stadt)")
+        embed.add_field(name="Beispiel:", value="wetter München")
+        await ctx.send(embed=embed)
+
+    @hilfe.command()
+    async def clear(ctx):
+        embed = discord.Embed(title="wetter",
+                              description="Mit clear kannst du eine beliebige Anzahl an Nachrichten aus einem Channel löschen",
+                              color=ctx.author.color)
+        embed.add_field(name="Benutzung:", value="clear (Anzahl)")
+        embed.add_field(name="Beispiel:", value="clear 15")
+        await ctx.send(embed=embed)
+
+    @hilfe.command()
+    async def benutzerinfo(ctx):
+        embed = discord.Embed(title="benutzerinfo",
+                              description="Mit benutzerinfo kannst du dir einige Infos über einen Nutzer anzeigen lassen",
+                              color=ctx.author.color)
+        embed.add_field(name="Benutzung:", value="benutzerinfo (Benutzer)")
+        embed.add_field(name="Beispiel:", value="benutzerinfo DCGALAXY")
+        await ctx.send(embed=embed)
+
+    @hilfe.command()
+    async def ping(ctx):
+        embed = discord.Embed(title="ping",
+                              description="Mit ping kannst du dir die Discord WebSocket protocol latency anzeigen lassen",
+                              color=ctx.author.color)
+        embed.add_field(name="Benutzung:", value="ping")
+        await ctx.send(embed=embed)
+
+
+hilfe()
 
 with open('token.json', 'r') as f:
     json_stuff = json.load(f)
