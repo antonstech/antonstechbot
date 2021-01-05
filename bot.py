@@ -194,6 +194,40 @@ def hilfe():
 
 hilfe()
 
+
+def give():
+    @client.group(invoke_without_command=True)
+    async def give(ctx):
+        embed = discord.Embed(title="Minecraft Konsole", description="gieb das Item und dann den Discord Namen ein".format(), colour=ctx.author.color)
+        embed.set_thumbnail(url="https://static.wikia.nocookie.net/minecraft/images/f/fe/GrassNew.png/revision/latest/top-crop/width/300/height/300?cb=20190903234415")
+        await ctx.send(embed=embed)
+
+
+    @give.command()
+    async def diamonds(ctx, member: discord.Member):
+        embed = discord.Embed(title="Minecraft Konsole", description="`/give {} minecraft:diamonds 64`".format(member.name), colour=ctx.author.color)
+        embed.set_thumbnail(url="https://freepngimg.com/thumb/minecraft/11-2-minecraft-diamond-png.png")
+        await ctx.send(embed=embed)
+
+    @give.command()
+    async def schwert(ctx, member: discord.Member):
+        embed = discord.Embed(title="Minecraft Konsole",
+                              description="`/give {} minecraft:diamond_sword`".format(member.name),
+                              colour=ctx.author.color)
+        embed.set_thumbnail(url="https://assets.stickpng.com/images/580b57fcd9996e24bc43c301.png")
+        await ctx.send(embed=embed)
+
+    @give.command()
+    async def opgoldapfel(ctx, member: discord.Member):
+        embed = discord.Embed(title="Minecraft Konsole",
+                              description="`/give {} enchanted_golden_apple`".format(member.name),
+                              colour=ctx.author.color)
+        embed.set_thumbnail(url="https://static.wikia.nocookie.net/hypixel-skyblock/images/4/4d/Enchanted_Golden_Apple.gif/revision/latest/smart/width/200/height/200?cb=20200619230630")
+        await ctx.send(embed=embed)
+
+give()
+
+
 with open('token.json', 'r') as f:
     json_stuff = json.load(f)
     token = json_stuff["token"]
