@@ -5,11 +5,13 @@ from discord.ext import commands
 import json
 import requests
 import random
+import os
 
 
 # Wichs Codierung
 # ä=Ã¼
 # ö=Ã¶
+
 
 def start():
     tokengesetzt = input("Ist dein Token gesetzt? (j/n) ")
@@ -122,6 +124,7 @@ def wetter():
 
 wetter()
 
+
 # Ping
 @client.command()
 async def ping(ctx):
@@ -154,6 +157,7 @@ def hilfe():
                               color=ctx.author.color)
         embed.add_field(name="Moderation:", value="clear")
         embed.add_field(name="nützlich:", value="wetter, benutzerinfo , ping")
+        embed.add_field(name="fun", value="give")
         embed.set_footer(text='Bei sonstigen Fragen einfach DCGALAXY#9729 anschreiben')
         await ctx.send(embed=embed)
 
@@ -192,6 +196,14 @@ def hilfe():
         embed.add_field(name="Benutzung:", value="ping")
         await ctx.send(embed=embed)
 
+    @hilfe.command()
+    async def give(ctx):
+        embed = discord.Embed(title="ping",
+                              description="Mit give wird eine Minecraft Konsole simuliert",
+                              color=ctx.author.color)
+        embed.add_field(name="Benutzung:", value="give (item) (spieler)")
+        await ctx.send(embed=embed)
+
 
 hilfe()
 
@@ -199,15 +211,19 @@ hilfe()
 def give():
     @client.group(invoke_without_command=True)
     async def give(ctx):
-        embed = discord.Embed(title="Minecraft Konsole", description="gieb das Item und dann den Discord Namen ein".format(), colour=ctx.author.color)
-        embed.set_thumbnail(url="https://static.wikia.nocookie.net/minecraft/images/f/fe/GrassNew.png/revision/latest/top-crop/width/300/height/300?cb=20190903234415")
+        embed = discord.Embed(title="Minecraft Konsole",
+                              description="gieb das Item und dann den Discord Namen ein".format(),
+                              colour=ctx.author.color)
+        embed.set_thumbnail(
+            url="https://static.wikia.nocookie.net/minecraft/images/f/fe/GrassNew.png/revision/latest/top-crop/width/300/height/300?cb=20190903234415")
         await ctx.send(embed=embed)
-
 
     @give.command()
     async def diamonds(ctx, member: discord.Member):
         randomnum = random.randint(0, 64)
-        embed = discord.Embed(title="Minecraft Konsole", description="`/give {0} minecraft:diamonds {1}`".format(member.name, randomnum), colour=ctx.author.color)
+        embed = discord.Embed(title="Minecraft Konsole",
+                              description="`/give {0} minecraft:diamonds {1}`".format(member.name, randomnum),
+                              colour=ctx.author.color)
         embed.set_thumbnail(url="https://freepngimg.com/thumb/minecraft/11-2-minecraft-diamond-png.png")
         await ctx.send(embed=embed)
 
@@ -226,11 +242,12 @@ def give():
         embed = discord.Embed(title="Minecraft Konsole",
                               description="`/give {0} enchanted_golden_apple {1}`".format(member.name, randomnum),
                               colour=ctx.author.color)
-        embed.set_thumbnail(url="https://static.wikia.nocookie.net/hypixel-skyblock/images/4/4d/Enchanted_Golden_Apple.gif/revision/latest/smart/width/200/height/200?cb=20200619230630")
+        embed.set_thumbnail(
+            url="https://static.wikia.nocookie.net/hypixel-skyblock/images/4/4d/Enchanted_Golden_Apple.gif/revision/latest/smart/width/200/height/200?cb=20200619230630")
         await ctx.send(embed=embed)
 
-give()
 
+give()
 
 with open('token.json', 'r') as f:
     json_stuff = json.load(f)
