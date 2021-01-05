@@ -4,6 +4,7 @@ import discord.ext
 from discord.ext import commands
 import json
 import requests
+import random
 
 
 # Wichs Codierung
@@ -205,22 +206,25 @@ def give():
 
     @give.command()
     async def diamonds(ctx, member: discord.Member):
-        embed = discord.Embed(title="Minecraft Konsole", description="`/give {} minecraft:diamonds 64`".format(member.name), colour=ctx.author.color)
+        randomnum = random.randint(0, 64)
+        embed = discord.Embed(title="Minecraft Konsole", description="`/give {0} minecraft:diamonds {1}`".format(member.name, randomnum), colour=ctx.author.color)
         embed.set_thumbnail(url="https://freepngimg.com/thumb/minecraft/11-2-minecraft-diamond-png.png")
         await ctx.send(embed=embed)
 
     @give.command()
     async def schwert(ctx, member: discord.Member):
+        randomnum = random.randint(0, 64)
         embed = discord.Embed(title="Minecraft Konsole",
-                              description="`/give {} minecraft:diamond_sword`".format(member.name),
+                              description="`/give {0} minecraft:diamond_sword {1}`".format(member.name, randomnum),
                               colour=ctx.author.color)
         embed.set_thumbnail(url="https://assets.stickpng.com/images/580b57fcd9996e24bc43c301.png")
         await ctx.send(embed=embed)
 
     @give.command()
     async def opgoldapfel(ctx, member: discord.Member):
+        randomnum = random.randint(0, 64)
         embed = discord.Embed(title="Minecraft Konsole",
-                              description="`/give {} enchanted_golden_apple`".format(member.name),
+                              description="`/give {0} enchanted_golden_apple {1}`".format(member.name, randomnum),
                               colour=ctx.author.color)
         embed.set_thumbnail(url="https://static.wikia.nocookie.net/hypixel-skyblock/images/4/4d/Enchanted_Golden_Apple.gif/revision/latest/smart/width/200/height/200?cb=20200619230630")
         await ctx.send(embed=embed)
