@@ -3,14 +3,18 @@ import discord
 import discord.ext
 from discord.ext import commands
 import json
-import requests
 import random
+import requests
 import os
+from riotwatcher import LolWatcher, ApiError
 
 
 # Wichs Codierung
 # ä=Ã¼
 # ö=Ã¶
+
+
+os.system("git pull https://github.com/antonstech/simplediscordbot")
 
 
 def start():
@@ -95,26 +99,29 @@ def wetter():
     @client.command()
     async def wetter(ctx, *, city: str):
         city_name = city
-        complete_url = base_url + "appid=" + api_key + "&q=" + city_name
+        complete_url = base_url + "appid=" + api_key + "&q=" + city_name + "&lang=de"
         response = requests.get(complete_url)
         x = response.json()
         channel = ctx.message.channel
         if x["cod"] != "404":
             async with channel.typing():
                 y = x["main"]
-                current_temperature = y["temp"]
-                current_temperature_celsiuis = str(round(current_temperature - 273.15))
-                current_pressure = y["pressure"]
-                current_humidity = y["humidity"]
+                derzeitige_temperatur = y["temp"]
+                derzeitige_temperatur_celsius = str(round(derzeitige_temperatur - 273.15))
+                druck = y["pressure"]
+                luftfeuchtigkeit = y["humidity"]
+                fuehlt_sich_an_wie = y["feels_like"]
+                fuehlt_sich_an_wie_celsius = str(round(fuehlt_sich_an_wie - 273.15))
                 z = x["weather"]
-                weather_description = z[0]["description"]
+                wetter_beschreibung = z[0]["description"]
                 embed = discord.Embed(title=f"Wetter in {city_name}",
                                       color=ctx.guild.me.top_role.color,
                                       timestamp=ctx.message.created_at, )
-                embed.add_field(name="Beschreibung", value=f"**{weather_description}**", inline=False)
-                embed.add_field(name="Temperatur(C)", value=f"**{current_temperature_celsiuis}°C**", inline=False)
-                embed.add_field(name="Luftfeuchtigkeit(%)", value=f"**{current_humidity}%**", inline=False)
-                embed.add_field(name="Luftdruck(hPa)", value=f"**{current_pressure}hPa**", inline=False)
+                embed.add_field(name="Beschreibung", value=f"**{wetter_beschreibung}**", inline=False)
+                embed.add_field(name="Temperatur(C)", value=f"**{derzeitige_temperatur_celsius}°C**", inline=False)
+                embed.add_field(name="Fühlt sich an wie(C)", value=f"**{fuehlt_sich_an_wie_celsius}°C**", inline=False)
+                embed.add_field(name="Luftfeuchtigkeit(%)", value=f"**{luftfeuchtigkeit}%**", inline=False)
+                embed.add_field(name="Luftdruck(hPa)", value=f"**{druck}hPa**", inline=False)
                 embed.set_thumbnail(url="https://i.ibb.co/CMrsxdX/weather.png")
                 embed.set_footer(text=f"Angefragt von {ctx.author.name}")
             await ctx.send(embed=embed)
@@ -126,7 +133,7 @@ wetter()
 
 
 # Ping
-@client.command()
+@client.command(invoke_without_command=True)
 async def ping(ctx):
     await ctx.send("Der Ping beträgt derzeit " f"{round(client.latency * 1000)}ms")
 
