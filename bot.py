@@ -33,6 +33,13 @@ def start():
         botprefix = {"prefix": input("Dein Bot Prefix: ")}
         with open("prefix.json", "w") as f:
             json.dump(botprefix, f)
+    riotapi = input("Ist dein Riot Games Dev Token gesetzt? (j/n ")
+    if riotapi == "j":
+        pass
+    else:
+        riotapi = {"riotapi": input("Dein Riot Games Api Token: ")}
+        with open("riotapi.json", "w") as f:
+            json.dump(riotapi, f)
 
 
 with open('./prefix.json', 'r') as f:
@@ -113,6 +120,7 @@ def wetter():
                 fuehlt_sich_an_wie = y["feels_like"]
                 fuehlt_sich_an_wie_celsius = str(round(fuehlt_sich_an_wie - 273.15))
                 z = x["weather"]
+                symbol = z[0]["icon"]
                 wetter_beschreibung = z[0]["description"]
                 embed = discord.Embed(title=f"Wetter in {city_name}",
                                       color=ctx.guild.me.top_role.color,
@@ -122,7 +130,7 @@ def wetter():
                 embed.add_field(name="Fühlt sich an wie(C)", value=f"**{fuehlt_sich_an_wie_celsius}°C**", inline=False)
                 embed.add_field(name="Luftfeuchtigkeit(%)", value=f"**{luftfeuchtigkeit}%**", inline=False)
                 embed.add_field(name="Luftdruck(hPa)", value=f"**{druck}hPa**", inline=False)
-                embed.set_thumbnail(url="https://i.ibb.co/CMrsxdX/weather.png")
+                embed.set_thumbnail(url="http://openweathermap.org/img/wn/" + symbol + ".png")
                 embed.set_footer(text=f"Angefragt von {ctx.author.name}")
             await ctx.send(embed=embed)
         else:
@@ -130,6 +138,81 @@ def wetter():
 
 
 wetter()
+
+
+def LeagueofLegendsstats():
+    with open('./riotapi.json', 'r') as f:
+        json_stuff = json.load(f)
+        riotapi = json_stuff["riotapi"]
+    api_key = riotapi
+    base_url = "https://euw1.api.riotgames.com/lol/"
+
+
+    @client.group(invoke_without_command=True)
+    async def lol(ctx):
+        embed = discord.Embed(title="League of Legends Statistiken", color=ctx.author.color)
+        embed.add_field(name="Alle Befehle:", value="Mach help lol um dir alle Befehle anzeigen zu lassen", inline=False)
+        embed.set_thumbnail(url="https://www.riotgames.com/darkroom/original/462106d7bcc8d74a57a49411b70c4a92:d4bed097ee383e5afad037edb5e5786e/lol-logo-rendered-hi-res.png")
+        await ctx.send(embed=embed)
+
+
+    @lol.command()
+    async def level(ctx, *, name: str):
+        spielername = name
+        complete_url = base_url + "summoner/v4/summoners/by-name/" + spielername + "?api_key=" + api_key
+        response = requests.get(complete_url)
+        x = response.json()
+        channel = ctx.message.channel
+        if 0 < x["summonerLevel"] < 3000:
+            async with channel.typing():
+                y = x
+                spielerlevel = y["summonerLevel"]
+                profilbild = y["profileIconId"]
+                embed = discord.Embed(title=f"Leauge of Legends Statistiken für {spielername}",
+                                      color=ctx.author.color,
+                                      timestamp=ctx.message.created_at, )
+                embed.add_field(name="Level des Spielers:", value=f"**{spielerlevel}**",inline=False)
+                embed.set_thumbnail(url='http://ddragon.leagueoflegends.com/cdn/11.1.1/img/profileicon/' + str(profilbild) + '.png')
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send("Spieler wurde nicht gefunden.")
+
+
+    @lol.command()
+    async def rang(ctx, *, name: str):
+        spielername = name
+        lol_watcher = LolWatcher(api_key)
+        my_region = 'euw1'
+        me = lol_watcher.summoner.by_name(my_region, spielername)
+        my_ranked_stats = lol_watcher.league.by_summoner(my_region, me['id'])
+        channel = ctx.message.channel
+        async with channel.typing():
+            if my_ranked_stats:
+                data = my_ranked_stats[0]
+                rang_typ = data["queueType"]
+                rang = data["tier"]
+                nummer = data["rank"]
+                punkte = data["leaguePoints"]
+                gewonnen = data["wins"]
+                verloren = data["losses"]
+                neu_in_der_elo = data["freshBlood"]
+                winrate = (gewonnen)/(gewonnen+verloren)*100
+                embed = discord.Embed(title=f"Leauge of Legends Ranked Statistiken für {spielername}",
+                                      color=ctx.author.color,
+                                      timestamp=ctx.message.created_at, )
+                embed.add_field(name="Rang", value=f"{rang} {nummer}", inline=True)
+                embed.add_field(name="Punkte", value=f"{punkte}", inline=True)
+                embed.add_field(name="Neu in der Elo?", value=f"{neu_in_der_elo}", inline=True)
+                embed.add_field(name="Gewonnen:", value=f"{gewonnen}", inline=True)
+                embed.add_field(name="Verloren:", value=f"{verloren}", inline=True)
+                embed.add_field(name="Winrate", value=f"{(winrate).__round__()}%", inline=True)
+                embed.set_thumbnail(url="https://antonstech.de/" + str(rang) + ".png")
+                await ctx.send(embed=embed)
+            else:
+                await ctx.send("Spieler nicht gefunden oder nicht eingeranked.")
+
+
+LeagueofLegendsstats()
 
 
 # Ping
@@ -165,6 +248,7 @@ def hilfe():
         embed.add_field(name="Moderation:", value="clear")
         embed.add_field(name="nützlich:", value="wetter, benutzerinfo , ping")
         embed.add_field(name="fun", value="give")
+        embed.add_field(name="Game-Stats", value="lol")
         embed.set_footer(text='Bei sonstigen Fragen einfach DCGALAXY#9729 anschreiben')
         await ctx.send(embed=embed)
 
