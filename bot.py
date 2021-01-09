@@ -7,6 +7,13 @@ import random
 import requests
 import os
 from riotwatcher import LolWatcher, ApiError
+import subprocess
+
+try:
+    VERSION = subprocess.check_output(["git", "describe", "--tags", "--always"]).decode('ascii').strip()
+except Exception:
+    VERSION = 'version_unknown'
+VERSION = VERSION[:-11]
 
 # Wichs Codierung
 # ä=Ã¼
@@ -52,7 +59,10 @@ start()
 
 @client.event
 async def on_ready():
+    print("--------------------------------------------------------------------------")
+    print("--------------------------------------------------------------------------")
     print("Yess der bot läuft :)".format(client))
+    print("Du hast derzeit Release " + VERSION + " installiert")
     print("Du bist eingeloggt als {0.user} auf discord.py Version {1}".format(client, discord.__version__))
     print("Der Bot ist zurzeit auf folgenden Server:")
     for guild in client.guilds:
@@ -70,6 +80,7 @@ async def status_task():
         await asyncio.sleep(5)
         await client.change_presence(
             activity=discord.Activity(type=discord.ActivityType.watching, name="auf deine Nachrichten"))
+        await asyncio.sleep(60)
 
 
 # Benutzerinfo
@@ -157,6 +168,7 @@ def LeagueofLegendsstats():
                         inline=False)
         embed.set_thumbnail(
             url="https://www.riotgames.com/darkroom/original/462106d7bcc8d74a57a49411b70c4a92:d4bed097ee383e5afad037edb5e5786e/lol-logo-rendered-hi-res.png")
+        embed.set_footer(text='antonstech/simplediscordbot ({})'.format(VERSION), icon_url='https://i.imgur.com/gFHBoZA.png')
         await ctx.send(embed=embed)
 
     @lol.command()
@@ -222,6 +234,11 @@ LeagueofLegendsstats()
 @client.command(invoke_without_command=True)
 async def ping(ctx):
     await ctx.send("Der Ping beträgt derzeit " f"{round(client.latency * 1000)}ms")
+
+
+@client.command(invoke_without_command=True)
+async def version(ctx):
+    await ctx.send("Der Bot läuft derzeit auf Release " + VERSION + " und geht auch dank discord.py Version {}".format(discord.__version__))
 
 
 def clear():
