@@ -70,11 +70,16 @@ async def on_ready():
     client.loop.create_task(status_task())
 
 
+with open('./prefix.json', 'r') as f:
+    json_stuff = json.load(f)
+    prefix = json_stuff["prefix"]
+
+
 async def status_task():
     while True:
         await client.change_presence(activity=discord.Game("https://git.io/simplebot"), status=discord.Status.online)
         await asyncio.sleep(60)
-        await client.change_presence(activity=discord.Game("lol stats auf " + str(len(client.guilds)) + " Servern"))
+        await client.change_presence(activity=discord.Game(prefix + "lol stats auf " + str(len(client.guilds)) + "Servern"))
         await asyncio.sleep(60)
         await client.change_presence(activity=discord.Game("ein heißes Spiel mit der Stiefschwester"))
         await asyncio.sleep(5)
@@ -167,8 +172,10 @@ def LeagueofLegendsstats():
         embed.add_field(name="Alle Befehle:", value="Mach help lol um dir alle Befehle anzeigen zu lassen",
                         inline=False)
         embed.set_thumbnail(
-            url="https://www.riotgames.com/darkroom/original/462106d7bcc8d74a57a49411b70c4a92:d4bed097ee383e5afad037edb5e5786e/lol-logo-rendered-hi-res.png")
-        embed.set_footer(text='antonstech/simplediscordbot ({})'.format(VERSION), icon_url='https://i.imgur.com/gFHBoZA.png')
+            url="https://www.riotgames.com/darkroom/original/462106d7bcc8d74a57a49411b70c4a92"
+                ":d4bed097ee383e5afad037edb5e5786e/lol-logo-rendered-hi-res.png")
+        embed.set_footer(text='antonstech/simplediscordbot ({})'.format(VERSION), icon_url='https://i.imgur.com'
+                                                                                           '/gFHBoZA.png')
         await ctx.send(embed=embed)
 
     @lol.command()
@@ -269,6 +276,7 @@ def hilfe():
         embed.add_field(name="nützlich:", value="wetter, benutzerinfo , ping")
         embed.add_field(name="fun", value="give")
         embed.add_field(name="Game-Stats", value="lol")
+        embed.add_field(name="Infos zum Bot", value="version , einladen , hosten")
         embed.set_footer(text='Bei sonstigen Fragen einfach DCGALAXY#9729 anschreiben')
         await ctx.send(embed=embed)
 
@@ -363,7 +371,8 @@ def give():
                               description="`/give {0} enchanted_golden_apple {1}`".format(member.name, randomnum),
                               colour=ctx.author.color)
         embed.set_thumbnail(
-            url="https://static.wikia.nocookie.net/hypixel-skyblock/images/4/4d/Enchanted_Golden_Apple.gif/revision/latest/smart/width/200/height/200?cb=20200619230630")
+            url="https://static.wikia.nocookie.net/hypixel-skyblock/images/4/4d/Enchanted_Golden_Apple.gif/revision"
+                "/latest/smart/width/200/height/200?cb=20200619230630")
         await ctx.send(embed=embed)
 
 
