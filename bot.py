@@ -8,7 +8,6 @@ import requests
 import os
 from riotwatcher import LolWatcher, ApiError
 
-
 # Wichs Codierung
 # ä=Ã¼
 # ö=Ã¶
@@ -18,7 +17,7 @@ os.system("git pull https://github.com/antonstech/simplediscordbot")
 
 
 def start():
-    tokengesetzt = input("Ist dein Token gesetzt? (j/n) ")
+    tokengesetzt = input("Ist dein Token gesetzt? (j/n): ")
     if tokengesetzt == "j":
         pass
     else:
@@ -26,14 +25,14 @@ def start():
         with open("token.json", "w") as f:
             json.dump(bottoken, f)
 
-    prefixgesetzt = input("Ist dein Bot Prefix gesetzt? (j/n) ")
+    prefixgesetzt = input("Ist dein Bot Prefix gesetzt? (j/n): ")
     if prefixgesetzt == "j":
         pass
     else:
         botprefix = {"prefix": input("Dein Bot Prefix: ")}
         with open("prefix.json", "w") as f:
             json.dump(botprefix, f)
-    riotapi = input("Ist dein Riot Games Dev Token gesetzt? (j/n ")
+    riotapi = input("Ist dein Riot Games Dev Token gesetzt? (j/n): ")
     if riotapi == "j":
         pass
     else:
@@ -63,10 +62,14 @@ async def on_ready():
 
 async def status_task():
     while True:
-        await client.change_presence(activity=discord.Game("SimpleBot by antonstech"), status=discord.Status.online)
-        await asyncio.sleep(360)
-        await client.change_presence(activity=discord.Game("Moin Meister"), status=discord.Status.online)
-        await asyncio.sleep(360)
+        await client.change_presence(activity=discord.Game("https://git.io/simplebot"), status=discord.Status.online)
+        await asyncio.sleep(60)
+        await client.change_presence(activity=discord.Game("lol stats auf " + str(len(client.guilds)) + " Servern"))
+        await asyncio.sleep(60)
+        await client.change_presence(activity=discord.Game("ein heißes Spiel mit der Stiefschwester"))
+        await asyncio.sleep(5)
+        await client.change_presence(
+            activity=discord.Activity(type=discord.ActivityType.watching, name="auf deine Nachrichten"))
 
 
 # Benutzerinfo
@@ -147,14 +150,14 @@ def LeagueofLegendsstats():
     api_key = riotapi
     base_url = "https://euw1.api.riotgames.com/lol/"
 
-
     @client.group(invoke_without_command=True)
     async def lol(ctx):
         embed = discord.Embed(title="League of Legends Statistiken", color=ctx.author.color)
-        embed.add_field(name="Alle Befehle:", value="Mach help lol um dir alle Befehle anzeigen zu lassen", inline=False)
-        embed.set_thumbnail(url="https://www.riotgames.com/darkroom/original/462106d7bcc8d74a57a49411b70c4a92:d4bed097ee383e5afad037edb5e5786e/lol-logo-rendered-hi-res.png")
+        embed.add_field(name="Alle Befehle:", value="Mach help lol um dir alle Befehle anzeigen zu lassen",
+                        inline=False)
+        embed.set_thumbnail(
+            url="https://www.riotgames.com/darkroom/original/462106d7bcc8d74a57a49411b70c4a92:d4bed097ee383e5afad037edb5e5786e/lol-logo-rendered-hi-res.png")
         await ctx.send(embed=embed)
-
 
     @lol.command()
     async def level(ctx, *, name: str):
@@ -171,12 +174,12 @@ def LeagueofLegendsstats():
                 embed = discord.Embed(title=f"Leauge of Legends Statistiken für {spielername}",
                                       color=ctx.author.color,
                                       timestamp=ctx.message.created_at, )
-                embed.add_field(name="Level des Spielers:", value=f"**{spielerlevel}**",inline=False)
-                embed.set_thumbnail(url='http://ddragon.leagueoflegends.com/cdn/11.1.1/img/profileicon/' + str(profilbild) + '.png')
+                embed.add_field(name="Level des Spielers:", value=f"**{spielerlevel}**", inline=False)
+                embed.set_thumbnail(
+                    url='http://ddragon.leagueoflegends.com/cdn/11.1.1/img/profileicon/' + str(profilbild) + '.png')
             await ctx.send(embed=embed)
         else:
             await ctx.send("Spieler wurde nicht gefunden.")
-
 
     @lol.command()
     async def rang(ctx, *, name: str):
@@ -196,7 +199,7 @@ def LeagueofLegendsstats():
                 gewonnen = data["wins"]
                 verloren = data["losses"]
                 neu_in_der_elo = data["freshBlood"]
-                winrate = (gewonnen)/(gewonnen+verloren)*100
+                winrate = gewonnen / (gewonnen + verloren) * 100
                 embed = discord.Embed(title=f"Leauge of Legends Ranked Statistiken für {spielername}",
                                       color=ctx.author.color,
                                       timestamp=ctx.message.created_at, )
@@ -205,7 +208,7 @@ def LeagueofLegendsstats():
                 embed.add_field(name="Neu in der Elo?", value=f"{neu_in_der_elo}", inline=True)
                 embed.add_field(name="Gewonnen:", value=f"{gewonnen}", inline=True)
                 embed.add_field(name="Verloren:", value=f"{verloren}", inline=True)
-                embed.add_field(name="Winrate", value=f"{(winrate).__round__()}%", inline=True)
+                embed.add_field(name="Winrate", value=f"{winrate.__round__()}%", inline=True)
                 embed.set_thumbnail(url="https://antonstech.de/" + str(rang) + ".png")
                 await ctx.send(embed=embed)
             else:
@@ -293,6 +296,15 @@ def hilfe():
                               description="Mit give wird eine Minecraft Konsole simuliert",
                               color=ctx.author.color)
         embed.add_field(name="Benutzung:", value="give (item) (spieler)")
+        await ctx.send(embed=embed)
+
+    @hilfe.command()
+    async def lol(ctx):
+        embed = discord.Embed(title="lol",
+                              description="Mit lol kannst du dir eine League of Legends Stats anzeigen lassen",
+                              color=ctx.author.color)
+        embed.add_field(name="Benutzung:", value="lol (level/rang) (name)")
+        embed.add_field(name="Beispiel:", value="lol rang Aftersh0ock")
         await ctx.send(embed=embed)
 
 
