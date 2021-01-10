@@ -7,13 +7,8 @@ import random
 import requests
 import os
 from riotwatcher import LolWatcher, ApiError
-import subprocess
 
-try:
-    VERSION = subprocess.check_output(["git", "describe", "--tags", "--always"]).decode('ascii').strip()
-except Exception:
-    VERSION = 'version_unknown'
-VERSION = VERSION[:-11]
+VERSION = 2.1
 
 # Wichs Codierung
 # ä=Ã¼
@@ -62,7 +57,7 @@ async def on_ready():
     print("--------------------------------------------------------------------------")
     print("--------------------------------------------------------------------------")
     print("Yess der bot läuft :)".format(client))
-    print("Du hast derzeit Release " + VERSION + " installiert")
+    print("Du hast derzeit Release " + str(VERSION) + " installiert")
     print("Du bist eingeloggt als {0.user} auf discord.py Version {1}".format(client, discord.__version__))
     print("Der Bot ist zurzeit auf folgenden Server:")
     for guild in client.guilds:
@@ -79,7 +74,8 @@ async def status_task():
     while True:
         await client.change_presence(activity=discord.Game("https://git.io/simplebot"), status=discord.Status.online)
         await asyncio.sleep(60)
-        await client.change_presence(activity=discord.Game(prefix + "lol stats auf " + str(len(client.guilds)) + "Servern"))
+        await client.change_presence(
+            activity=discord.Game(prefix + "lol stats auf " + str(len(client.guilds)) + " Servern"))
         await asyncio.sleep(60)
         await client.change_presence(activity=discord.Game("ein heißes Spiel mit der Stiefschwester"))
         await asyncio.sleep(5)
@@ -237,7 +233,6 @@ def LeagueofLegendsstats():
 LeagueofLegendsstats()
 
 
-# Ping
 @client.command(invoke_without_command=True)
 async def ping(ctx):
     await ctx.send("Der Ping beträgt derzeit " f"{round(client.latency * 1000)}ms")
@@ -245,7 +240,33 @@ async def ping(ctx):
 
 @client.command(invoke_without_command=True)
 async def version(ctx):
-    await ctx.send("Der Bot läuft derzeit auf Release " + VERSION + " und geht auch dank discord.py Version {}".format(discord.__version__))
+    await ctx.send(
+        "Der Bot läuft derzeit auf Release " + str(VERSION) + " und geht auch dank discord.py Version {}".format(
+            discord.__version__))
+
+
+@client.command(invite_without_command=True)
+async def einladen(ctx):
+    embed = discord.Embed()
+    embed.set_author(name="Klicke hier zum einladen",
+                     url='https://discord.com/api/oauth2/authorize?client_id=744218316167708773&permissions=8&scope=bot')
+    await ctx.send(embed=embed)
+
+
+@client.command(invite_without_command=True)
+async def hosten(ctx):
+    embed = discord.Embed()
+    embed.set_author(name="Klicke hier um ein Tutorial zum Selber hosten zu bekommen",
+                     url='https://github.com/antonstech/simplediscordbot/wiki/Installation')
+    await ctx.send(embed=embed)
+
+
+@client.command(invite_without_command=True)
+async def code(ctx):
+    embed = discord.Embed()
+    embed.set_author(name="Hier findest du den ganzen Code vom Bot",
+                     url='https://github.com/antonstech/simplediscordbot')
+    await ctx.send(embed=embed)
 
 
 def clear():
@@ -270,66 +291,67 @@ def hilfe():
     @client.group(invoke_without_command=True)
     async def hilfe(ctx):
         embed = discord.Embed(title="Hilfe",
-                              description="Benutze hilfe (command) für mehr Informationen zu einem Command.",
+                              description="Benutze " + prefix + "hilfe (command) für mehr Informationen zu einem Command.",
                               color=ctx.author.color)
         embed.add_field(name="Moderation:", value="clear")
-        embed.add_field(name="nützlich:", value="wetter, benutzerinfo , ping")
-        embed.add_field(name="fun", value="give")
-        embed.add_field(name="Game-Stats", value="lol")
-        embed.add_field(name="Infos zum Bot", value="version , einladen , hosten")
+        embed.add_field(name="nützlich:", value="wetter, benutzerinfo , ping", inline=True)
+        embed.add_field(name="fun", value="give", inline=True)
+        embed.add_field(name="Game-Stats", value="lol", inline=True)
+        embed.add_field(name="Infos zum Bot", value="version, einladen, hosten, code", inline=False)
         embed.set_footer(text='Bei sonstigen Fragen einfach DCGALAXY#9729 anschreiben')
         await ctx.send(embed=embed)
 
     @hilfe.command()
     async def wetter(ctx):
         embed = discord.Embed(title="clear",
-                              description="Mit wetter kannst du dir das Wetter so wie einige Infos dazu anzeigen lassen",
+                              description="Mit " + prefix + "wetter kannst du dir das Wetter so wie einige Infos dazu anzeigen lassen",
                               color=ctx.author.color)
-        embed.add_field(name="Benutzung:", value="wetter (Stadt)")
-        embed.add_field(name="Beispiel:", value="wetter München")
+        embed.add_field(name="Benutzung:", value=prefix + "wetter (Stadt)")
+        embed.add_field(name="Beispiel:", value=prefix + "wetter München")
         await ctx.send(embed=embed)
 
     @hilfe.command()
     async def clear(ctx):
         embed = discord.Embed(title="wetter",
-                              description="Mit clear kannst du eine beliebige Anzahl an Nachrichten aus einem Channel löschen",
+                              description="Mit " + prefix + "clear kannst du eine beliebige Anzahl an Nachrichten aus einem Channel löschen",
                               color=ctx.author.color)
-        embed.add_field(name="Benutzung:", value="clear (Anzahl)")
-        embed.add_field(name="Beispiel:", value="clear 15")
+        embed.add_field(name="Benutzung:", value=prefix + "clear (Anzahl)")
+        embed.add_field(name="Beispiel:", value=prefix + "clear 15")
         await ctx.send(embed=embed)
 
     @hilfe.command()
     async def benutzerinfo(ctx):
         embed = discord.Embed(title="benutzerinfo",
-                              description="Mit benutzerinfo kannst du dir einige Infos über einen Nutzer anzeigen lassen",
+                              description="Mit " + prefix + "benutzerinfo kannst du dir einige Infos über einen Nutzer anzeigen lassen",
                               color=ctx.author.color)
-        embed.add_field(name="Benutzung:", value="benutzerinfo (Benutzer)")
-        embed.add_field(name="Beispiel:", value="benutzerinfo DCGALAXY")
+        embed.add_field(name="Benutzung:", value=prefix + "benutzerinfo (Benutzer)")
+        embed.add_field(name="Beispiel:", value=prefix + "benutzerinfo DCGALAXY")
         await ctx.send(embed=embed)
 
     @hilfe.command()
     async def ping(ctx):
         embed = discord.Embed(title="ping",
-                              description="Mit ping kannst du dir die Discord WebSocket protocol latency anzeigen lassen",
+                              description="Mit " + prefix + "ping kannst du dir die Discord WebSocket protocol latency anzeigen lassen",
                               color=ctx.author.color)
-        embed.add_field(name="Benutzung:", value="ping")
+        embed.add_field(name="Benutzung:", value=prefix + "ping")
         await ctx.send(embed=embed)
 
     @hilfe.command()
     async def give(ctx):
         embed = discord.Embed(title="ping",
-                              description="Mit give wird eine Minecraft Konsole simuliert",
+                              description="Mit " + prefix + "give wird eine Minecraft Konsole simuliert",
                               color=ctx.author.color)
-        embed.add_field(name="Benutzung:", value="give (item) (spieler)")
+        embed.add_field(name="Benutzung:", value=prefix + "give (item) (spieler)")
+        embed.add_field(name="Beispiel:", value=prefix + "give diamonds DCGALAXY")
         await ctx.send(embed=embed)
 
     @hilfe.command()
     async def lol(ctx):
         embed = discord.Embed(title="lol",
-                              description="Mit lol kannst du dir eine League of Legends Stats anzeigen lassen",
+                              description="Mit " + prefix + "lol kannst du dir eine League of Legends Stats anzeigen lassen",
                               color=ctx.author.color)
-        embed.add_field(name="Benutzung:", value="lol (level/rang) (name)")
-        embed.add_field(name="Beispiel:", value="lol rang Aftersh0ock")
+        embed.add_field(name="Benutzung:", value=prefix + "lol (level/rang) (name)")
+        embed.add_field(name="Beispiel:", value=prefix + "lol rang Aftersh0ock")
         await ctx.send(embed=embed)
 
 
