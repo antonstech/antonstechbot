@@ -59,7 +59,7 @@ async def on_ready():
     print("Yess der bot läuft :)".format(client))
     print("Du hast derzeit Release " + str(VERSION) + " installiert")
     print("Du bist eingeloggt als {0.user} auf discord.py Version {1}".format(client, discord.__version__))
-    print("Der Bot ist zurzeit auf folgenden Server:")
+    print("Der Bot ist zurzeit auf folgenden " +  str(len(client.guilds)) + " Servern:")
     for guild in client.guilds:
         print("-" + guild.name)
     client.loop.create_task(status_task())
@@ -207,7 +207,6 @@ def LeagueofLegendsstats():
         async with channel.typing():
             if my_ranked_stats:
                 data = my_ranked_stats[0]
-                rang_typ = data["queueType"]
                 rang = data["tier"]
                 nummer = data["rank"]
                 punkte = data["leaguePoints"]
@@ -231,6 +230,59 @@ def LeagueofLegendsstats():
 
 
 LeagueofLegendsstats()
+
+
+def mc():
+    base_url = "https://api.mcsrvstat.us/2/"
+
+    @client.command()
+    async def mc(ctx, *, adresse: str):
+        complete_url = base_url + adresse
+        response = requests.get(complete_url)
+        channel = ctx.message.channel
+        x = response.json()
+        async with channel.typing():
+            status = x["online"]
+            embed = discord.Embed(title="Minecraft Server Stats für " + adresse )
+            if status is True:
+                try:
+                    modt = x["motd"]
+                    beschreibung = modt["clean"]
+                    modtbeschreibung = beschreibung[0]
+                    spieler = x["players"]
+                    spieleronline = spieler["online"]
+                    slots = spieler["max"]
+                    embed.add_field(name="Beschreibung", value=f"{modtbeschreibung}")
+                    embed.add_field(name="Spieler", value=f"{spieleronline} / {slots}")
+                    try:
+                        version = x["version"]
+                        software = x["software"]
+                        embed.add_field(name="Version", value=f"{software} {version}")
+                    except:
+                        embed.add_field(name="Version", value="Info nicht vorhanden")
+                    try:
+                        mods = x["mods"]
+                        modss = mods["names"]
+                        if modss != "":
+                            embed.set_author(name="Modlist",
+                                             url='https://mcsrvstat.us/server/' + adresse)
+                            embed.add_field(name="Modlist", value="Siehe oben links")
+                        else:
+                            pass
+                    except:
+                        pass
+                    embed.add_field(name="Online?", value="Jap")
+                    embed.set_thumbnail(url="https://api.mcsrvstat.us/icon/" + adresse)
+                    await ctx.send(embed=embed)
+                except:
+                    embed.add_field(name="Test", value="Test123")
+                    await ctx.send(embed=embed)
+            else:
+                embed.set_footer(text="Der Server ist derzeit nicht online")
+                await ctx.send(embed=embed)
+
+
+mc()
 
 
 @client.command(invoke_without_command=True)
