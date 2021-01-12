@@ -8,7 +8,7 @@ import requests
 import os
 from riotwatcher import LolWatcher, ApiError
 
-VERSION = 2.1
+VERSION = 2.2
 
 # Wichs Codierung
 # ä=Ã¼
@@ -348,7 +348,7 @@ def hilfe():
         embed.add_field(name="Moderation:", value="clear")
         embed.add_field(name="nützlich:", value="wetter, benutzerinfo , ping", inline=True)
         embed.add_field(name="fun", value="give", inline=True)
-        embed.add_field(name="Game-Stats", value="lol", inline=True)
+        embed.add_field(name="Game-Stats", value="lol, mc", inline=True)
         embed.add_field(name="Infos zum Bot", value="version, einladen, hosten, code", inline=False)
         embed.set_footer(text='Bei sonstigen Fragen einfach DCGALAXY#9729 anschreiben')
         await ctx.send(embed=embed)
@@ -404,6 +404,15 @@ def hilfe():
                               color=ctx.author.color)
         embed.add_field(name="Benutzung:", value=prefix + "lol (level/rang) (name)")
         embed.add_field(name="Beispiel:", value=prefix + "lol rang Aftersh0ock")
+        await ctx.send(embed=embed)
+
+    @hilfe.command()
+    async def mc(ctx):
+        embed = discord.Embed(title="benutzerinfo",
+                              description="Mit " + prefix + "mc kannst du dir Informationen zu einem Minecraftserver anzeigen",
+                              color=ctx.author.color)
+        embed.add_field(name="Benutzung:", value=prefix + "mc (serveradresse)")
+        embed.add_field(name="Beispiel:", value=prefix + "mc gommehd.net")
         await ctx.send(embed=embed)
 
 
