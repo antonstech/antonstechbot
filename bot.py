@@ -298,7 +298,7 @@ def corona():
         async with channel.typing():
             insgesamt = x["cases"]
             todegesamt = x["deaths"]
-            insidenz = x["weekIncidence"]
+            inzidenz = x["weekIncidence"]
             data = y["data"]
             jetzgeimpft = data["quote"]
             embed = discord.Embed(title="Corona Virus Statistiken für Deutschland",
@@ -306,7 +306,7 @@ def corona():
                                       timestamp=ctx.message.created_at)
             embed.add_field(name="Fälle insgesammt", value=f"{insgesamt}")
             embed.add_field(name="Tode insgesamt",value=f"{todegesamt}")
-            embed.add_field(name="Insidenz",value=f"{insidenz.__round__()}")
+            embed.add_field(name="Inzidenz",value=f"{inzidenz.__round__()}")
             embed.add_field(name="Geimpft",value=f"{jetzgeimpft.__round__(4) * 100}%")
             await ctx.send(embed=embed)
 
@@ -366,6 +366,16 @@ def clear():
 
 clear()
 
+
+@client.command()
+async def nudes(ctx):
+    channel = ctx.message.channel
+    if ctx.channel.is_nsfw():
+        embed = discord.Embed(title="Nudes")
+        embed.set_image(url="https://www.nydailynews.com/resizer/OYta-jTp2D6Xt_Wj_o6zEUqWttE=/415x562/top/arc-anglerfish-arc2-prod-tronc.s3.amazonaws.com/public/7Y53KJVE7FGLZZPD44LTN4QB5I.jpg")
+        await ctx.send(embed=embed)
+    else:
+        await ctx.channel.send("Der Channel ist nicht nsfw")
 
 def hilfe():
     @client.group(invoke_without_command=True)
