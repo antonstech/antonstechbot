@@ -8,7 +8,7 @@ import requests
 import os
 from riotwatcher import LolWatcher, ApiError
 
-VERSION = 2.2
+VERSION = 2.3
 
 # Wichs Codierung
 # ä=Ã¼
@@ -283,6 +283,34 @@ def mc():
 
 
 mc()
+
+
+def corona():
+    @client.group()
+    async def corona(ctx):
+        url = "https://api.corona-zahlen.org/germany"
+        deutschland = requests.get(url)
+        x = deutschland.json()
+        g_url = "https://api.corona-zahlen.org/vaccinations"
+        geimpft = requests.get(g_url)
+        y = geimpft.json()
+        channel = ctx.message.channel
+        async with channel.typing():
+            insgesamt = x["cases"]
+            todegesamt = x["deaths"]
+            insidenz = x["weekIncidence"]
+            data = y["data"]
+            jetzgeimpft = data["quote"]
+            embed = discord.Embed(title="Corona Virus Statistiken für Deutschland",
+                                      color=ctx.author.color,
+                                      timestamp=ctx.message.created_at)
+            embed.add_field(name="Fälle insgesammt", value=f"{insgesamt}")
+            embed.add_field(name="Tode insgesamt",value=f"{todegesamt}")
+            embed.add_field(name="Insidenz",value=f"{insidenz.__round__()}")
+            embed.add_field(name="Geimpft",value=f"{jetzgeimpft.__round__(4) * 100}%")
+            await ctx.send(embed=embed)
+
+corona()
 
 
 @client.command(invoke_without_command=True)
