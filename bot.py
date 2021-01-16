@@ -6,7 +6,7 @@ import json
 import random
 import requests
 import os
-from riotwatcher import LolWatcher, ApiError
+from riotwatcher import LolWatcher
 
 VERSION = 2.3
 
@@ -19,28 +19,32 @@ os.system("git pull https://github.com/antonstech/simplediscordbot")
 
 
 def start():
-    tokengesetzt = input("Ist dein Token gesetzt? (j/n): ")
-    if tokengesetzt == "j":
+    allesgesetzt = input("Ist alles gesetzt (j/n): ")
+    if allesgesetzt == "j":
         pass
     else:
-        bottoken = {"token": input("Dein Bot Token: ")}
-        with open("token.json", "w") as f:
-            json.dump(bottoken, f)
+        tokengesetzt = input("Ist dein Token gesetzt? (j/n): ")
+        if tokengesetzt == "j":
+            pass
+        else:
+            bottoken = {"token": input("Dein Bot Token: ")}
+            with open("token.json", "w") as f:
+                json.dump(bottoken, f)
 
-    prefixgesetzt = input("Ist dein Bot Prefix gesetzt? (j/n): ")
-    if prefixgesetzt == "j":
-        pass
-    else:
-        botprefix = {"prefix": input("Dein Bot Prefix: ")}
-        with open("prefix.json", "w") as f:
-            json.dump(botprefix, f)
-    riotapi = input("Ist dein Riot Games Dev Token gesetzt? (j/n): ")
-    if riotapi == "j":
-        pass
-    else:
-        riotapi = {"riotapi": input("Dein Riot Games Api Token: ")}
-        with open("riotapi.json", "w") as f:
-            json.dump(riotapi, f)
+        prefixgesetzt = input("Ist dein Bot Prefix gesetzt? (j/n): ")
+        if prefixgesetzt == "j":
+            pass
+        else:
+            botprefix = {"prefix": input("Dein Bot Prefix: ")}
+            with open("prefix.json", "w") as f:
+                json.dump(botprefix, f)
+        riotapi = input("Ist dein Riot Games Dev Token gesetzt? (j/n): ")
+        if riotapi == "j":
+            pass
+        else:
+            riotapi = {"riotapi": input("Dein Riot Games Api Token: ")}
+            with open("riotapi.json", "w") as f:
+                json.dump(riotapi, f)
 
 
 with open('./prefix.json', 'r') as f:
@@ -289,8 +293,8 @@ def corona():
     @client.group()
     async def corona(ctx):
         url = "https://api.corona-zahlen.org/germany"
-        deutschland = requests.get(url)
-        x = deutschland.json()
+        response = requests.get(url)
+        x = response.json()
         g_url = "https://api.corona-zahlen.org/vaccinations"
         geimpft = requests.get(g_url)
         y = geimpft.json()
