@@ -239,8 +239,14 @@ LeagueofLegendsstats()
 def mc():
     base_url = "https://api.mcsrvstat.us/2/"
 
-    @client.command()
-    async def mc(ctx, *, adresse: str):
+    @client.group(invoke_without_command=True)
+    async def mc(ctx):
+        embed = discord.Embed(title="Der Mc Command kann dir viele Nützliche Dinge zum Thema Minecraft anzeigen")
+        await ctx.send(embed=embed)
+
+
+    @mc.command()
+    async def server(ctx, *, adresse: str):
         complete_url = base_url + adresse
         response = requests.get(complete_url)
         channel = ctx.message.channel
@@ -284,6 +290,17 @@ def mc():
             else:
                 embed.set_footer(text="Der Server ist derzeit nicht online")
                 await ctx.send(embed=embed)
+
+
+    @mc.command()
+    async def skin (ctx, name):
+        kopf = "https://minotar.net/avatar/"
+        body = "https://minotar.net/armor/body/"
+        embed = discord.Embed(title="Minecraft Skin von " + name)
+        embed.set_thumbnail(url=kopf + name + "/50.png")
+        embed.set_image(url= body + name + "/300.png")
+        embed.set_author(name="Skin Download", url='https://minotar.net/download/' + name)
+        await ctx.send(embed=embed)
 
 
 mc()
