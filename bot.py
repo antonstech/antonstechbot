@@ -242,6 +242,7 @@ def mc():
     @client.group(invoke_without_command=True)
     async def mc(ctx):
         embed = discord.Embed(title="Der Mc Command kann dir viele Nützliche Dinge zum Thema Minecraft anzeigen")
+        embed.add_field(name="Funktionen:", value="skin, server, name")
         await ctx.send(embed=embed)
 
 
@@ -294,12 +295,37 @@ def mc():
 
     @mc.command()
     async def skin (ctx, name):
-        kopf = "https://minotar.net/avatar/"
-        body = "https://minotar.net/armor/body/"
+        uuid = "https://api.mojang.com/users/profiles/minecraft/" + name
+        response = requests.get(uuid)
+        x = response.json()
+        playeruuid = x["id"]
+        kopf = "https://crafatar.com/avatars/"
+        body = "https://crafatar.com/renders/body/"
         embed = discord.Embed(title="Minecraft Skin von " + name)
-        embed.set_thumbnail(url=kopf + name + "/50.png")
-        embed.set_image(url= body + name + "/300.png")
+        embed.set_thumbnail(url=kopf + playeruuid + "?size=50")
+        embed.set_image(url= body + playeruuid + "?size=512")
         embed.set_author(name="Skin Download", url='https://minotar.net/download/' + name)
+        await ctx.send(embed=embed)
+
+
+    @mc.command()
+    async def name (ctx, name):
+        embed = discord.Embed(title="Minecraft Namehistory für " + name)
+        try:
+            uuid = "https://api.mojang.com/users/profiles/minecraft/" + name
+            response = requests.get(uuid)
+            x = response.json()
+            playeruuid = x["id"]
+            namehistory = "https://api.mojang.com/user/profiles/" + playeruuid + "/names"
+            response2 = requests.get(namehistory)
+            y = response2.json()
+            try:
+                namen = y[0]["name"]
+                embed.add_field(name="Namensänderung:", value=f"**{namen}** --> **{name}**")
+            except:
+                pass
+        except:
+            embed.add_field(name="Spieler Nicht gefunden", value="Schau mal nach ob du alles richtig geschrieben hast. Und falls es dann immernoch nicht geht Kontaktier bitte den Entwickler des Bots")
         await ctx.send(embed=embed)
 
 
@@ -407,8 +433,9 @@ def hilfe():
         embed.add_field(name="Moderation:", value="clear")
         embed.add_field(name="nützlich:", value="wetter, benutzerinfo , ping", inline=True)
         embed.add_field(name="fun", value="give", inline=True)
-        embed.add_field(name="Game-Stats", value="lol, mc", inline=True)
-        embed.add_field(name="Infos zum Bot", value="version, einladen, hosten, code", inline=False)
+        embed.add_field(name="Game-Stats", value="lol, mehr kommt bald", inline=True)
+        embed.add_field(name="Minecraft Zeugs", value="mc", inline=True)
+        embed.add_field(name="Infos zum Bot", value="version, einladen, hosten, code", inline=True)
         embed.set_footer(text='Bei sonstigen Fragen einfach DCGALAXY#9729 anschreiben')
         await ctx.send(embed=embed)
 
@@ -467,11 +494,10 @@ def hilfe():
 
     @hilfe.command()
     async def mc(ctx):
-        embed = discord.Embed(title="benutzerinfo",
-                              description="Mit " + prefix + "mc kannst du dir Informationen zu einem Minecraftserver anzeigen",
+        embed = discord.Embed(title="mc",
+                              description="Mit " + prefix + "mc (command) kannst du dir mehrere Interessante sachen zu Minecraft Anzeigen lassen",
                               color=ctx.author.color)
-        embed.add_field(name="Benutzung:", value=prefix + "mc (serveradresse)")
-        embed.add_field(name="Beispiel:", value=prefix + "mc gommehd.net")
+        embed.add_field(name="Mehr Infos gibts es hier:", value=prefix + "mc ")
         await ctx.send(embed=embed)
 
 
