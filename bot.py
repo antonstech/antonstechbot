@@ -304,7 +304,7 @@ def mc():
         embed = discord.Embed(title="Minecraft Skin von " + name)
         embed.set_thumbnail(url=kopf + playeruuid + "?size=50")
         embed.set_image(url= body + playeruuid + "?size=512")
-        embed.set_author(name="Skin Download", url='https://minotar.net/download/' + name)
+        embed.set_author(name="Skin Download", url="https://minotar.net/download/" + name)
         await ctx.send(embed=embed)
 
 
