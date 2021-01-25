@@ -8,7 +8,7 @@ import requests
 import os
 from riotwatcher import LolWatcher
 
-VERSION = 2.3
+VERSION = 2.5
 
 # Wichs Codierung
 # ä=Ã¼
