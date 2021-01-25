@@ -45,6 +45,13 @@ def start():
             riotapi = {"riotapi": input("Dein Riot Games Api Token: ")}
             with open("riotapi.json", "w") as f:
                 json.dump(riotapi, f)
+        osuapi = input("Ist dein Osu Api Token gesetzt? (j/n): ")
+        if osuapi == "j":
+            pass
+        else:
+            osuapi = {"token": input("Dein Osu Api Token: ")}
+            with open("osuapi.json", "w") as f:
+                json.dump(osuapi, f)
 
 
 with open('./prefix.json', 'r') as f:
@@ -360,6 +367,45 @@ def corona():
 corona()
 
 
+def osu():
+    with open('./osuapi.json', 'r') as f:
+        json_stuff = json.load(f)
+        osuapi = json_stuff["token"]
+        url = "https://osu.ppy.sh/api/get_user?u="
+    @client.command()
+    async def osu(ctx, name):
+        try:
+            spielerstats = url + name + "&k=" + osuapi
+            response = requests.get(spielerstats)
+            x = response.json()
+            y = x[0]
+            userid = y["user_id"]
+            playedgames = y["playcount"]
+            level = y["level"]
+            levelgerundet = (int(float(level)))
+            spielzeit_sekunden = y["total_seconds_played"]
+            spielzeit_stunden = int(spielzeit_sekunden) / 3600
+            genauigkeit = y["accuracy"]
+            genauigkeit_int = (int(float(genauigkeit)))
+            globalrank = y["pp_rank"]
+            localrank = y["pp_country_rank"]
+            land = y["country"]
+            embed = discord.Embed(title="Osu Stats für " + name)
+            embed.set_thumbnail(url="http://s.ppy.sh/a/" + userid)
+            embed.add_field(name="Gespielte Spiele",value=f"{playedgames}")
+            embed.add_field(name="Level",value=f"{levelgerundet}")
+            embed.add_field(name="Spielzeit", value=f"{(int(float(spielzeit_stunden)))} Stunden")
+            embed.add_field(name="Genauigkeit",value=f"{genauigkeit_int.__round__()}%")
+            embed.add_field(name="Globaler Rang",value=f"{globalrank}")
+            embed.add_field(name="Rang in " + land,value=f"{localrank}")
+            await ctx.send(embed=embed)
+        except:
+            ctx.send("Irgendetwas ist schief gelaufen; check ob der Name richtig geschrieben ist und falls es dann nicht geht Kontaktiere DCGALAXY#6729")
+
+
+osu()
+
+
 @client.command(invoke_without_command=True)
 async def ping(ctx):
     await ctx.send("Der Ping beträgt derzeit " f"{round(client.latency * 1000)}ms")
@@ -433,7 +479,7 @@ def hilfe():
         embed.add_field(name="Moderation:", value="clear")
         embed.add_field(name="nützlich:", value="wetter, benutzerinfo , ping", inline=True)
         embed.add_field(name="fun", value="give", inline=True)
-        embed.add_field(name="Game-Stats", value="lol, mehr kommt bald", inline=True)
+        embed.add_field(name="Game-Stats", value="lol, osu", inline=True)
         embed.add_field(name="Minecraft Zeugs", value="mc", inline=True)
         embed.add_field(name="Infos zum Bot", value="version, einladen, hosten, code", inline=True)
         embed.set_footer(text='Bei sonstigen Fragen einfach DCGALAXY#9729 anschreiben')
@@ -499,6 +545,16 @@ def hilfe():
                               color=ctx.author.color)
         embed.add_field(name="Mehr Infos gibts es hier:", value=prefix + "mc ")
         await ctx.send(embed=embed)
+
+    @hilfe.command()
+    async def osu(ctx):
+        embed = discord.Embed(title="osu",
+                              description="Mit " + prefix + "osu kannst du dir Osu Stats zu einem Spieler Anzeigen lassen",
+                              color=ctx.author.color)
+        embed.add_field(name="Benutzung:", value=prefix + "osu (name)")
+        embed.add_field(name="Beispiel:", value=prefix + "osu Aftersh0ock")
+        await ctx.send(embed=embed)
+
 
 
 hilfe()
