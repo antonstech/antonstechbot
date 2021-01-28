@@ -8,7 +8,7 @@ import requests
 import os
 from riotwatcher import LolWatcher
 
-VERSION = 2.5
+VERSION = 2.6
 
 # Wichs Codierung
 # ä=Ã¼
@@ -95,7 +95,6 @@ async def status_task():
         await asyncio.sleep(60)
 
 
-# Benutzerinfo
 def benutzerinfo():
     @client.command()
     async def benutzerinfo(ctx, member: discord.Member):
@@ -355,13 +354,21 @@ def corona():
             inzidenz = x["weekIncidence"]
             data = y["data"]
             jetzgeimpft = data["quote"]
+            infor = x["r"]
+            rwert = infor["value"]
+            gesund = x["recovered"]
             embed = discord.Embed(title="Corona Virus Statistiken für Deutschland",
                                       color=ctx.author.color,
                                       timestamp=ctx.message.created_at)
             embed.add_field(name="Fälle insgesammt", value=f"{insgesamt}")
             embed.add_field(name="Tode insgesamt",value=f"{todegesamt}")
+            embed.add_field(name="Gesund",value=f"{gesund}")
             embed.add_field(name="Inzidenz",value=f"{inzidenz.__round__()}")
             embed.add_field(name="Geimpft",value=f"{jetzgeimpft.__round__(4) * 100}%")
+            embed.add_field(name="R-Wert",value=f"{rwert}")
+            await ctx.send(embed=embed)
+            embed = discord.Embed(title="Aktuelle Corona Map für Deutschland")
+            embed.set_image(url="https://api.corona-zahlen.org/map/districts")
             await ctx.send(embed=embed)
 
 corona()
