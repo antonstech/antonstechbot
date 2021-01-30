@@ -8,7 +8,7 @@ import requests
 import os
 from riotwatcher import LolWatcher
 
-VERSION = 2.6
+VERSION = 3.0
 
 # Wichs Codierung
 # ä=Ã¼
@@ -17,50 +17,18 @@ VERSION = 2.6
 
 os.system("git pull https://github.com/antonstech/simplediscordbot")
 
+passtalles = input("Sind alle Tokens gesetzt (j/n):")
+if passtalles == "j":
+    pass
+else:
+    os.system("python3 setup.py")
 
-def start():
-    allesgesetzt = input("Ist alles gesetzt (j/n): ")
-    if allesgesetzt == "j":
-        pass
-    else:
-        tokengesetzt = input("Ist dein Token gesetzt? (j/n): ")
-        if tokengesetzt == "j":
-            pass
-        else:
-            bottoken = {"token": input("Dein Bot Token: ")}
-            with open("token.json", "w") as f:
-                json.dump(bottoken, f)
-
-        prefixgesetzt = input("Ist dein Bot Prefix gesetzt? (j/n): ")
-        if prefixgesetzt == "j":
-            pass
-        else:
-            botprefix = {"prefix": input("Dein Bot Prefix: ")}
-            with open("prefix.json", "w") as f:
-                json.dump(botprefix, f)
-        riotapi = input("Ist dein Riot Games Dev Token gesetzt? (j/n): ")
-        if riotapi == "j":
-            pass
-        else:
-            riotapi = {"riotapi": input("Dein Riot Games Api Token: ")}
-            with open("riotapi.json", "w") as f:
-                json.dump(riotapi, f)
-        osuapi = input("Ist dein Osu Api Token gesetzt? (j/n): ")
-        if osuapi == "j":
-            pass
-        else:
-            osuapi = {"token": input("Dein Osu Api Token: ")}
-            with open("osuapi.json", "w") as f:
-                json.dump(osuapi, f)
-
-
-with open('./prefix.json', 'r') as f:
+with open('./config.json', 'r') as f:
     json_stuff = json.load(f)
     prefix = json_stuff["prefix"]
 
 client = commands.Bot(command_prefix=prefix, intents=discord.Intents.all())
 
-start()
 
 
 @client.event
@@ -76,7 +44,7 @@ async def on_ready():
     client.loop.create_task(status_task())
 
 
-with open('./prefix.json', 'r') as f:
+with open('./config.json', 'r') as f:
     json_stuff = json.load(f)
     prefix = json_stuff["prefix"]
 
@@ -166,7 +134,7 @@ wetter()
 
 
 def LeagueofLegendsstats():
-    with open('./riotapi.json', 'r') as f:
+    with open('./config.json', 'r') as f:
         json_stuff = json.load(f)
         riotapi = json_stuff["riotapi"]
     api_key = riotapi
@@ -375,9 +343,9 @@ corona()
 
 
 def osu():
-    with open('./osuapi.json', 'r') as f:
+    with open('./config.json', 'r') as f:
         json_stuff = json.load(f)
-        osuapi = json_stuff["token"]
+        osuapi = json_stuff["osuapi"]
         url = "https://osu.ppy.sh/api/get_user?u="
     @client.command()
     async def osu(ctx, name):
@@ -407,7 +375,7 @@ def osu():
             embed.add_field(name="Rang in " + land,value=f"{localrank}")
             await ctx.send(embed=embed)
         except:
-            ctx.send("Irgendetwas ist schief gelaufen; check ob der Name richtig geschrieben ist und falls es dann nicht geht Kontaktiere DCGALAXY#6729")
+            await ctx.send("Irgendetwas ist schief gelaufen; check ob der Name richtig geschrieben ist und falls es dann nicht geht Kontaktiere DCGALAXY#9729")
 
 
 osu()
@@ -609,7 +577,7 @@ def give():
 
 give()
 
-with open('token.json', 'r') as f:
+with open('config.json', 'r') as f:
     json_stuff = json.load(f)
     token = json_stuff["token"]
 
