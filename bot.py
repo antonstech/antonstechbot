@@ -17,7 +17,7 @@ VERSION = 3.0
 
 os.system("git pull https://github.com/antonstech/simplediscordbot")
 
-passtalles = input("Sind alle Tokens gesetzt (j/n):")
+passtalles = input("Sind alle Tokens gesetzt (j/n): ")
 if passtalles == "j":
     pass
 else:
@@ -30,7 +30,6 @@ with open('./config.json', 'r') as f:
 client = commands.Bot(command_prefix=prefix, intents=discord.Intents.all())
 
 
-
 @client.event
 async def on_ready():
     print("--------------------------------------------------------------------------")
@@ -38,7 +37,7 @@ async def on_ready():
     print("Yess der bot läuft :)".format(client))
     print("Du hast derzeit Release " + str(VERSION) + " installiert")
     print("Du bist eingeloggt als {0.user} auf discord.py Version {1}".format(client, discord.__version__))
-    print("Der Bot ist zurzeit auf folgenden " +  str(len(client.guilds)) + " Servern:")
+    print("Der Bot ist zurzeit auf folgenden " + str(len(client.guilds)) + " Servern:")
     for guild in client.guilds:
         print("-" + guild.name)
     client.loop.create_task(status_task())
@@ -219,7 +218,6 @@ def mc():
         embed.add_field(name="Funktionen:", value="skin, server, name")
         await ctx.send(embed=embed)
 
-
     @mc.command()
     async def server(ctx, *, adresse: str):
         complete_url = base_url + adresse
@@ -228,7 +226,7 @@ def mc():
         x = response.json()
         async with channel.typing():
             status = x["online"]
-            embed = discord.Embed(title="Minecraft Server Stats für " + adresse )
+            embed = discord.Embed(title="Minecraft Server Stats für " + adresse)
             if status is True:
                 try:
                     modt = x["motd"]
@@ -266,9 +264,8 @@ def mc():
                 embed.set_footer(text="Der Server ist derzeit nicht online")
                 await ctx.send(embed=embed)
 
-
     @mc.command()
-    async def skin (ctx, name):
+    async def skin(ctx, name):
         uuid = "https://api.mojang.com/users/profiles/minecraft/" + name
         response = requests.get(uuid)
         x = response.json()
@@ -277,13 +274,12 @@ def mc():
         body = "https://crafatar.com/renders/body/"
         embed = discord.Embed(title="Minecraft Skin von " + name)
         embed.set_thumbnail(url=kopf + playeruuid + "?size=50")
-        embed.set_image(url= body + playeruuid + "?size=512")
+        embed.set_image(url=body + playeruuid + "?size=512")
         embed.set_author(name="Skin Download", url="https://minotar.net/download/" + name)
         await ctx.send(embed=embed)
 
-
     @mc.command()
-    async def name (ctx, name):
+    async def name(ctx, name):
         embed = discord.Embed(title="Minecraft Namehistory für " + name)
         try:
             uuid = "https://api.mojang.com/users/profiles/minecraft/" + name
@@ -299,7 +295,9 @@ def mc():
             except:
                 pass
         except:
-            embed.add_field(name="Spieler Nicht gefunden", value="Schau mal nach ob du alles richtig geschrieben hast. Und falls es dann immernoch nicht geht Kontaktier bitte den Entwickler des Bots")
+            embed.add_field(name="Spieler Nicht gefunden",
+                            value="Schau mal nach ob du alles richtig geschrieben hast. Und falls es dann immernoch "
+                                  "nicht geht Kontaktier bitte den Entwickler des Bots")
         await ctx.send(embed=embed)
 
 
@@ -307,7 +305,7 @@ mc()
 
 
 def corona():
-    @client.group()
+    @client.group(invoke_without_command=True)
     async def corona(ctx):
         url = "https://api.corona-zahlen.org/germany"
         response = requests.get(url)
@@ -325,19 +323,50 @@ def corona():
             infor = x["r"]
             rwert = infor["value"]
             gesund = x["recovered"]
+            embed = discord.Embed(title="Impfen lassen", url="https://antonstech.de/impfung.html",
+                                  color=ctx.author.color)
+            await ctx.send(embed=embed)
             embed = discord.Embed(title="Corona Virus Statistiken für Deutschland",
-                                      color=ctx.author.color,
-                                      timestamp=ctx.message.created_at)
+                                  color=ctx.author.color,
+                                  timestamp=ctx.message.created_at)
             embed.add_field(name="Fälle insgesammt", value=f"{insgesamt}")
-            embed.add_field(name="Tode insgesamt",value=f"{todegesamt}")
-            embed.add_field(name="Gesund",value=f"{gesund}")
-            embed.add_field(name="Inzidenz",value=f"{inzidenz.__round__()}")
-            embed.add_field(name="Geimpft",value=f"{jetzgeimpft.__round__(4) * 100}%")
-            embed.add_field(name="R-Wert",value=f"{rwert}")
+            embed.add_field(name="Tode insgesamt", value=f"{todegesamt}")
+            embed.add_field(name="Gesund", value=f"{gesund}")
+            embed.add_field(name="Inzidenz", value=f"{inzidenz.__round__()}")
+            embed.add_field(name="Geimpft", value=f"{jetzgeimpft.__round__(3) * 100}%")
+            embed.add_field(name="R-Wert", value=f"{rwert}")
+            embed.set_footer(text="Mit " + prefix + "corona geimpft gibts mehr zur Impfung")
             await ctx.send(embed=embed)
-            embed = discord.Embed(title="Aktuelle Corona Map für Deutschland")
+            embed = discord.Embed(title="Aktuelle Corona Map für Deutschland",
+                                  color=ctx.author.color,
+                                  timestamp=ctx.message.created_at)
             embed.set_image(url="https://api.corona-zahlen.org/map/districts")
+            embed.set_footer(text="Mit " + prefix + "corona geimpft gibts mehr zur Impfung")
             await ctx.send(embed=embed)
+
+    @corona.command(invoke_without_command=True)
+    async def geimpft(ctx):
+        url = "https://api.corona-zahlen.org/vaccinations"
+        response = requests.get(url)
+        x = response.json()
+        channel = ctx.message.channel
+        async with channel.typing():
+            y = x["data"]
+            jetztgeimpft = y["quote"]
+            gesamt = y["vaccinated"]
+            second = y["secondVaccination"]
+            zweite_imfung = second["vaccinated"]
+            embed = discord.Embed(title="Impfen lassen", url="https://antonstech.de/impfung.html",
+                                  color=ctx.author.color)
+            await ctx.send(embed=embed)
+            embed = discord.Embed(title="Statistiken zur Impfung in Deutschland",
+                                  color=ctx.author.color)
+            embed.add_field(name="Prozent der Bevölkerung", value=f"{jetztgeimpft.__round__(3) * 100}%")
+            embed.add_field(name="Anzahl der Geimpften", value=f"{gesamt} Personen",inline=False)
+            embed.add_field(name="Zweite Impfung haben bereits erhalten", value=f"{zweite_imfung} Personen")
+            await ctx.send(embed=embed)
+
+
 
 corona()
 
@@ -347,6 +376,7 @@ def osu():
         json_stuff = json.load(f)
         osuapi = json_stuff["osuapi"]
         url = "https://osu.ppy.sh/api/get_user?u="
+
     @client.command()
     async def osu(ctx, name):
         try:
@@ -367,15 +397,16 @@ def osu():
             land = y["country"]
             embed = discord.Embed(title="Osu Stats für " + name)
             embed.set_thumbnail(url="http://s.ppy.sh/a/" + userid)
-            embed.add_field(name="Gespielte Spiele",value=f"{playedgames}")
-            embed.add_field(name="Level",value=f"{levelgerundet}")
+            embed.add_field(name="Gespielte Spiele", value=f"{playedgames}")
+            embed.add_field(name="Level", value=f"{levelgerundet}")
             embed.add_field(name="Spielzeit", value=f"{(int(float(spielzeit_stunden)))} Stunden")
-            embed.add_field(name="Genauigkeit",value=f"{genauigkeit_int.__round__()}%")
-            embed.add_field(name="Globaler Rang",value=f"{globalrank}")
-            embed.add_field(name="Rang in " + land,value=f"{localrank}")
+            embed.add_field(name="Genauigkeit", value=f"{genauigkeit_int.__round__()}%")
+            embed.add_field(name="Globaler Rang", value=f"{globalrank}")
+            embed.add_field(name="Rang in " + land, value=f"{localrank}")
             await ctx.send(embed=embed)
         except:
-            await ctx.send("Irgendetwas ist schief gelaufen; check ob der Name richtig geschrieben ist und falls es dann nicht geht Kontaktiere DCGALAXY#9729")
+            await ctx.send(
+                "Irgendetwas ist schief gelaufen; check ob der Name richtig geschrieben ist und falls es dann nicht geht Kontaktiere DCGALAXY#9729")
 
 
 osu()
@@ -440,10 +471,12 @@ async def nudes(ctx):
     channel = ctx.message.channel
     if ctx.channel.is_nsfw():
         embed = discord.Embed(title="Nudes")
-        embed.set_image(url="https://www.nydailynews.com/resizer/OYta-jTp2D6Xt_Wj_o6zEUqWttE=/415x562/top/arc-anglerfish-arc2-prod-tronc.s3.amazonaws.com/public/7Y53KJVE7FGLZZPD44LTN4QB5I.jpg")
+        embed.set_image(
+            url="https://www.nydailynews.com/resizer/OYta-jTp2D6Xt_Wj_o6zEUqWttE=/415x562/top/arc-anglerfish-arc2-prod-tronc.s3.amazonaws.com/public/7Y53KJVE7FGLZZPD44LTN4QB5I.jpg")
         await ctx.send(embed=embed)
     else:
         await ctx.channel.send("Der Channel ist nicht nsfw")
+
 
 def hilfe():
     @client.group(invoke_without_command=True)
@@ -453,7 +486,7 @@ def hilfe():
                               color=ctx.author.color)
         embed.add_field(name="Moderation:", value="clear")
         embed.add_field(name="nützlich:", value="wetter, benutzerinfo , ping", inline=True)
-        embed.add_field(name="fun", value="give", inline=True)
+        embed.add_field(name="fun", value="give, corona", inline=True)
         embed.add_field(name="Game-Stats", value="lol, osu", inline=True)
         embed.add_field(name="Minecraft Zeugs", value="mc", inline=True)
         embed.add_field(name="Infos zum Bot", value="version, einladen, hosten, code", inline=True)
@@ -529,7 +562,6 @@ def hilfe():
         embed.add_field(name="Benutzung:", value=prefix + "osu (name)")
         embed.add_field(name="Beispiel:", value=prefix + "osu Aftersh0ock")
         await ctx.send(embed=embed)
-
 
 
 hilfe()
