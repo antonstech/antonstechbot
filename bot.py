@@ -8,7 +8,7 @@ import requests
 import os
 from riotwatcher import LolWatcher
 
-VERSION = 3.0
+VERSION = 3.2
 
 # Wichs Codierung
 # ä=Ã¼
@@ -410,6 +410,25 @@ def osu():
 
 
 osu()
+
+
+def earth2():
+    @client.command()
+    async def earth2(ctx):
+        url = "https://earth2stats.net/api/get_countries/199"
+        response = requests.get(url)
+        x = response.json()
+        land = x["name"]
+        wert = x["marketplace_tile_value"]
+        verkauft = x["total_sold_tiles"]
+        embed = discord.Embed(title="Earth2 Statistiken für " + land, url="https://earth2stats.net/country/" + land)
+        embed.set_thumbnail(url="https://static-cdn.jtvnw.net/jtv_user_pictures/99783da2-3f60-4aeb-92bd-83e953c03627-profile_image-70x70.png")
+        embed.add_field(name="Wert eines Tiles", value=f"{wert}E$")
+        embed.add_field(name="Insgesamt verkauft", value=f"{verkauft} Tiles")
+        await ctx.send(embed=embed)
+
+earth2()
+
 
 
 @client.command(invoke_without_command=True)
