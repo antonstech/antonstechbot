@@ -5,23 +5,13 @@ from discord.ext import commands
 import json
 import random
 import requests
-import os
 from riotwatcher import LolWatcher
-
-VERSION = 3.2
 
 # Wichs Codierung
 # ä=Ã¼
 # ö=Ã¶
 
-
-os.system("git pull https://github.com/antonstech/simplediscordbot")
-
-passtalles = input("Sind alle Tokens gesetzt (j/n): ")
-if passtalles == "j":
-    pass
-else:
-    os.system("python3 setup.py")
+VERSION = 4.0
 
 with open('./config.json', 'r') as f:
     json_stuff = json.load(f)
@@ -32,14 +22,12 @@ client = commands.Bot(command_prefix=prefix, intents=discord.Intents.all())
 
 @client.event
 async def on_ready():
-    print("--------------------------------------------------------------------------")
-    print("--------------------------------------------------------------------------")
     print("Yess der bot läuft :)".format(client))
     print("Du hast derzeit Release " + str(VERSION) + " installiert")
     print("Du bist eingeloggt als {0.user} auf discord.py Version {1}".format(client, discord.__version__))
     print("Der Bot ist zurzeit auf folgenden " + str(len(client.guilds)) + " Servern:")
     for guild in client.guilds:
-        print("-" + guild.name)
+        print("-" + str(guild.name))
     client.loop.create_task(status_task())
 
 
@@ -50,7 +38,8 @@ with open('./config.json', 'r') as f:
 
 async def status_task():
     while True:
-        await client.change_presence(activity=discord.Game("https://git.io/simplebot"), status=discord.Status.online)
+        await client.change_presence(activity=discord.Game("https://git.io/simplebot"),
+                                     status=discord.Status.online)
         await asyncio.sleep(60)
         await client.change_presence(
             activity=discord.Game(prefix + "lol stats auf " + str(len(client.guilds)) + " Servern"))
@@ -75,7 +64,8 @@ def benutzerinfo():
         embed.add_field(name='Discord beigetreten',
                         value=member.created_at.strftime('%d/%m/%Y'),
                         inline=True)
-        embed.add_field(name=f"Rollen ({len(member.roles)})", value=" ".join([role.mention for role in member.roles]))
+        embed.add_field(name=f"Rollen ({len(member.roles)})",
+                        value=" ".join([role.mention for role in member.roles]))
 
         rollen = ''
         for role in member.roles:
@@ -119,7 +109,8 @@ def wetter():
                                       timestamp=ctx.message.created_at, )
                 embed.add_field(name="Beschreibung", value=f"**{wetter_beschreibung}**", inline=False)
                 embed.add_field(name="Temperatur(C)", value=f"**{derzeitige_temperatur_celsius}°C**", inline=False)
-                embed.add_field(name="Fühlt sich an wie(C)", value=f"**{fuehlt_sich_an_wie_celsius}°C**", inline=False)
+                embed.add_field(name="Fühlt sich an wie(C)", value=f"**{fuehlt_sich_an_wie_celsius}°C**",
+                                inline=False)
                 embed.add_field(name="Luftfeuchtigkeit(%)", value=f"**{luftfeuchtigkeit}%**", inline=False)
                 embed.add_field(name="Luftdruck(hPa)", value=f"**{druck}hPa**", inline=False)
                 embed.set_thumbnail(url="http://openweathermap.org/img/wn/" + symbol + ".png")
@@ -362,10 +353,9 @@ def corona():
             embed = discord.Embed(title="Statistiken zur Impfung in Deutschland",
                                   color=ctx.author.color)
             embed.add_field(name="Prozent der Bevölkerung", value=f"{jetztgeimpft.__round__(3) * 100}%")
-            embed.add_field(name="Anzahl der Geimpften", value=f"{gesamt} Personen",inline=False)
+            embed.add_field(name="Anzahl der Geimpften", value=f"{gesamt} Personen", inline=False)
             embed.add_field(name="Zweite Impfung haben bereits erhalten", value=f"{zweite_imfung} Personen")
             await ctx.send(embed=embed)
-
 
 
 corona()
@@ -422,13 +412,13 @@ def earth2():
         wert = x["marketplace_tile_value"]
         verkauft = x["total_sold_tiles"]
         embed = discord.Embed(title="Earth2 Statistiken für " + land, url="https://earth2stats.net/country/" + land)
-        embed.set_thumbnail(url="https://static-cdn.jtvnw.net/jtv_user_pictures/99783da2-3f60-4aeb-92bd-83e953c03627-profile_image-70x70.png")
+        embed.set_thumbnail(
+            url="https://static-cdn.jtvnw.net/jtv_user_pictures/99783da2-3f60-4aeb-92bd-83e953c03627-profile_image-70x70.png")
         embed.add_field(name="Wert eines Tiles", value=f"{wert}E$")
         embed.add_field(name="Insgesamt verkauft", value=f"{verkauft} Tiles")
         await ctx.send(embed=embed)
 
 earth2()
-
 
 
 @client.command(invoke_without_command=True)

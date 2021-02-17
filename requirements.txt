@@ -2,3 +2,4 @@ discord
 riotwatcher
 asyncio
 requests
+console-menu
