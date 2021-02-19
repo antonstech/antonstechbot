@@ -6,12 +6,13 @@ import json
 import random
 import requests
 from riotwatcher import LolWatcher
+import subprocess
 
 # Wichs Codierung
 # ä=Ã¼
 # ö=Ã¶
 
-VERSION = 4.0
+VERSION = subprocess.check_output(["git", "describe", "--tags", "--always"]).decode('ascii').strip()
 
 with open('./config.json', 'r') as f:
     json_stuff = json.load(f)
