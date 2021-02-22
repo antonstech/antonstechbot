@@ -20,6 +20,42 @@ with open('./config.json', 'r') as f:
 
 client = commands.Bot(command_prefix=prefix, intents=discord.Intents.all())
 
+def starttest():
+    with open('./config.json', 'r') as f:
+        json_stuff = json.load(f)
+        riotapi = json_stuff["riotapi"]
+    base_riot_url = "https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/DCGALAXY?api_key="
+    rioturl = base_riot_url + riotapi
+    response = requests.get(rioturl)
+    if response.status_code == 200:
+       pass
+    else:
+        print("Der Riot-API Key hat nicht funktioniert :((")
+        print("Bitte checke ob der Key in der config.json richtig gesetzt ist und schau auf https://developer.riotgames.com/api-status/ nach ob es nicht vllt an Riot selber liegt")
+        riotnotworkingexe = input("Willst du trotzdem starten? (j/n): ")
+        if riotnotworkingexe == "j":
+            pass
+        else:
+            raise Exception("Der Riot-API Key hat nicht funktioniert.")
+
+    with open('./config.json', 'r') as f:
+        json_stuff = json.load(f)
+        osuapi = json_stuff["osuapi"]
+    base_osu_url="https://osu.ppy.sh/api/get_user_best?u=Aftersh0ock&k="
+    osuurl = base_osu_url + osuapi
+    osuresponse = requests.get(osuurl)
+    if osuresponse.status_code == 200:
+        pass
+    else:
+        print("Der Osu-API Key hat nicht funktioniert :((")
+        print("Bitte checke ob der Key in der config.json richtig gesetzt ist und schau auf https://status.ppy.sh nach ob es nicht vllt an Osu selber liegt")
+        osunotworkingexe = input("Willst du trotzdem starten? (j/n): ")
+        if osunotworkingexe == "j":
+            pass
+        else:
+            raise Exception("Der Osu-API Key hat nicht funktioniert.")
+starttest()
+
 
 @client.event
 async def on_ready():
@@ -43,7 +79,7 @@ async def status_task():
                                      status=discord.Status.online)
         await asyncio.sleep(60)
         await client.change_presence(
-            activity=discord.Game(prefix + "lol stats auf " + str(len(client.guilds)) + " Servern"))
+            activity=discord.Game(prefix + "corona auf " + str(len(client.guilds)) + " Servern"))
         await asyncio.sleep(60)
         await client.change_presence(activity=discord.Game("ein heißes Spiel mit der Stiefschwester"))
         await asyncio.sleep(5)
