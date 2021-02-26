@@ -75,7 +75,7 @@ with open('./config.json', 'r') as f:
 
 async def status_task():
     while True:
-        await client.change_presence(activity=discord.Game("https://git.io/simplebot"),
+        await client.change_presence(activity=discord.Game("https://git.io/antonsbot"),
                                      status=discord.Status.online)
         await asyncio.sleep(60)
         await client.change_presence(
@@ -458,6 +458,34 @@ def earth2():
 earth2()
 
 
+def anime():
+    @client.command()
+    async def anime(ctx):
+        base_url = "https://trace.moe/api/search?url="
+        attachment = ctx.message.attachments[0]
+        attachementurl = attachment.url
+        url = base_url + attachementurl
+        response = requests.post(url)
+        x = response.json()
+        y = x["docs"]
+        genauigkeit = y[0]["similarity"]
+        hentai = y[0]["is_adult"]
+        titel = y[0]["title_english"]
+        nativetitel = y[0]["title_native"]
+        anilist = y[0]["anilist_id"]
+        embed = discord.Embed(title=f"{titel}")
+        anilisturl = "https://anilist.co/anime/" + str(anilist)
+        embed.set_author(name="Anilist Link", url=anilisturl)
+        embed.add_field(name="Genauigkeit", value=f"{(genauigkeit * 100).__round__()}%")
+        if hentai == False:
+            embed.add_field(name="Hentai?", value="Nope :(")
+        else:
+            embed.add_field(name="Hentai?", value="Yess Sir")
+        embed.add_field(name="Titel in Orginalsprache", value=f"{nativetitel}")
+        await ctx.send(embed=embed)
+anime()
+
+
 @client.command(invoke_without_command=True)
 async def ping(ctx):
     await ctx.send("Der Ping beträgt derzeit " f"{round(client.latency * 1000)}ms")
@@ -514,7 +542,6 @@ clear()
 
 @client.command()
 async def nudes(ctx):
-    channel = ctx.message.channel
     if ctx.channel.is_nsfw():
         embed = discord.Embed(title="Nudes")
         embed.set_image(
@@ -531,8 +558,8 @@ def hilfe():
                               description="Benutze " + prefix + "hilfe (command) für mehr Informationen zu einem Command.",
                               color=ctx.author.color)
         embed.add_field(name="Moderation:", value="clear")
-        embed.add_field(name="nützlich:", value="wetter, benutzerinfo , ping", inline=True)
-        embed.add_field(name="fun", value="give, corona", inline=True)
+        embed.add_field(name="nützlich:", value="wetter, benutzerinfo , ping, anime", inline=True)
+        embed.add_field(name="fun", value="give, corona, earth2", inline=True)
         embed.add_field(name="Game-Stats", value="lol, osu", inline=True)
         embed.add_field(name="Minecraft Zeugs", value="mc", inline=True)
         embed.add_field(name="Infos zum Bot", value="version, einladen, hosten, code", inline=True)
@@ -609,6 +636,21 @@ def hilfe():
         embed.add_field(name="Beispiel:", value=prefix + "osu Aftersh0ock")
         await ctx.send(embed=embed)
 
+    @hilfe.command()
+    async def earth2(ctx):
+        embed = discord.Embed(title="earth2",
+                              description="Mit " + prefix + "earth2 kannst du dir Earth2 Stats zu Deutschland Anzeigen lassen",
+                              color=ctx.author.color)
+        embed.add_field(name="Benutzung:", value=prefix + "earth2")
+        await ctx.send(embed=embed)
+
+    @hilfe.command()
+    async def anime(ctx):
+        embed = discord.Embed(title="anime",
+                              description="Sende ein Bild und als Beschreibung " + prefix + "anime und es sagt dir welcher anime es ist",
+                              color=ctx.author.color)
+        embed.add_field(name="Benutzung:", value="Bild mit Kommentar" + prefix + "anime")
+        await ctx.send(embed=embed)
 
 hilfe()
 
