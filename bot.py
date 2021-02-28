@@ -1,12 +1,12 @@
 import asyncio
-import discord
-import discord.ext
-from discord.ext import commands
 import json
 import random
-import requests
-from riotwatcher import LolWatcher
 import subprocess
+import discord
+import discord.ext
+import requests
+from discord.ext import commands
+from riotwatcher import LolWatcher
 
 # Wichs Codierung
 # ä=Ã¼
@@ -20,7 +20,8 @@ with open('./config.json', 'r') as f:
 
 client = commands.Bot(command_prefix=prefix, intents=discord.Intents.all())
 
-def starttest():
+
+def tokenchecker():
     with open('./config.json', 'r') as f:
         json_stuff = json.load(f)
         riotapi = json_stuff["riotapi"]
@@ -28,10 +29,11 @@ def starttest():
     rioturl = base_riot_url + riotapi
     response = requests.get(rioturl)
     if response.status_code == 200:
-       pass
+        pass
     else:
         print("Der Riot-API Key hat nicht funktioniert :((")
-        print("Bitte checke ob der Key in der config.json richtig gesetzt ist und schau auf https://developer.riotgames.com/api-status/ nach ob es nicht vllt an Riot selber liegt")
+        print(
+            "Bitte checke ob der Key in der config.json richtig gesetzt ist und schau auf https://developer.riotgames.com/api-status/ nach ob es nicht vllt an Riot selber liegt")
         riotnotworkingexe = input("Willst du trotzdem starten? (j/n): ")
         if riotnotworkingexe == "j":
             pass
@@ -41,20 +43,34 @@ def starttest():
     with open('./config.json', 'r') as f:
         json_stuff = json.load(f)
         osuapi = json_stuff["osuapi"]
-    base_osu_url="https://osu.ppy.sh/api/get_user_best?u=Aftersh0ock&k="
+    base_osu_url = "https://osu.ppy.sh/api/get_user_best?u=Aftersh0ock&k="
     osuurl = base_osu_url + osuapi
     osuresponse = requests.get(osuurl)
     if osuresponse.status_code == 200:
         pass
     else:
         print("Der Osu-API Key hat nicht funktioniert :((")
-        print("Bitte checke ob der Key in der config.json richtig gesetzt ist und schau auf https://status.ppy.sh nach ob es nicht vllt an Osu selber liegt")
+        print(
+            "Bitte checke ob der Key in der config.json richtig gesetzt ist und schau auf https://status.ppy.sh nach ob es nicht vllt an Osu selber liegt")
         osunotworkingexe = input("Willst du trotzdem starten? (j/n): ")
         if osunotworkingexe == "j":
             pass
         else:
             raise Exception("Der Osu-API Key hat nicht funktioniert.")
-starttest()
+    with open('config.json', 'r') as f:
+        json_stuff = json.load(f)
+        token = json_stuff["token"]
+    headers = {
+        "Authorization": "Bot " + token
+    }
+    response = requests.get('https://discordapp.com/api/v8/auth/login', headers=headers)
+    if response.status_code == 200:
+        pass
+    else:
+        raise Exception("Der Discord Bot Token funktioniert nicht!")
+
+
+tokenchecker()
 
 
 @client.event
@@ -204,34 +220,37 @@ def LeagueofLegendsstats():
     @lol.command()
     async def rang(ctx, *, name: str):
         spielername = name
-        lol_watcher = LolWatcher(api_key)
-        my_region = 'euw1'
-        me = lol_watcher.summoner.by_name(my_region, spielername)
-        my_ranked_stats = lol_watcher.league.by_summoner(my_region, me['id'])
         channel = ctx.message.channel
-        async with channel.typing():
-            if my_ranked_stats:
-                data = my_ranked_stats[0]
-                rang = data["tier"]
-                nummer = data["rank"]
-                punkte = data["leaguePoints"]
-                gewonnen = data["wins"]
-                verloren = data["losses"]
-                neu_in_der_elo = data["freshBlood"]
-                winrate = gewonnen / (gewonnen + verloren) * 100
-                embed = discord.Embed(title=f"Leauge of Legends Ranked Statistiken für {spielername}",
-                                      color=ctx.author.color,
-                                      timestamp=ctx.message.created_at, )
-                embed.add_field(name="Rang", value=f"{rang} {nummer}", inline=True)
-                embed.add_field(name="Punkte", value=f"{punkte}", inline=True)
-                embed.add_field(name="Neu in der Elo?", value=f"{neu_in_der_elo}", inline=True)
-                embed.add_field(name="Gewonnen:", value=f"{gewonnen}", inline=True)
-                embed.add_field(name="Verloren:", value=f"{verloren}", inline=True)
-                embed.add_field(name="Winrate", value=f"{winrate.__round__()}%", inline=True)
-                embed.set_thumbnail(url="https://antonstech.de/" + str(rang) + ".png")
-                await ctx.send(embed=embed)
-            else:
-                await ctx.send("Spieler nicht gefunden oder nicht eingeranked.")
+        try:
+            lol_watcher = LolWatcher(api_key)
+            my_region = 'euw1'
+            me = lol_watcher.summoner.by_name(my_region, spielername)
+            my_ranked_stats = lol_watcher.league.by_summoner(my_region, me['id'])
+            async with channel.typing():
+                if my_ranked_stats:
+                    data = my_ranked_stats[0]
+                    rang = data["tier"]
+                    nummer = data["rank"]
+                    punkte = data["leaguePoints"]
+                    gewonnen = data["wins"]
+                    verloren = data["losses"]
+                    neu_in_der_elo = data["freshBlood"]
+                    winrate = gewonnen / (gewonnen + verloren) * 100
+                    embed = discord.Embed(title=f"Leauge of Legends Ranked Statistiken für {spielername}",
+                                          color=ctx.author.color,
+                                          timestamp=ctx.message.created_at, )
+                    embed.add_field(name="Rang", value=f"{rang} {nummer}", inline=True)
+                    embed.add_field(name="Punkte", value=f"{punkte}", inline=True)
+                    embed.add_field(name="Neu in der Elo?", value=f"{neu_in_der_elo}", inline=True)
+                    embed.add_field(name="Gewonnen:", value=f"{gewonnen}", inline=True)
+                    embed.add_field(name="Verloren:", value=f"{verloren}", inline=True)
+                    embed.add_field(name="Winrate", value=f"{winrate.__round__()}%", inline=True)
+                    embed.set_thumbnail(url="https://antonstech.de/" + str(rang) + ".png")
+                    await ctx.send(embed=embed)
+                else:
+                    await ctx.send("Spieler nicht gefunden oder nicht eingeranked.")
+        except:
+            await ctx.send("Spieler nicht gefunden oder nicht eingeranked.")
 
 
 LeagueofLegendsstats()
@@ -455,6 +474,7 @@ def earth2():
         embed.add_field(name="Insgesamt verkauft", value=f"{verkauft} Tiles")
         await ctx.send(embed=embed)
 
+
 earth2()
 
 
@@ -467,13 +487,17 @@ def anime():
         url = base_url + attachementurl
         response = requests.post(url)
         x = response.json()
-        y = x["docs"]
-        genauigkeit = y[0]["similarity"]
-        hentai = y[0]["is_adult"]
-        titel = y[0]["title_english"]
-        nativetitel = y[0]["title_native"]
-        anilist = y[0]["anilist_id"]
-        embed = discord.Embed(title=f"{titel}")
+        y = x["docs"][0]
+        genauigkeit = y["similarity"]
+        hentai = y["is_adult"]
+        titel = y["title_english"]
+        nativetitel = y["title_native"]
+        anilist = y["anilist_id"]
+        print(type(titel))
+        if titel != None:
+            embed = discord.Embed(title=f"{titel}")
+        else:
+            embed = discord.Embed(title=f"{nativetitel}")
         anilisturl = "https://anilist.co/anime/" + str(anilist)
         embed.set_author(name="Anilist Link", url=anilisturl)
         embed.add_field(name="Genauigkeit", value=f"{(genauigkeit * 100).__round__()}%")
@@ -481,8 +505,13 @@ def anime():
             embed.add_field(name="Hentai?", value="Nope :(")
         else:
             embed.add_field(name="Hentai?", value="Yess Sir")
-        embed.add_field(name="Titel in Orginalsprache", value=f"{nativetitel}")
+        if titel != None:
+            embed.add_field(name="Titel in Orginalsprache", value=f"{nativetitel}")
+        else:
+            pass
         await ctx.send(embed=embed)
+
+
 anime()
 
 
@@ -651,6 +680,7 @@ def hilfe():
                               color=ctx.author.color)
         embed.add_field(name="Benutzung:", value="Bild mit Kommentar" + prefix + "anime")
         await ctx.send(embed=embed)
+
 
 hilfe()
 
