@@ -3,3 +3,4 @@ riotwatcher
 asyncio
 requests
 console-menu
+colorama

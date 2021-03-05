@@ -68,6 +68,23 @@ def tokenchecker():
         pass
     else:
         raise Exception("Der Discord Bot Token funktioniert nicht!")
+    with open('./config.json', 'r') as f:
+        json_stuff = json.load(f)
+        ipdata = json_stuff["ipdata"]
+    baseipurl = "https://api.ipdata.co/8.8.8.8"
+    ipurl = baseipurl + "?api-key=" + ipdata
+    ipresponse = requests.get(ipurl)
+    if ipresponse.status_code == 200:
+        pass
+    else:
+        print("Der IPData-API Key hat nicht funktioniert :((")
+        print(
+            "Bitte checke ob der Key in der config.json richtig gesetzt ist und schau auf https://status.ipdata.co nach ob es nicht vllt an Osu selber liegt")
+        ipdatanotworkingexe = input("Willst du trotzdem starten? (j/n): ")
+        if ipdatanotworkingexe == "j":
+            pass
+        else:
+            raise Exception("Der IPData Key hat nicht funktioniert.")
 
 
 tokenchecker()
@@ -191,7 +208,7 @@ def LeagueofLegendsstats():
         embed.set_thumbnail(
             url="https://www.riotgames.com/darkroom/original/462106d7bcc8d74a57a49411b70c4a92"
                 ":d4bed097ee383e5afad037edb5e5786e/lol-logo-rendered-hi-res.png")
-        embed.set_footer(text='antonstech/simplediscordbot ({})'.format(VERSION), icon_url='https://i.imgur.com'
+        embed.set_footer(text='antonstech/antonstechbot ({})'.format(VERSION), icon_url='https://i.imgur.com'
                                                                                            '/gFHBoZA.png')
         await ctx.send(embed=embed)
 
@@ -514,6 +531,42 @@ def anime():
 
 anime()
 
+def ipdata():
+    with open('./config.json', 'r') as f:
+        json_stuff = json.load(f)
+        ipdata = json_stuff["ipdata"]
+        url = "https://api.ipdata.co/"
+
+    @client.command()
+    async def ip(ctx, ip):
+        apiurl = "?api-key=" + ipdata
+        resulturl = url + ip + apiurl
+        response = requests.get(resulturl)
+        x = response.json()
+        city = x["city"]
+        country = x["country_name"]
+        flag = x["flag"]
+        y = x["asn"]
+        asn = y["name"]
+        asntype = y["type"]
+        postleitzahl = x["postal"]
+        kontinent = x["continent_name"]
+        embed = discord.Embed(title="IP Informationen zu " + ip)
+        embed.set_thumbnail(url=flag)
+        embed.add_field(name="Land",value=f"{country}")
+        embed.add_field(name="Stadt", value=f"{city}")
+        embed.add_field(name="Kontinent",value=f"{kontinent}")
+        if postleitzahl == None:
+            pass
+        else:
+            embed.add_field(name="Postleitzahl",value=f"{postleitzahl}")
+        embed.add_field(name="Internetanbieter", value=f"{asn}")
+        embed.add_field(name="Anbiter-Type",value=f"{asntype}")
+        await ctx.send(embed=embed)
+
+
+ipdata()
+
 
 @client.command(invoke_without_command=True)
 async def ping(ctx):
@@ -539,7 +592,7 @@ async def einladen(ctx):
 async def hosten(ctx):
     embed = discord.Embed()
     embed.set_author(name="Klicke hier um ein Tutorial zum Selber hosten zu bekommen",
-                     url='https://github.com/antonstech/simplediscordbot/wiki/Installation')
+                     url='https://github.com/antonstech/antonstechbot/wiki/Installation')
     await ctx.send(embed=embed)
 
 
@@ -547,7 +600,7 @@ async def hosten(ctx):
 async def code(ctx):
     embed = discord.Embed()
     embed.set_author(name="Hier findest du den ganzen Code vom Bot",
-                     url='https://github.com/antonstech/simplediscordbot')
+                     url='https://github.com/antonstech/antonstechbot')
     await ctx.send(embed=embed)
 
 
