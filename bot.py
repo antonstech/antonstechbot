@@ -818,6 +818,7 @@ def MySql():
                     mycursor = mydb.cursor()
                     mycursor.executemany(sql, val)
                     mydb.commit()
+                    await client.process_commands(message)
             else:
                 pass
     except:
