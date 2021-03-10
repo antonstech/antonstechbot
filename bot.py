@@ -7,6 +7,9 @@ import discord.ext
 import requests
 from discord.ext import commands
 from riotwatcher import LolWatcher
+import datetime
+import mysql.connector
+
 
 # Wichs Codierung
 # ä=Ã¼
@@ -33,7 +36,8 @@ def tokenchecker():
     else:
         print("Der Riot-API Key hat nicht funktioniert :((")
         print(
-            "Bitte checke ob der Key in der config.json richtig gesetzt ist und schau auf https://developer.riotgames.com/api-status/ nach ob es nicht vllt an Riot selber liegt")
+            "Bitte checke ob der Key in der config.json richtig gesetzt ist und schau auf "
+            "https://developer.riotgames.com/api-status/ nach ob es nicht vllt an Riot selber liegt")
         riotnotworkingexe = input("Willst du trotzdem starten? (j/n): ")
         if riotnotworkingexe == "j":
             pass
@@ -209,7 +213,7 @@ def LeagueofLegendsstats():
             url="https://www.riotgames.com/darkroom/original/462106d7bcc8d74a57a49411b70c4a92"
                 ":d4bed097ee383e5afad037edb5e5786e/lol-logo-rendered-hi-res.png")
         embed.set_footer(text='antonstech/antonstechbot ({})'.format(VERSION), icon_url='https://i.imgur.com'
-                                                                                           '/gFHBoZA.png')
+                                                                                        '/gFHBoZA.png')
         await ctx.send(embed=embed)
 
     @lol.command()
@@ -531,6 +535,7 @@ def anime():
 
 anime()
 
+
 def ipdata():
     with open('./config.json', 'r') as f:
         json_stuff = json.load(f)
@@ -553,15 +558,15 @@ def ipdata():
         kontinent = x["continent_name"]
         embed = discord.Embed(title="IP Informationen zu " + ip)
         embed.set_thumbnail(url=flag)
-        embed.add_field(name="Land",value=f"{country}")
+        embed.add_field(name="Land", value=f"{country}")
         embed.add_field(name="Stadt", value=f"{city}")
-        embed.add_field(name="Kontinent",value=f"{kontinent}")
+        embed.add_field(name="Kontinent", value=f"{kontinent}")
         if postleitzahl == None:
             pass
         else:
-            embed.add_field(name="Postleitzahl",value=f"{postleitzahl}")
+            embed.add_field(name="Postleitzahl", value=f"{postleitzahl}")
         embed.add_field(name="Internetanbieter", value=f"{asn}")
-        embed.add_field(name="Anbiter-Type",value=f"{asntype}")
+        embed.add_field(name="Anbiter-Type", value=f"{asntype}")
         await ctx.send(embed=embed)
 
 
@@ -779,6 +784,47 @@ def give():
 
 
 give()
+
+def MySql():
+    try:
+        with open('mysql.json', 'r') as f:
+            json_stuff = json.load(f)
+            enable = json_stuff["enable"]
+            if enable == True:
+                host = json_stuff["host"]
+                user = json_stuff["user"]
+                passwort = json_stuff["passwort"]
+                datenbank = json_stuff["datenbank"]
+                port = json_stuff["port"]
+                tablename = json_stuff["tablename"]
+                mydb = mysql.connector.connect(
+                    host = host,
+                    user = user,
+                    password = passwort,
+                    database= datenbank,
+                    port = port )
+
+                @client.event
+                async def on_message(message):
+                    zeit = datetime.datetime.now()
+                    zeit_srftime = zeit.strftime("%Y-%m-%d %H:%M:%S")
+                    sql = "INSERT INTO " + tablename +  "(time, content, attachement, membername, memberid, guildid, guildname, channelid,  \
+                        channelname, id)  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
+                    val = [
+                    (f"{zeit_srftime}", f"{message.content}", f"{message.attachments}", f"{message.author}",
+                    f"{message.author.id}", f"{message.guild.id}", f"{message.guild}",
+                    f"{message.channel.id}", f"{message.channel}", f"{message.id}")
+                ]
+                    mycursor = mydb.cursor()
+                    mycursor.executemany(sql, val)
+                    mydb.commit()
+            else:
+                pass
+    except:
+        pass
+
+MySql()
+
 
 with open('config.json', 'r') as f:
     json_stuff = json.load(f)

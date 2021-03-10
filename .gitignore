@@ -1,6 +1,7 @@
 archiv/
 config.json
-
+.idea
+mysql.json
 
 
 # Byte-compiled / optimized / DLL files

@@ -7,11 +7,13 @@ import time
 import requests
 import json
 from colorama import *
+import mysql.connector
 
 VERSION = subprocess.check_output(["git", "describe", "--tags", "--always"]).decode('ascii').strip()
 
 menu = ConsoleMenu(f"antonstechbot Version {VERSION} by antonstech",
                    "https://git.io/antonsbot")
+
 
 def browser():
     webbrowser.open("https://git.io/antonsbot")
@@ -19,8 +21,9 @@ def browser():
 
     time.sleep(5)
 
+
 def tokenchecker():
-    ### Riot
+    # Riot
     with open('./config.json', 'r') as f:
         json_stuff = json.load(f)
         riotapi = json_stuff["riotapi"]
@@ -31,7 +34,7 @@ def tokenchecker():
         print(Fore.GREEN + "Riot Games API Key ✅")
     else:
         print(Fore.RED + "Riot Games API Key ❌")
-    ### Osu
+    # Osu
     with open('./config.json', 'r') as f:
         json_stuff = json.load(f)
         osuapi = json_stuff["osuapi"]
@@ -42,7 +45,7 @@ def tokenchecker():
         print(Fore.GREEN + "Osu API Key ✅")
     else:
         print(Fore.RED + "Osu API Key ❌")
-    ### Discord
+    # Discord
     with open('config.json', 'r') as f:
         json_stuff = json.load(f)
         token = json_stuff["token"]
@@ -54,8 +57,7 @@ def tokenchecker():
         print(Fore.GREEN + "Discord Token ✅")
     else:
         print(Fore.RED + "Discord Token ❌")
-    print(Style.RESET_ALL)
-    ### ipdata
+    # ipdata
     with open('./config.json', 'r') as f:
         json_stuff = json.load(f)
         ipdata = json_stuff["ipdata"]
@@ -66,16 +68,69 @@ def tokenchecker():
         print(Fore.GREEN + "ipdata API Key ✅")
     else:
         print(Fore.RED + "ipdata API Key ❌")
+    print(Style.RESET_ALL)
     time.sleep(7)
 
+
+def mysqlsetup():
+    print("MySql Setup")
+    print("Für Hilfe bitte das Wiki auf Github lesen")
+    print("WICHTIG!!!!")
+    yesorno = input("Es wird eine NEUE MySQL Datenbank UND Tabelle erzeugt, welche dann anschließend auch nach einem Neustarten vom Bot bentutzt wird!!!  (j/n): ")
+    if yesorno == "j":
+        config = {"enable": True, "host": input("Host: "), "user": input("Benutzername: "),
+                  "passwort": input("Dein Passwort: "), "datenbank": input("Datenbank: "),
+                  "tablename": input("Name der Tablle: "), "port": input("Port: ")}
+        with open("mysql.json", "w+") as file:
+            json.dump(config, file, indent=2)
+        with open('mysql.json', 'r') as f:
+            json_stuff = json.load(f)
+            host = json_stuff["host"]
+            user = json_stuff["user"]
+            passwort = json_stuff["passwort"]
+            datenbank = json_stuff["datenbank"]
+            table_name = json_stuff["tablename"]
+            port = json_stuff["port"]
+        mydb = mysql.connector.connect(
+            host=host,
+            user=user,
+            password=passwort,
+            database="mysql",
+            port=port)
+        mycursor = mydb.cursor()
+        mycursor.execute("CREATE DATABASE " + datenbank)
+        mydb = mysql.connector.connect(
+            host=host,
+            user=user,
+            password=passwort,
+            database=datenbank,
+            port=port)
+        mycursor = mydb.cursor()
+        mycursor.execute(
+            "CREATE TABLE " + table_name + " (time timestamp null, content text null, attachement varchar(255) null, membername varchar(255) null, memberid bigint null, guildid bigint null, guildname varchar(255) null, channelid bigint null, channelname varchar(255) null, id bigint not null primary key)")
+    else:
+        pass
+
+
+def tokens():
+    print("Wichtig: Dieses Script erstellt eine neue config.json")
+    config = {'token': input("Dein Bot Token: "), 'prefix': input("Dein Bot Prefix: "),
+              "riotapi": input("Dein Riot Games Api Token: "), "osuapi": input("Dein Osu Api Token: "),
+              "ipdata": input("Dein ipdata.co Token: ")}
+    with open('config.json', 'w+') as file:
+        json.dump(config, file, indent=2)
+
+
 starten = FunctionItem("Bot starten", os.system, ["python3 bot.py"])
-config = FunctionItem("Config bearbeiten", os.system, ["python3 config.py"])
+config = FunctionItem("Config bearbeiten", tokens)
 updaten = FunctionItem("Bot Updaten", os.system, ["python3 update.py"])
 tokencheck = FunctionItem("Token-Checker", tokenchecker)
 infos = FunctionItem("Infos über den Bot&Code", browser)
+mysqlsetup = FunctionItem("MySQL Setup", mysqlsetup)
 
 menu.append_item(starten)
 menu.append_item(config)
+menu.append_item(mysqlsetup)
 menu.append_item(updaten)
 menu.append_item(tokencheck)
 menu.append_item(infos)
