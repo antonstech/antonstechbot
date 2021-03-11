@@ -5,5 +5,5 @@
 - [Funktionen](https://github.com/antonstech/antonstechbot/wiki/Funktionen)
 - Bei Fragen:
 Discord: DCGALAXY#9729
-[Support Discord](https://discord.gg/4B7ce4pQz)
+[Support Discord](https://discord.gg/bHQGfxFzhQ)
 Email: kontakt@antonstech.de
