@@ -2,6 +2,7 @@ archiv/
 config.json
 .idea
 mysql.json
+disabled_mysql.json
 
 
 # Byte-compiled / optimized / DLL files

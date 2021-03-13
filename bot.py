@@ -9,7 +9,9 @@ from discord.ext import commands
 from riotwatcher import LolWatcher
 import datetime
 import mysql.connector
-
+import urllib
+from urllib import parse
+import os
 
 # Wichs Codierung
 # ä=Ã¼
@@ -99,6 +101,10 @@ async def on_ready():
     print("Yess der bot läuft :)".format(client))
     print("Du hast derzeit Release " + str(VERSION) + " installiert")
     print("Du bist eingeloggt als {0.user} auf discord.py Version {1}".format(client, discord.__version__))
+    if os.path.exists("mysql.json"):
+        print("MySQL-Logging ist AKTIVIERT")
+    else:
+        print("MySQL-Logging ist DEAKTIVIERT")
     print("Der Bot ist zurzeit auf folgenden " + str(len(client.guilds)) + " Servern:")
     for guild in client.guilds:
         print("-" + str(guild.name))
@@ -514,7 +520,14 @@ def anime():
         titel = y["title_english"]
         nativetitel = y["title_native"]
         anilist = y["anilist_id"]
-        print(type(titel))
+        filename = y["filename"]
+        at = y["at"]
+        tokenthumb = y["tokenthumb"]
+        ### Coming Soon
+        filenameencoded = urllib.parse.quote(filename)
+        imgrequest = "https://media.trace.moe/image/" + str(anilist) + "/" + filenameencoded + "?t=" + str(
+            at) + "&token=" + tokenthumb + "&size=m"
+        ###
         if titel != None:
             embed = discord.Embed(title=f"{titel}")
         else:
@@ -530,6 +543,7 @@ def anime():
             embed.add_field(name="Titel in Orginalsprache", value=f"{nativetitel}")
         else:
             pass
+        embed.set_image(url=str(imgrequest))
         await ctx.send(embed=embed)
 
 
@@ -785,47 +799,44 @@ def give():
 
 give()
 
+
 def MySql():
-    try:
+    if os.path.exists("mysql.json"):
         with open('mysql.json', 'r') as f:
             json_stuff = json.load(f)
-            enable = json_stuff["enable"]
-            if enable == True:
-                host = json_stuff["host"]
-                user = json_stuff["user"]
-                passwort = json_stuff["passwort"]
-                datenbank = json_stuff["datenbank"]
-                port = json_stuff["port"]
-                tablename = json_stuff["tablename"]
-                mydb = mysql.connector.connect(
-                    host = host,
-                    user = user,
-                    password = passwort,
-                    database= datenbank,
-                    port = port )
+            host = json_stuff["host"]
+            user = json_stuff["user"]
+            passwort = json_stuff["passwort"]
+            datenbank = json_stuff["datenbank"]
+            port = json_stuff["port"]
+            tablename = json_stuff["tablename"]
+            mydb = mysql.connector.connect(
+            host=host,
+            user=user,
+            password=passwort,
+            database=datenbank,
+            port=port)
 
-                @client.event
-                async def on_message(message):
-                    zeit = datetime.datetime.now()
-                    zeit_srftime = zeit.strftime("%Y-%m-%d %H:%M:%S")
-                    sql = "INSERT INTO " + tablename +  "(time, content, attachement, membername, memberid, guildid, guildname, channelid,  \
-                        channelname, id)  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
-                    val = [
+            @client.event
+            async def on_message(message):
+                zeit = datetime.datetime.now()
+                zeit_srftime = zeit.strftime("%Y-%m-%d %H:%M:%S")
+                sql = "INSERT INTO " + tablename + "(time, content, attachement, membername, memberid, guildid, guildname, channelid,  \
+                     channelname, id)  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
+                val = [
                     (f"{zeit_srftime}", f"{message.content}", f"{message.attachments}", f"{message.author}",
-                    f"{message.author.id}", f"{message.guild.id}", f"{message.guild}",
-                    f"{message.channel.id}", f"{message.channel}", f"{message.id}")
-                ]
-                    mycursor = mydb.cursor()
-                    mycursor.executemany(sql, val)
-                    mydb.commit()
-                    await client.process_commands(message)
-            else:
-                pass
-    except:
-        pass
+                     f"{message.author.id}", f"{message.guild.id}", f"{message.guild}",
+                     f"{message.channel.id}", f"{message.channel}", f"{message.id}")
+                 ]
+                mycursor = mydb.cursor()
+                mycursor.executemany(sql, val)
+                mydb.commit()
+                await client.process_commands(message)
+    else:
+         pass
+
 
 MySql()
-
 
 with open('config.json', 'r') as f:
     json_stuff = json.load(f)

@@ -11,9 +11,6 @@ import mysql.connector
 
 VERSION = subprocess.check_output(["git", "describe", "--tags", "--always"]).decode('ascii').strip()
 
-menu = ConsoleMenu(f"antonstechbot Version {VERSION} by antonstech",
-                   "https://git.io/antonsbot")
-
 
 def browser():
     webbrowser.open("https://git.io/antonsbot")
@@ -76,7 +73,8 @@ def mysqlsetup():
     print("MySql Setup")
     print("Für Hilfe bitte das Wiki auf Github lesen")
     print("WICHTIG!!!!")
-    yesorno = input("Es wird eine NEUE MySQL Datenbank UND Tabelle erzeugt, welche dann anschließend auch nach einem Neustarten vom Bot bentutzt wird!!!  (j/n): ")
+    yesorno = input(
+        "Es wird eine NEUE MySQL Datenbank UND Tabelle erzeugt, welche dann anschließend auch nach einem Neustarten vom Bot bentutzt wird!!!  (j/n): ")
     if yesorno == "j":
         config = {"enable": True, "host": input("Host: "), "user": input("Benutzername: "),
                   "passwort": input("Dein Passwort: "), "datenbank": input("Datenbank: "),
@@ -121,18 +119,59 @@ def tokens():
         json.dump(config, file, indent=2)
 
 
+def mysqldisable():
+    if os.path.exists("mysql.json"):
+        os.rename("mysql.json", "disabled_mysql.json")
+        print("MySQL ist nun DEAKTIVIEREN!")
+        print("Du musst den Bot 1x neustarten damit die Änderung wirksam wird!")
+    else:
+        if os.path.exists("disabled_mysql.json"):
+            print("MySQL ist bereits deaktiviert")
+        else:
+            print("Iwas ist falsch gelaufen. Hier gibt es Hilfe:")
+            print("https://github.com/antonstech/antonstechbot/wiki/Support")
+
+
+def mysqlenable():
+    if os.path.exists("disabled_mysql.json"):
+        os.rename("disabled_mysql.json", "mysql.json")
+        print("MySQL ist nun AKTIVIERT!")
+        print("Du musst den Bot 1x neustarten damit die Änderung wirksam wird!")
+    else:
+        if os.path.exists("mysql.json"):
+            print("MySQL ist bereits aktiviert")
+        else:
+            print("Iwas ist falsch gelaufen. Hier gibt es Hilfe:")
+            print("https://github.com/antonstech/antonstechbot/wiki/Support")
+
+
+menu = ConsoleMenu(f"antonstechbot Version {VERSION} by antonstech",
+                   "https://git.io/antonsbot")
+
 starten = FunctionItem("Bot starten", os.system, ["python3 bot.py"])
 config = FunctionItem("Config bearbeiten", tokens)
 updaten = FunctionItem("Bot Updaten", os.system, ["python3 update.py"])
 tokencheck = FunctionItem("Token-Checker", tokenchecker)
 infos = FunctionItem("Infos über den Bot&Code", browser)
 mysqlsetup = FunctionItem("MySQL Setup", mysqlsetup)
+mysqldisable = FunctionItem("MySQL deaktivieren", mysqldisable)
+mysqlenable = FunctionItem("MySQL aktivieren", mysqlenable)
+submenu = ConsoleMenu("MySQL Menü")
+mysqlmenu = SubmenuItem("MySQL Menü", submenu, menu)
+updatemenu = ConsoleMenu("Menü um Sachen zu updaten")
+updateeee = SubmenuItem("Updaten", updatemenu, menu)
+pipupdate = CommandItem("pip Module updaten", "pip install --upgrade --force-reinstall -r requirements.txt")
 
 menu.append_item(starten)
 menu.append_item(config)
-menu.append_item(mysqlsetup)
-menu.append_item(updaten)
+menu.append_item(mysqlmenu)
+menu.append_item(updateeee)
 menu.append_item(tokencheck)
 menu.append_item(infos)
+submenu.append_item(mysqlsetup)
+submenu.append_item(mysqldisable)
+submenu.append_item(mysqlenable)
+updatemenu.append_item(updaten)
+updatemenu.append_item(pipupdate)
 
 menu.show()
