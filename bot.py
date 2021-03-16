@@ -800,8 +800,9 @@ def give():
 give()
 
 
-def MySql():
-    if os.path.exists("mysql.json"):
+use_mysql = False
+
+if os.path.exists("mysql.json"):
         with open('mysql.json', 'r') as f:
             json_stuff = json.load(f)
             host = json_stuff["host"]
@@ -810,36 +811,45 @@ def MySql():
             datenbank = json_stuff["datenbank"]
             port = json_stuff["port"]
             tablename = json_stuff["tablename"]
-            mydb = mysql.connector.connect(
-            host=host,
-            user=user,
-            password=passwort,
-            database=datenbank,
-            port=port)
-
-            @client.event
-            async def on_message(message):
-                zeit = datetime.datetime.now()
-                zeit_srftime = zeit.strftime("%Y-%m-%d %H:%M:%S")
-                sql = "INSERT INTO " + tablename + "(time, content, attachement, membername, memberid, guildid, guildname, channelid,  \
-                     channelname, id)  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
-                val = [
-                    (f"{zeit_srftime}", f"{message.content}", f"{message.attachments}", f"{message.author}",
-                     f"{message.author.id}", f"{message.guild.id}", f"{message.guild}",
-                     f"{message.channel.id}", f"{message.channel}", f"{message.id}")
-                 ]
-                mycursor = mydb.cursor()
-                mycursor.executemany(sql, val)
-                mydb.commit()
-                await client.process_commands(message)
-    else:
-         pass
+            use_mysql = True
 
 
-MySql()
+
+else:
+    pass
+
+
+async def sql_connection_stuff(message):
+    if not use_mysql:
+        return
+    mydb = mysql.connector.connect(
+        host=host,
+        user=user,
+        password=passwort,
+        database=datenbank,
+        port=port)
+    zeit = datetime.datetime.now()
+    zeit_srftime = zeit.strftime("%Y-%m-%d %H:%M:%S")
+    sql = "INSERT INTO " + tablename + "(time, content, attachement, membername, memberid, guildid, guildname, channelid,  \
+             channelname, id)  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
+    val = [
+        (f"{zeit_srftime}", f"{message.content}", f"{message.attachments}", f"{message.author}",
+         f"{message.author.id}", f"{message.guild.id}", f"{message.guild}",
+         f"{message.channel.id}", f"{message.channel}", f"{message.id}")
+    ]
+    mycursor = mydb.cursor()
+    mycursor.executemany(sql, val)
+    mydb.commit()
+
+
+@client.event
+async def on_message(message):
+    asyncio.ensure_future(sql_connection_stuff(message))
+    await client.process_commands(message)
 
 with open('config.json', 'r') as f:
     json_stuff = json.load(f)
     token = json_stuff["token"]
 
 client.run(token)
+
