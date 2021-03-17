@@ -92,7 +92,7 @@ async def on_ready():
     print("Yess der bot läuft :)".format(client))
     print("Du hast derzeit Release " + str(VERSION) + " installiert")
     print("Du bist eingeloggt als {0.user} auf discord.py Version {1}".format(client, discord.__version__))
-    if os.path.exists("mysql.json"):
+    if os.path.exists("config/mysql.json"):
         print("MySQL-Logging ist AKTIVIERT")
     else:
         print("MySQL-Logging ist DEAKTIVIERT")
