@@ -1,6 +1,7 @@
 from consolemenu import *
 from consolemenu.items import *
 import os
+import sys
 import subprocess
 import webbrowser
 import time
@@ -21,7 +22,7 @@ def browser():
 
 def tokenchecker():
     # Riot
-    with open('./config.json', 'r') as f:
+    with open('config/config.json', 'r') as f:
         json_stuff = json.load(f)
         riotapi = json_stuff["riotapi"]
     base_riot_url = "https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/DCGALAXY?api_key="
@@ -32,7 +33,7 @@ def tokenchecker():
     else:
         print(Fore.RED + "Riot Games API Key ❌")
     # Osu
-    with open('./config.json', 'r') as f:
+    with open('config/config.json', 'r') as f:
         json_stuff = json.load(f)
         osuapi = json_stuff["osuapi"]
     base_osu_url = "https://osu.ppy.sh/api/get_user_best?u=Aftersh0ock&k="
@@ -43,7 +44,7 @@ def tokenchecker():
     else:
         print(Fore.RED + "Osu API Key ❌")
     # Discord
-    with open('config.json', 'r') as f:
+    with open('config/config.json', 'r') as f:
         json_stuff = json.load(f)
         token = json_stuff["token"]
     headers = {
@@ -55,7 +56,7 @@ def tokenchecker():
     else:
         print(Fore.RED + "Discord Token ❌")
     # ipdata
-    with open('./config.json', 'r') as f:
+    with open('config/config.json', 'r') as f:
         json_stuff = json.load(f)
         ipdata = json_stuff["ipdata"]
     baseipurl = "https://api.ipdata.co/8.8.8.8"
@@ -79,9 +80,9 @@ def mysqlsetup():
         config = {"enable": True, "host": input("Host: "), "user": input("Benutzername: "),
                   "passwort": input("Dein Passwort: "), "datenbank": input("Datenbank: "),
                   "tablename": input("Name der Tablle: "), "port": input("Port: ")}
-        with open("mysql.json", "w+") as file:
+        with open("config/mysql.json", "w+") as file:
             json.dump(config, file, indent=2)
-        with open('mysql.json', 'r') as f:
+        with open('config/mysql.json', 'r') as f:
             json_stuff = json.load(f)
             host = json_stuff["host"]
             user = json_stuff["user"]
@@ -115,17 +116,17 @@ def tokens():
     config = {'token': input("Dein Bot Token: "), 'prefix': input("Dein Bot Prefix: "),
               "riotapi": input("Dein Riot Games Api Token: "), "osuapi": input("Dein Osu Api Token: "),
               "ipdata": input("Dein ipdata.co Token: ")}
-    with open('config.json', 'w+') as file:
+    with open('config/config.json', 'w+') as file:
         json.dump(config, file, indent=2)
 
 
 def mysqldisable():
-    if os.path.exists("mysql.json"):
-        os.rename("mysql.json", "disabled_mysql.json")
+    if os.path.exists("config/mysql.json"):
+        os.rename("config/mysql.json", "config/disabled_mysql.json")
         print("MySQL ist nun DEAKTIVIEREN!")
         print("Du musst den Bot 1x neustarten damit die Änderung wirksam wird!")
     else:
-        if os.path.exists("disabled_mysql.json"):
+        if os.path.exists("config/disabled_mysql.json"):
             print("MySQL ist bereits deaktiviert")
         else:
             print("Iwas ist falsch gelaufen. Hier gibt es Hilfe:")
@@ -133,24 +134,38 @@ def mysqldisable():
 
 
 def mysqlenable():
-    if os.path.exists("disabled_mysql.json"):
-        os.rename("disabled_mysql.json", "mysql.json")
+    if os.path.exists("config/disabled_mysql.json"):
+        os.rename("config/disabled_mysql.json", "config/mysql.json")
         print("MySQL ist nun AKTIVIERT!")
         print("Du musst den Bot 1x neustarten damit die Änderung wirksam wird!")
     else:
-        if os.path.exists("mysql.json"):
+        if os.path.exists("config/mysql.json"):
             print("MySQL ist bereits aktiviert")
         else:
             print("Iwas ist falsch gelaufen. Hier gibt es Hilfe:")
             print("https://github.com/antonstech/antonstechbot/wiki/Support")
 
 
+def run_bot():
+    if sys.platform == "win32":
+        os.system("py -3 bot.py")
+    else:
+        os.system("python3 bot.py")
+
+
+def update_bot():
+    if sys.platform == "win32":
+        os.system("py -3 update.py")
+    else:
+        os.system("python3 update.py")
+
+
 menu = ConsoleMenu(f"antonstechbot Version {VERSION} by antonstech",
                    "https://git.io/antonsbot")
 
-starten = FunctionItem("Bot starten", os.system, ["python3 bot.py"])
+starten = FunctionItem("Bot starten", run_bot)
 config = FunctionItem("Config bearbeiten", tokens)
-updaten = FunctionItem("Bot Updaten", os.system, ["python3 update.py"])
+updaten = FunctionItem("Bot Updaten", update_bot)
 tokencheck = FunctionItem("Token-Checker", tokenchecker)
 infos = FunctionItem("Infos über den Bot&Code", browser)
 mysqlsetup = FunctionItem("MySQL Setup", mysqlsetup)

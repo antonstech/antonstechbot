@@ -1,0 +1,61 @@
+{
+  "wetter": {
+    "description": "Mit {0}wetter kannst du dir das Wetter so wie einige Infos dazu anzeigen lassen",
+    "usage": "{0}wetter Stadt",
+    "example": "{0}wetter München"
+  },
+
+  "clear": {
+    "description": "Mit {0}clear kannst du eine beliebige Anzahl an Nachrichten aus einem Channel löschen",
+    "usage": "{0}clear (Anzahl)",
+    "example": "{0}clear 5"
+  },
+
+  "benutzerinfo":{
+    "description": "Mit {0}benutzerinfo kannst du dir einige Infos über einen Nutzer anzeigen lassen",
+    "usage": "{0}benutzerinfo (Benutzer)",
+    "example": "{0}benutzerinfo DCGALAXY"
+  },
+
+  "ping": {
+    "description": "Mit {0}ping kannst du dir die Discord WebSocket protocol latency anzeigen lassen",
+    "usage": "{0}ping",
+    "example": "{0}ping"
+  },
+
+  "give": {
+    "description": "Mit {0}give wird eine Minecraft Konsole simuliert",
+    "usage": "{0}give (item) (spieler)",
+    "example": "{0}give diamonds DCGALAXY"
+  },
+
+  "lol": {
+    "description": "Mit {0}lol kannst du dir eine League of Legends Stats anzeigen lassen",
+    "usage": "{0}lol (level/rang) (name)",
+    "example": "{0}lol rang Aftersh0ock"
+  },
+
+  "mc": {
+    "description": "Mit {0}mc (command) kannst du dir mehrere Interessante sachen zu Minecraft Anzeigen lassen",
+    "usage": "Mehr info gibt hier: {0}mc",
+    "example": "Mehr info gibt hier: {0}mc"
+  },
+
+  "osu": {
+    "description": "Mit {0}osu kannst du dir Osu Stats zu einem Spieler Anzeigen lassen",
+    "usage": "{0}osu (name)",
+    "example": "{0}osu Aftersh0ock"
+  },
+
+  "earth2": {
+    "description": "Mit {0}earth2 kannst du dir Earth2 Stats zu Deutschland Anzeigen lassen",
+    "usage": "{0}earth2",
+    "example": "{0}earth2"
+  },
+
+  "anime": {
+    "description": "Sende ein Bild und als Beschreibung {0}anime und es sagt dir welcher anime es ist",
+    "usage": "Bild mit Kommentar {0}anime",
+    "example": "https://i.imgur.com/P43xKu4.png"
+  }
+}
