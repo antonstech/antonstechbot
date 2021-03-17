@@ -1,6 +1,6 @@
 from discord.ext import commands
 import discord
-from lib import constants
+from botlibrary import constants
 import json
 
 
@@ -33,7 +33,7 @@ class Hilfe(commands.Cog):
             await ctx.send(embed=embed)
             return
 
-        with open("lib/help.json") as f:
+        with open("botlibrary/help.json") as f:
             json_stuff = json.load(f)
 
         try:

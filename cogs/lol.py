@@ -1,8 +1,8 @@
 from discord.ext import commands
 import discord
-from lib import constants
+from botlibrary import constants
 import requests
-from lib import constants
+from botlibrary import constants
 from riotwatcher import LolWatcher
 
 

@@ -8,8 +8,8 @@ import requests
 from discord.ext import commands
 import os
 
-from lib.utils import get_variable
-from lib import constants
+from botlibrary.utils import get_variable
+from botlibrary import constants
 
 # Wichs Codierung
 # ä=Ã¼

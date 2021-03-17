@@ -1,6 +1,6 @@
 from discord.ext import commands
 import discord
-from lib import constants
+from botlibrary import constants
 
 
 class Commands(commands.Cog):

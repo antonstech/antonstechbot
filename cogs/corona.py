@@ -1,7 +1,7 @@
 from discord.ext import commands
 import discord
 import requests
-from lib import constants
+from botlibrary import constants
 
 
 class Corona(commands.Cog):
