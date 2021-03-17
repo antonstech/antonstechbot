@@ -1,6 +1,7 @@
 from consolemenu import *
 from consolemenu.items import *
 import os
+import sys
 import subprocess
 import webbrowser
 import time
@@ -145,12 +146,26 @@ def mysqlenable():
             print("https://github.com/antonstech/antonstechbot/wiki/Support")
 
 
+def run_bot():
+    if sys.platform == "win32":
+        os.system("py -3 bot.py")
+    else:
+        os.system("python3 bot.py")
+
+
+def update_bot():
+    if sys.platform == "win32":
+        os.system("py -3 update.py")
+    else:
+        os.system("python3 update.py")
+
+
 menu = ConsoleMenu(f"antonstechbot Version {VERSION} by antonstech",
                    "https://git.io/antonsbot")
 
-starten = FunctionItem("Bot starten", os.system, ["python3 bot.py"])
+starten = FunctionItem("Bot starten", run_bot)
 config = FunctionItem("Config bearbeiten", tokens)
-updaten = FunctionItem("Bot Updaten", os.system, ["python3 update.py"])
+updaten = FunctionItem("Bot Updaten", update_bot)
 tokencheck = FunctionItem("Token-Checker", tokenchecker)
 infos = FunctionItem("Infos über den Bot&Code", browser)
 mysqlsetup = FunctionItem("MySQL Setup", mysqlsetup)
