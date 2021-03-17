@@ -1,7 +1,5 @@
 import asyncio
 import json
-import random
-import subprocess
 import discord
 import discord.ext
 import requests
