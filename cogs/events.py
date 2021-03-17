@@ -11,7 +11,7 @@ class Events(commands.Cog):
         self.client = client
         self.use_mysql = False
         if os.path.exists("config/mysql.json"):
-            with open('mysql.json', 'r') as f:
+            with open('config/mysql.json', 'r') as f:
                 json_stuff = json.load(f)
                 self.host = json_stuff["host"]
                 self. user = json_stuff["user"]
