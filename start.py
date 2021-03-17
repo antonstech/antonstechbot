@@ -80,9 +80,9 @@ def mysqlsetup():
         config = {"enable": True, "host": input("Host: "), "user": input("Benutzername: "),
                   "passwort": input("Dein Passwort: "), "datenbank": input("Datenbank: "),
                   "tablename": input("Name der Tablle: "), "port": input("Port: ")}
-        with open("mysql.json", "w+") as file:
+        with open("config/mysql.json", "w+") as file:
             json.dump(config, file, indent=2)
-        with open('mysql.json', 'r') as f:
+        with open('config/mysql.json', 'r') as f:
             json_stuff = json.load(f)
             host = json_stuff["host"]
             user = json_stuff["user"]
@@ -121,12 +121,12 @@ def tokens():
 
 
 def mysqldisable():
-    if os.path.exists("mysql.json"):
-        os.rename("mysql.json", "disabled_mysql.json")
+    if os.path.exists("config/mysql.json"):
+        os.rename("config/mysql.json", "config/disabled_mysql.json")
         print("MySQL ist nun DEAKTIVIEREN!")
         print("Du musst den Bot 1x neustarten damit die Änderung wirksam wird!")
     else:
-        if os.path.exists("disabled_mysql.json"):
+        if os.path.exists("config/disabled_mysql.json"):
             print("MySQL ist bereits deaktiviert")
         else:
             print("Iwas ist falsch gelaufen. Hier gibt es Hilfe:")
@@ -134,12 +134,12 @@ def mysqldisable():
 
 
 def mysqlenable():
-    if os.path.exists("disabled_mysql.json"):
-        os.rename("disabled_mysql.json", "mysql.json")
+    if os.path.exists("config/disabled_mysql.json"):
+        os.rename("config/disabled_mysql.json", "config/mysql.json")
         print("MySQL ist nun AKTIVIERT!")
         print("Du musst den Bot 1x neustarten damit die Änderung wirksam wird!")
     else:
-        if os.path.exists("mysql.json"):
+        if os.path.exists("config/mysql.json"):
             print("MySQL ist bereits aktiviert")
         else:
             print("Iwas ist falsch gelaufen. Hier gibt es Hilfe:")
