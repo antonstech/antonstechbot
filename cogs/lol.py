@@ -1,6 +1,6 @@
 from discord.ext import commands
 import discord
-import json
+from lib import constants
 import requests
 from lib import constants
 from riotwatcher import LolWatcher
@@ -9,14 +9,8 @@ from riotwatcher import LolWatcher
 class Lol(commands.Cog):
     def __init__(self, client):
         self.client = client
-        with open('./config.json', 'r') as f:
-            json_stuff = json.load(f)
-        self.api_key = json_stuff["riotapi"]
-        self.base_url = "https://euw1.api.riotgames.com/lol/"
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print("lolcommand hat geladen")
+        self.api_key = constants.lol_token
+        self.base_url = constants.lol_url
 
     @commands.command(name="lol")
     async def lol_command(self, ctx, option=None, username=None):

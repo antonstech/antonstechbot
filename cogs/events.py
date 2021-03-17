@@ -43,7 +43,7 @@ class Events(commands.Cog):
         mycursor.executemany(sql, val)
         mydb.commit()
         
-    @commands.Cog.listener
+    @commands.Cog.listener()
     async def on_message(self, message):
         asyncio.ensure_future(self.sql_connection_stuff(message))
         

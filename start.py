@@ -21,7 +21,7 @@ def browser():
 
 def tokenchecker():
     # Riot
-    with open('./config.json', 'r') as f:
+    with open('config/config.json', 'r') as f:
         json_stuff = json.load(f)
         riotapi = json_stuff["riotapi"]
     base_riot_url = "https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/DCGALAXY?api_key="
@@ -32,7 +32,7 @@ def tokenchecker():
     else:
         print(Fore.RED + "Riot Games API Key ❌")
     # Osu
-    with open('./config.json', 'r') as f:
+    with open('config/config.json', 'r') as f:
         json_stuff = json.load(f)
         osuapi = json_stuff["osuapi"]
     base_osu_url = "https://osu.ppy.sh/api/get_user_best?u=Aftersh0ock&k="
@@ -43,7 +43,7 @@ def tokenchecker():
     else:
         print(Fore.RED + "Osu API Key ❌")
     # Discord
-    with open('config.json', 'r') as f:
+    with open('config/config.json', 'r') as f:
         json_stuff = json.load(f)
         token = json_stuff["token"]
     headers = {
@@ -55,7 +55,7 @@ def tokenchecker():
     else:
         print(Fore.RED + "Discord Token ❌")
     # ipdata
-    with open('./config.json', 'r') as f:
+    with open('config/config.json', 'r') as f:
         json_stuff = json.load(f)
         ipdata = json_stuff["ipdata"]
     baseipurl = "https://api.ipdata.co/8.8.8.8"
@@ -115,7 +115,7 @@ def tokens():
     config = {'token': input("Dein Bot Token: "), 'prefix': input("Dein Bot Prefix: "),
               "riotapi": input("Dein Riot Games Api Token: "), "osuapi": input("Dein Osu Api Token: "),
               "ipdata": input("Dein ipdata.co Token: ")}
-    with open('config.json', 'w+') as file:
+    with open('config/config.json', 'w+') as file:
         json.dump(config, file, indent=2)
 
 
