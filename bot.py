@@ -106,7 +106,7 @@ async def status_task():
                                      status=discord.Status.online)
         await asyncio.sleep(60)
         await client.change_presence(
-            activity=discord.Game(bot_prefix + "corona auf " + str(len(client.guilds)) + " Servern"))
+            activity=discord.Game(bot_prefix + "hilfe auf " + str(len(client.guilds)) + " Servern"))
         await asyncio.sleep(60)
         await client.change_presence(activity=discord.Game("ein heißes Spiel mit der Stiefschwester"))
         await asyncio.sleep(5)
@@ -117,6 +117,7 @@ async def status_task():
 """
 ##############################################################################################################################################################
                                                             Ole rewrite paradise
+                                                            https://github.com/DestinyofYeet <3
 ##############################################################################################################################################################
 """
 
@@ -128,7 +129,7 @@ def owner_only(func):
         if ctx.author.id == info.owner.id:
             return await func(self, *args, **kwargs)
         else:
-            await ctx.channel.send("Error, only the bot owner can use this command!")
+            await ctx.channel.send("Nur der Owner kann diesen Command benutzen!")
 
     return wrapper
 
@@ -175,4 +176,3 @@ for filename in os.listdir("./cogs"):
 
 # run bot
 client.run(token)
-

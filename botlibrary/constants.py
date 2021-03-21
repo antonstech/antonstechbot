@@ -1,12 +1,13 @@
 import subprocess
 import json
 
-global VERSION, bot_prefix, ipdata_token, ipdata_url, osu_token, osu_url, lol_token, lol_url, bot_token
+global VERSION, bot_prefix, ipdata_token, ipdata_url, osu_token, osu_url, lol_token, lol_url, bot_token, reddit_url
 
 
 def assignVariables():
-    global VERSION, bot_prefix, ipdata_token, ipdata_url, osu_token, osu_url, lol_token, lol_url, bot_token
+    global VERSION, bot_prefix, ipdata_token, ipdata_url, osu_token, osu_url, lol_token, lol_url, bot_token, reddit_url
     VERSION = subprocess.check_output(["git", "describe", "--tags", "--always"]).decode('ascii').strip()
+    reddit_url = "https://meme-api.herokuapp.com/gimme"
 
     with open('config/config.json', 'r') as f:
         json_stuff = json.load(f)
