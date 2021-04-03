@@ -1,6 +1,5 @@
 from discord.ext import commands
 import discord
-from botlibrary import constants
 import requests
 from botlibrary import constants
 from riotwatcher import LolWatcher
@@ -17,7 +16,7 @@ class Lol(commands.Cog):
 
         if option is None:
             embed = discord.Embed(title="League of Legends Statistiken", color=ctx.author.color)
-            embed.add_field(name="Alle Befehle:", value="Mach help lol um dir alle Befehle anzeigen zu lassen",
+            embed.add_field(name="Alle Befehle:", value="level, rang",
                             inline=False)
             embed.set_thumbnail(
                 url="https://www.riotgames.com/darkroom/original/462106d7bcc8d74a57a49411b70c4a92"

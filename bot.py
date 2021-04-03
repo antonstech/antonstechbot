@@ -170,7 +170,7 @@ with open('config/config.json', 'r') as f:
 
 # load cogs
 for filename in os.listdir("./cogs"):
-    if filename.endswith(".py"):
+    if filename.endswith(".py") and filename not in ["errorstuff.py"]:
         client.load_extension(f"cogs.{filename[:-3]}")
 
 

@@ -14,7 +14,7 @@ class Events(commands.Cog):
             with open('config/mysql.json', 'r') as f:
                 json_stuff = json.load(f)
                 self.host = json_stuff["host"]
-                self. user = json_stuff["user"]
+                self.user = json_stuff["user"]
                 self.passwort = json_stuff["passwort"]
                 self.datenbank = json_stuff["datenbank"]
                 self.port = json_stuff["port"]

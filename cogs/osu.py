@@ -2,7 +2,7 @@ from discord.ext import commands
 import discord
 from botlibrary import constants
 import requests
-
+from .errorstuff import error
 
 class Osu(commands.Cog):
     def __init__(self, client):
@@ -36,10 +36,7 @@ class Osu(commands.Cog):
             embed.add_field(name="Rang in " + land, value=f"{localrank}")
             await ctx.send(embed=embed)
         except:
-            await ctx.send(
-                "Irgendetwas ist schief gelaufen; check ob der Name richtig geschrieben ist und falls es dann nicht geht Kontaktiere DCGALAXY#9729")
-
-        return
+            await error(ctx)
 
 
 def setup(client):

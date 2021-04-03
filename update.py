@@ -10,6 +10,7 @@ def updaten():
     command = subprocess.check_output("git pull ", shell=True)
     if str("Already up to date.") in str(command):
         print(f"Der Bot is bereits auf der neusten Version({VERSION})!")
+        raise Exception("Der Bot wurde geupdatet.")
     else:
         print(f"Der Bot wurde auf die Neuste Version geupdatet")
 
