@@ -80,6 +80,19 @@ def tokenchecker():
             pass
         else:
             raise Exception("Der IPData Key hat nicht funktioniert.")
+    url = constants.coc_url
+    headers = {"Authorization": "Bearer " + constants.coc_token}
+    cocresponse = requests.get(url, headers=headers)
+    if cocresponse.status_code == 200:
+        pass
+    else:
+        print("Der Coc API Token hat nicht funktioniert :((")
+        print("Bitte checke ob der Token in der config.json richtig gesetzt ist und schau nach ob es nicht vllt an Supercell selber liegt")
+        cocnotworkingexe = input("Willst du trotzdem starten? (j/n): ")
+        if cocnotworkingexe == "j":
+            pass
+        else:
+            raise Exception("Der CoC API-Key hat nicht funktioniert.")
 
 
 tokenchecker()

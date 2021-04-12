@@ -9,9 +9,11 @@ import requests
 import json
 from colorama import *
 import mysql.connector
+from botlibrary import constants
 
 VERSION = subprocess.check_output(["git", "describe", "--tags", "--always"]).decode('ascii').strip()
 
+constants.assignVariables()
 
 def browser():
     webbrowser.open("https://git.io/antonsbot")
@@ -66,6 +68,13 @@ def tokenchecker():
         print(Fore.GREEN + "ipdata API Key ✅")
     else:
         print(Fore.RED + "ipdata API Key ❌")
+    url = constants.coc_url
+    headers = {"Authorization": "Bearer " + constants.coc_token}
+    cocresponse = requests.get(url, headers=headers)
+    if cocresponse.status_code == 200:
+        print(Fore.GREEN + "CoC API Key ✅")
+    else:
+       print(Fore.RED + "CoC API Key ❌")
     print(Style.RESET_ALL)
     time.sleep(7)
 
@@ -115,7 +124,7 @@ def tokens():
     print("Wichtig: Dieses Script erstellt eine neue config.json")
     config = {'token': input("Dein Bot Token: "), 'prefix': input("Dein Bot Prefix: "),
               "riotapi": input("Dein Riot Games Api Token: "), "osuapi": input("Dein Osu Api Token: "),
-              "ipdata": input("Dein ipdata.co Token: ")}
+              "ipdata": input("Dein ipdata.co Token: "), "cocapi": input("Dein ClashOfClans Api Token: ")}
     with open('config/config.json', 'w+') as file:
         json.dump(config, file, indent=2)
 
