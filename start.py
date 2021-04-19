@@ -11,7 +11,11 @@ from colorama import *
 import mysql.connector
 from botlibrary import constants
 
-VERSION = subprocess.check_output(["git", "describe", "--tags", "--always"]).decode('ascii').strip()
+try:
+    VERSION = subprocess.check_output(["git", "describe", "--tags", "--always"]).decode('ascii').strip()
+except:
+    VERSION = 6.3
+    print("Bitte installiert dir GIT!!!")
 
 constants.assignVariables()
 
@@ -184,7 +188,7 @@ submenu = ConsoleMenu("MySQL Menü")
 mysqlmenu = SubmenuItem("MySQL Menü", submenu, menu)
 updatemenu = ConsoleMenu("Menü um Sachen zu updaten")
 updateeee = SubmenuItem("Updaten", updatemenu, menu)
-pipupdate = CommandItem("pip Module updaten", "pip install --upgrade --force-reinstall -r requirements.txt")
+pipupdate = CommandItem("pip Module updaten", "pip3 install --upgrade --force-reinstall -r requirements.txt")
 
 menu.append_item(starten)
 menu.append_item(config)

@@ -1,7 +1,14 @@
 import subprocess
 import time
 
-VERSION = subprocess.check_output(["git", "describe", "--tags", "--always"]).decode('ascii').strip()
+try:
+    VERSION = subprocess.check_output(["git", "describe", "--tags", "--always"]).decode('ascii').strip()
+except:
+    print("Du scheinst kein Git installiert zu haben :(")
+    print("Hier findest du raus, wie du es installieren kannst:")
+    print("https://github.com/git-guides/install-git")
+    time.sleep(25)
+
 
 print("Checke auf Updates...")
 

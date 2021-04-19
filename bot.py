@@ -1,5 +1,7 @@
 import asyncio
 import json
+import time
+
 import discord
 import discord.ext
 import requests
@@ -117,6 +119,8 @@ async def status_task():
     while True:
         await client.change_presence(activity=discord.Game("https://git.io/antonsbot"),
                                      status=discord.Status.online)
+        await asyncio.sleep(60)
+        await client.change_presence(activity=discord.Game(f"antonstechbot auf Version {VERSION}"))
         await asyncio.sleep(60)
         await client.change_presence(
             activity=discord.Game(bot_prefix + "hilfe auf " + str(len(client.guilds)) + " Servern"))
