@@ -17,14 +17,16 @@ class Commands(commands.Cog):
     @commands.command(name="version")
     async def version(self, ctx):
         await ctx.channel.send(
-            "Der Bot läuft derzeit auf Release " + str(constants.VERSION) + " und geht auch dank discord.py Version {}".format(
+            "Der Bot läuft derzeit auf Release " + str(
+                constants.VERSION) + " und geht auch dank discord.py Version {}".format(
                 discord.__version__))
 
     @commands.command(name="einladen")
     async def einladen(self, ctx):
         embed = discord.Embed()
         embed.set_author(name="Klicke hier zum einladen",
-                         url=discord.utils.oauth_url(self.client.user.id, permissions=discord.Permissions(8), guild=ctx.guild))
+                         url=discord.utils.oauth_url(self.client.user.id, permissions=discord.Permissions(8),
+                                                     guild=ctx.guild))
         await ctx.channel.send(embed=embed)
 
     @commands.command(name="hosten")
@@ -57,6 +59,15 @@ class Commands(commands.Cog):
             await ctx.channel.purge(limit=amount + 1, check=self.ist_gepinnt)
         except commands.MissingPermissions:
             await ctx.channel.send("Du hast keine Berechtigung dazu!")
+
+    @commands.command(name="list")
+    async def list_command(self, ctx):
+        if str(len(self.client.guilds)) == 1:
+            await ctx.send("Der Bot ist zurzeit auf folgendem Server:")
+        else:
+            await ctx.send("Der Bot ist zurzeit auf folgenden " + str(len(self.client.guilds)) + " Servern:")
+        for guild in self.client.guilds:
+            await ctx.send("- " + str(guild.name))
 
 
 def setup(client):
