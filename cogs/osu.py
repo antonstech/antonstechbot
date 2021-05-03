@@ -4,6 +4,7 @@ from botlibrary import constants
 import requests
 from .errorstuff import error
 
+
 class Osu(commands.Cog):
     def __init__(self, client):
         self.client = client

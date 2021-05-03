@@ -45,7 +45,10 @@ class Events(commands.Cog):
         
     @commands.Cog.listener()
     async def on_message(self, message):
-        asyncio.ensure_future(self.sql_connection_stuff(message))
+        if not message.guild:
+            pass
+        else:
+            asyncio.ensure_future(self.sql_connection_stuff(message))
         
 
 def setup(client):

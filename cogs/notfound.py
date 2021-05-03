@@ -15,6 +15,8 @@ class NotFound(commands.Cog):
                 embed = discord.Embed(title="Befehl nicht gefunden!", colour=discord.Colour.red())
                 embed.set_footer(text="Mit " + self.prefix + "hilfe bekommst du eine übersicht aller Befehle")
                 await ctx.send(embed=embed)
+            elif isinstance(error, commands.MissingPermissions):
+                await ctx.send("Dazu hast du keine Berechtigungen :)")
             else:
                 raise error
 
