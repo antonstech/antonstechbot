@@ -66,7 +66,7 @@ class Commands(commands.Cog):
             await ctx.send("Der Bot ist zurzeit auf folgenden " + str(len(self.client.guilds)) + " Servern:")
         for guild in self.client.guilds:
             await ctx.send("- " + str(guild.name))
-            await ctx.send(f"Auf diesen {str(len(self.client.guilds))} Servern sind insgesamt {len(set(self.client.get_all_members()))} Mitglieder")
+        await ctx.send(f"Auf diesen {str(len(self.client.guilds))} Servern sind insgesamt {len(set(self.client.get_all_members()))} Mitglieder")
 
 def setup(client):
     client.add_cog(Commands(client))
