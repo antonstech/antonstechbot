@@ -117,6 +117,7 @@ async def on_ready():
     if os.path.exists("temp/guildlist.json"):
         pass
     else:
+        os.mkdir("temp")
         newjsonfile = open("temp/guildlist.json", "w")
         newjsonfile.write("{}")
         newjsonfile.close()
