@@ -2,7 +2,7 @@ from discord.ext import commands
 import discord
 from botlibrary import constants
 import requests
-from .errorstuff import error
+from .errorstuff import basicerror
 
 class Ip(commands.Cog):
     def __init__(self, client):
@@ -39,7 +39,7 @@ class Ip(commands.Cog):
             await ctx.send(embed=embed)
             return
         except:
-            await error(ctx)
+            await basicerror(ctx)
 
 
 

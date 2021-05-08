@@ -3,7 +3,7 @@ import discord
 import requests
 import datetime
 from botlibrary import constants
-from .errorstuff import error
+from .errorstuff import basicerror
 
 
 class Mc(commands.Cog):
@@ -148,7 +148,7 @@ class Mc(commands.Cog):
                 embed.add_field(name="Fehlercode:", value=errorcode)
                 await ctx.send(embed=embed)
             else:
-                await error(ctx)
+                await basicerror(ctx)
 
         elif option == "jar":
             base_url = "https://serverjars.com/api/"
@@ -176,7 +176,7 @@ class Mc(commands.Cog):
                                  icon_url="https://papermc.io/forums/uploads/default/optimized/2X/9/94d4bbaf78d05116b6bf42c8de86865d6b2cb2cf_2_500x500.png")
                 await ctx.send(embed=embed)
             else:
-                await error(ctx)
+                await basicerror(ctx)
 
         elif option == "uuid":
             uuid = "https://api.mojang.com/users/profiles/minecraft/" + arg1

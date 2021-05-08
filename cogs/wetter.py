@@ -1,7 +1,7 @@
 from discord.ext import commands
 import discord
 import requests
-from .errorstuff import error
+from .errorstuff import basicerror
 
 
 class Wetter(commands.Cog):
@@ -43,7 +43,7 @@ class Wetter(commands.Cog):
             else:
                 await ctx.send("Stadt wurde nicht gefunden.")
         except:
-            await error(ctx)
+            await basicerror(ctx)
 
 
 def setup(client):

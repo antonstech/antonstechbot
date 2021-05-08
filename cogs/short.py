@@ -2,7 +2,7 @@ import requests
 import discord
 from discord.ext import commands
 from botlibrary import constants
-from .errorstuff import error
+from .errorstuff import basicerror
 
 
 class ShortUrl(commands.Cog):
@@ -32,7 +32,7 @@ class ShortUrl(commands.Cog):
             await ctx.send(response)
 
         else:
-            await error(ctx)
+            await basicerror(ctx)
 
 
 def setup(client):

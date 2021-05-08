@@ -3,7 +3,7 @@ import discord
 import requests
 from discord.ext import commands
 from botlibrary import constants
-from .errorstuff import error
+from .errorstuff import basicerror
 
 
 
@@ -54,7 +54,7 @@ class CoC(commands.Cog):
                     embed.add_field(name="gewonnene Clankriege", value=warwins)
                     await ctx.send(embed=embed)
             except:
-                await error(ctx)
+                await basicerror(ctx)
 
         elif option == "spieler":
             playertag = urllib.parse.quote(arg1)
@@ -90,7 +90,7 @@ class CoC(commands.Cog):
                     embed.add_field(name="Clan-Name", value=clanname)
                     await ctx.send(embed=embed)
             except:
-                await error(ctx)
+                await basicerror(ctx)
 
 def setup(client):
     client.add_cog(CoC(client))

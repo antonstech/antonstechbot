@@ -2,7 +2,7 @@ from discord.ext import commands
 import discord
 import requests
 import urllib.parse
-from .errorstuff import error
+from .errorstuff import basicerror
 
 
 class Anime(commands.Cog):
@@ -52,7 +52,7 @@ class Anime(commands.Cog):
                     embed.set_image(url=str(imgrequest))
                     await ctx.send(embed=embed)
         except:
-            await error(ctx)
+            await basicerror(ctx)
 
 
 def setup(client):

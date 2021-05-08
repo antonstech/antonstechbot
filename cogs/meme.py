@@ -2,7 +2,7 @@ from discord.ext import commands
 import discord
 import requests
 from botlibrary import constants
-from .errorstuff import error
+from .errorstuff import basicerror
 
 
 class Memes(commands.Cog):
@@ -27,7 +27,7 @@ class Memes(commands.Cog):
             embed.add_field(name="Link zum Post", value=f"[{link}]({link})")
             await ctx.send(embed=embed)
         except:
-            await error(ctx)
+            await basicerror(ctx)
 
 
 def setup(client):

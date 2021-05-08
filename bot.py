@@ -89,7 +89,8 @@ def tokenchecker():
         pass
     else:
         print("Der Coc API Token hat nicht funktioniert :((")
-        print("Bitte checke ob der Token in der config.json richtig gesetzt ist und schau nach ob es nicht vllt an Supercell selber liegt")
+        print(
+            "Bitte checke ob der Token in der config.json richtig gesetzt ist und schau nach ob es nicht vllt an Supercell selber liegt")
         cocnotworkingexe = input("Willst du trotzdem starten? (j/n): ")
         if cocnotworkingexe == "j":
             pass
@@ -102,6 +103,7 @@ tokenchecker()
 
 @client.event
 async def on_ready():
+    global guild
     print("Yess der bot läuft :)".format(client))
     print("Du hast derzeit Release " + str(VERSION) + " installiert")
     print("Du bist eingeloggt als {0.user} auf discord.py Version {1}".format(client, discord.__version__))
@@ -112,6 +114,26 @@ async def on_ready():
     print("Der Bot ist zurzeit auf folgenden " + str(len(client.guilds)) + " Servern:")
     for guild in client.guilds:
         print("- " + str(guild.name))
+    if os.path.exists("temp/guildlist.json"):
+        pass
+    else:
+        newjsonfile = open("temp/guildlist.json", "w")
+        newjsonfile.write("{}")
+        newjsonfile.close()
+    with open("temp/guildlist.json") as thejsonfile:
+        file = json.load(thejsonfile)
+
+    for guild in client.guilds:
+        try:
+            if file[str(guild.id)]:
+                continue
+        except KeyError:
+            pass
+
+        file[str(guild.id)] = False
+
+    with open("temp/guildlist.json", "w") as thejsonfile:
+        json.dump(file, thejsonfile, indent=2)
     client.loop.create_task(status_task())
 
 
@@ -127,6 +149,8 @@ async def status_task():
         await asyncio.sleep(60)
         await client.change_presence(activity=discord.Game("ein heißes Spiel mit der Stiefschwester"))
         await asyncio.sleep(5)
+        await client.change_presence(activity=discord.Game(f"mit {len(set(client.get_all_members()))} Leuten"))
+        await asyncio.sleep(60)
         await client.change_presence(
             activity=discord.Activity(type=discord.ActivityType.watching, name="auf deine Nachrichten"))
         await asyncio.sleep(60)
@@ -168,7 +192,7 @@ async def unload_cog(ctx, cogName):
         client.unload_extension(f"cogs.{cogName}")
         await ctx.channel.send(f"Erfolgreich erweiterung {cogName} entladen!")
     except Exception as e:
-        await ctx.channel.send(f"Fehler, entweder ist die erweiterung schong entladen, oder sie wurde nicht gefunden!")
+        await ctx.channel.send(f"Fehler, entweder ist die erweiterung schon entladen, oder sie wurde nicht gefunden!")
 
 
 @client.command(name="load")
@@ -189,7 +213,6 @@ with open('config/config.json', 'r') as f:
 for filename in os.listdir("./cogs"):
     if filename.endswith(".py") and filename not in ["errorstuff.py"]:
         client.load_extension(f"cogs.{filename[:-3]}")
-
 
 # run bot
 client.run(token)

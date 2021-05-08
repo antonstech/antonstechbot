@@ -2,7 +2,7 @@ from discord.ext import commands
 import discord
 from botlibrary import constants
 import requests
-from .errorstuff import error
+from .errorstuff import basicerror
 
 
 class Osu(commands.Cog):
@@ -37,7 +37,7 @@ class Osu(commands.Cog):
             embed.add_field(name="Rang in " + land, value=f"{localrank}")
             await ctx.send(embed=embed)
         except:
-            await error(ctx)
+            await basicerror(ctx)
 
 
 def setup(client):
