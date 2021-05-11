@@ -8,7 +8,7 @@ class Corona(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command(name="corona")
+    @commands.command(name="corona", aliases=["covid"])
     async def corona_command(self, ctx, option=None):
 
         if option is None:
@@ -33,7 +33,7 @@ class Corona(commands.Cog):
                 embed = discord.Embed(title="Corona Virus Statistiken für Deutschland",
                                       color=ctx.author.color,
                                       timestamp=ctx.message.created_at)
-                embed.add_field(name="Fälle insgesammt", value=f"{insgesamt}")
+                embed.add_field(name="Fälle insgesamt", value=f"{insgesamt}")
                 embed.add_field(name="Tode insgesamt", value=f"{todegesamt}")
                 embed.add_field(name="Gesund", value=f"{gesund}")
                 embed.add_field(name="Inzidenz", value=f"{round(inzidenz, 2)}")

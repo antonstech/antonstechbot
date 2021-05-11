@@ -23,6 +23,8 @@ VERSION = constants.VERSION
 bot_prefix = constants.bot_prefix
 
 client = commands.Bot(command_prefix=bot_prefix, intents=discord.Intents.all())
+client.remove_command('help')
+
 
 
 def tokenchecker():
@@ -117,7 +119,10 @@ async def on_ready():
     if os.path.exists("temp/guildlist.json"):
         pass
     else:
-        os.mkdir("temp")
+        try:
+            os.mkdir("temp")
+        except:
+            pass
         newjsonfile = open("temp/guildlist.json", "w")
         newjsonfile.write("{}")
         newjsonfile.close()
@@ -155,6 +160,7 @@ async def status_task():
         await client.change_presence(
             activity=discord.Activity(type=discord.ActivityType.watching, name="auf deine Nachrichten"))
         await asyncio.sleep(60)
+
 
 """
 ##############################################################################################################################################################

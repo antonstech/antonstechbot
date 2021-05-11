@@ -20,7 +20,7 @@ class Mc(commands.Cog):
             embed.add_field(name="Funktionen:", value="skin, server, name, jar")
             await ctx.send(embed=embed)
 
-        if arg1 is None and option != "jar":
+        elif arg1 is None and option != "jar":
             await ctx.send("Fehler: Gebe etwas an wonach du suchst!")
 
         elif option == "server":
@@ -123,7 +123,7 @@ class Mc(commands.Cog):
             await ctx.send(embed=embed)
             return
 
-        elif option == "jar" and arg1 != None:
+        elif option == "jar" and arg1 is not None:
             base_url = "https://serverjars.com/api/fetchLatest/"
             response = requests.get(base_url + arg1).json()
             if response["status"] == "success":

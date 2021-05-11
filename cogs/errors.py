@@ -16,7 +16,9 @@ class NotFound(commands.Cog):
                 embed.set_footer(text="Mit " + self.prefix + "hilfe bekommst du eine übersicht aller Befehle")
                 await ctx.send(embed=embed)
             elif isinstance(error, commands.MissingPermissions):
-                await ctx.send("Dazu hast du keine Berechtigungen :)")
+                await ctx.send("Dazu hast du keine Berechtigungen! ")
+            elif isinstance(error, commands.MissingRequiredArgument):
+                await ctx.send("Da fehlt noch etwas :wink:")
             else:
                 raise error
 

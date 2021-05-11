@@ -1,16 +1,17 @@
 import subprocess
 import json
 
-global VERSION, bot_prefix, ipdata_token, ipdata_url, osu_token, osu_url, lol_token, lol_url, bot_token, reddit_url, coc_token, coc_url, bitrate
+global VERSION, bot_prefix, ipdata_token, ipdata_url, osu_token, osu_url, lol_token, lol_url, bot_token, reddit_url, coc_token, coc_url, bitrate, cat_api
 
 
 def assignVariables():
-    global VERSION, bot_prefix, ipdata_token, ipdata_url, osu_token, osu_url, lol_token, lol_url, bot_token, reddit_url, coc_token, coc_url, bitrate
+    global VERSION, bot_prefix, ipdata_token, ipdata_url, osu_token, osu_url, lol_token, lol_url, bot_token, reddit_url, coc_token, coc_url, bitrate, cat_api
     try:
         VERSION = subprocess.check_output(["git", "describe", "--tags", "--always"]).decode('ascii').strip()
     except:
         VERSION = 6.4
     reddit_url = "https://meme-api.herokuapp.com/gimme"
+    cat_api = "https://api.thecatapi.com/v1/images/search"
     bitrate = 96000
 
     with open('config/config.json', 'r') as f:
