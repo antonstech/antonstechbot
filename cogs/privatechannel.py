@@ -62,7 +62,7 @@ class privatechannel(commands.Cog):
                     with open("temp/privatechannel.json", "w") as f:
                         json.dump(channels, f, indent=2)
                     await ctx.send(f'Channel "{channelnamefinal}" wurde erfolgreich erstellt!')
-                    await ctx.send(f"Mit {self.prefix}zugriff @User kannst du Leuten Zugriff auf deinen Channel geben")
+                    await ctx.send(f"Mit {self.prefix}hinzufügen @User kannst du Leuten Zugriff auf deinen Channel geben")
                     await ctx.send(f"Mit {self.prefix}entfernen @User kannst du Leuten Zugriff auf deinen Channel wegnehmen")
                     await ctx.send(f"Mit {self.prefix}delchannel kannst du deinen Channel löschen!")
             else:
@@ -127,7 +127,7 @@ class privatechannel(commands.Cog):
                 with open("temp/categoryname.json", "w") as f:
                     json.dump(channels, f, indent=2)
 
-    @commands.command(name="zugriff")
+    @commands.command(name="hinzufügen", aliases=["zugriff"])
     async def add_member(self, ctx, member: discord.Member):
         with open("temp/privatechannel.json", "r") as f:
             json_stuff = json.load(f)
@@ -137,8 +137,8 @@ class privatechannel(commands.Cog):
                                       view_channel=True, )
         await ctx.send(f"{member.mention} kann jetzt auf den Channel zugreifen :)")
 
-    @commands.command(name="entfernen")
-    async def add_member(self, ctx, member: discord.Member):
+    @commands.command(name="entfernen", aliases=["deny"])
+    async def remove_member(self, ctx, member: discord.Member):
         with open("temp/privatechannel.json", "r") as f:
             json_stuff = json.load(f)
         channel_id = json_stuff[str(ctx.message.author.id)]
