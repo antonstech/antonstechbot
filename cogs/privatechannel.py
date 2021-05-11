@@ -62,7 +62,7 @@ class privatechannel(commands.Cog):
                     with open("temp/privatechannel.json", "w") as f:
                         json.dump(channels, f, indent=2)
                     await ctx.send(f'Channel "{channelnamefinal}" wurde erfolgreich erstellt!')
-                    await ctx.send(f"Mit {self.prefix}hinzufügen @User kannst du Leuten Zugriff auf deinen Channel geben")
+                    await ctx.send(f"Mit {self.prefix}zugriff @User kannst du Leuten Zugriff auf deinen Channel geben")
                     await ctx.send(f"Mit {self.prefix}entfernen @User kannst du Leuten Zugriff auf deinen Channel wegnehmen")
                     await ctx.send(f"Mit {self.prefix}delchannel kannst du deinen Channel löschen!")
             else:
