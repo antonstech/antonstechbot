@@ -127,7 +127,7 @@ class privatechannel(commands.Cog):
                 with open("temp/categoryname.json", "w") as f:
                     json.dump(channels, f, indent=2)
 
-    @commands.command(name="hinzufügen")
+    @commands.command(name="zugriff")
     async def add_member(self, ctx, member: discord.Member):
         with open("temp/privatechannel.json", "r") as f:
             json_stuff = json.load(f)
