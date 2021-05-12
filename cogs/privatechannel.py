@@ -146,6 +146,20 @@ class privatechannel(commands.Cog):
         await channel.set_permissions(member, connect=False)
         await ctx.send(f"{member.mention} kann jetzt nicht mehr auf den Channel zugreifen")
 
+    @commands.command(name="removechannel")
+    @commands.has_permissions(administrator=True)
+    async def remove_channel_admins_only_command(self, ctx, member: discord.Member):
+        print(member.id)
+        with open("temp/privatechannel.json", "r") as f:
+            json_stuff = json.load(f)
+        channel_id = json_stuff[str(member.id)]
+        channel = self.client.get_channel(channel_id)
+        del json_stuff[str(member.id)]
+        with open("temp/privatechannel.json", "w") as f:
+            json.dump(json_stuff, f, indent=2)
+        await channel.delete()
+        await ctx.send(f'"{channel.name}" von {member.mention} wurde gelöscht!')
+
 
 def setup(client):
     client.add_cog(privatechannel(client))
