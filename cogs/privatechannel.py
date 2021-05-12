@@ -149,7 +149,6 @@ class privatechannel(commands.Cog):
     @commands.command(name="removechannel")
     @commands.has_permissions(administrator=True)
     async def remove_channel_admins_only_command(self, ctx, member: discord.Member):
-        print(member.id)
         with open("temp/privatechannel.json", "r") as f:
             json_stuff = json.load(f)
         channel_id = json_stuff[str(member.id)]
