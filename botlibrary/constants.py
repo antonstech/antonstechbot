@@ -9,7 +9,7 @@ def assignVariables():
     try:
         VERSION = subprocess.check_output(["git", "describe", "--tags", "--always"]).decode('ascii').strip()
     except:
-        VERSION = 6.4
+        VERSION = "7.1.1"
 
 # Here are just the Urls of the APIs so i can switch them out fast if they change
 

@@ -1,6 +1,6 @@
 {
   "token": "DiscordToken",
-  "prefix": "Prefix",
+  "default_prefix": "Prefix",
   "riotapi": "RiotGamesAPIToken",
   "osuapi": "OsuAPIToken"
   "ipdata": "IPDataToken"

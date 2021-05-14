@@ -153,8 +153,15 @@ async def on_ready():
         pass
     else:
         with open("config/prefixes.json", "w") as f:
-            prefixes = {guild.id : default_prefix}
-            json.dump(prefixes, f, indent=2)
+            f.write("{}")
+        with open("config/prefixes.json") as thejsonfile:
+            prefixes = json.load(thejsonfile)
+
+        for guild in client.guilds:
+            prefixes[str(guild.id)] = default_prefix
+
+        with open("config/prefixes.json", "w") as thejsonfile:
+            json.dump(prefixes, thejsonfile, indent=2)
     client.loop.create_task(status_task())
 
 
