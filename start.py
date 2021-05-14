@@ -88,7 +88,7 @@ def mysqlsetup():
     print("Für Hilfe bitte das Wiki auf Github lesen")
     print("WICHTIG!!!!")
     yesorno = input(
-        "Es wird eine NEUE MySQL Datenbank UND Tabelle erzeugt, welche dann anschließend auch nach einem Neustarten vom Bot bentutzt wird!!!  (j/n): ")
+        "Es wird eine NEUE MySQL Datenbank UND Tabelle erzeugt, welche dann anschließend auch nach einem Neustarten vom Bot benutzt wird!!!  (j/n): ")
     if yesorno == "j":
         config = {"enable": True, "host": input("Host: "), "user": input("Benutzername: "),
                   "passwort": input("Dein Passwort: "), "datenbank": input("Datenbank: "),
@@ -126,7 +126,7 @@ def mysqlsetup():
 
 def tokens():
     print("Wichtig: Dieses Script erstellt eine neue config.json")
-    config = {'token': input("Dein Bot Token: "), 'prefix': input("Dein Bot Prefix: "),
+    config = {'token': input("Dein Bot Token: "), 'default_prefix': input("Dein Bot Prefix: "),
               "riotapi": input("Dein Riot Games Api Token: "), "osuapi": input("Dein Osu Api Token: "),
               "ipdata": input("Dein ipdata.co Token: "), "cocapi": input("Dein ClashOfClans Api Token: ")}
     with open('config/config.json', 'w+') as file:

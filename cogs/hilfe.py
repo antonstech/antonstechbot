@@ -1,6 +1,5 @@
 from discord.ext import commands
 import discord
-from botlibrary import constants
 import json
 
 
@@ -9,26 +8,32 @@ class Hilfe(commands.Cog):
         self.client = client
 
     async def send(self, ctx, command_name, description, usage, example):
+        with open("config/prefixes.json", "r") as f:
+            prefixes = json.load(f)
+        prefix = prefixes[str(ctx.message.guild.id)]
         embed = discord.Embed(title=command_name,
-                              description=description.format(constants.bot_prefix),
+                              description=description.format(prefix),
                               color=ctx.author.color)
-        embed.add_field(name="Benutzung:", value=usage.format(constants.bot_prefix))
-        embed.add_field(name="Beispiel:", value=example.format(constants.bot_prefix))
+        embed.add_field(name="Benutzung:", value=usage.format(prefix))
+        embed.add_field(name="Beispiel:", value=example.format(prefix))
         await ctx.channel.send(embed=embed)
 
     @commands.command(name="hilfe")
     async def hilfe_command(self, ctx, command_name=None):
-
+        with open("config/prefixes.json", "r") as f:
+            prefixes = json.load(f)
+            prefix = prefixes[str(ctx.message.guild.id)]
         if command_name is None:
             embed = discord.Embed(title="Hilfe",
-                                  description="Benutze " + constants.bot_prefix + "hilfe (command) für mehr Informationen zu einem Command.",
+                                  description="Benutze " + prefix + "hilfe (command) für mehr Informationen zu einem Command.",
                                   color=ctx.author.color)
-            embed.add_field(name="Moderation:", value="clear")
-            embed.add_field(name="nützlich:", value="wetter, benutzerinfo , ping, anime", inline=True)
-            embed.add_field(name="fun", value="give, corona, earth2", inline=True)
-            embed.add_field(name="Game-Stats", value="lol, osu", inline=True)
-            embed.add_field(name="Minecraft Zeugs", value="mc", inline=True)
-            embed.add_field(name="Infos zum Bot", value="version, einladen, hosten, code", inline=True)
+            embed.add_field(name="Admin Only:", value="clear, prefix")
+            embed.add_field(name="Privatechannel", value="privatechannel, hinzufügen, entfernen, pc, kategorie")
+            embed.add_field(name="nützlich:", value="wetter, benutzerinfo ,anime, corona, reddit", inline=True)
+            embed.add_field(name="Nerd-Stuff", value="ip, short")
+            embed.add_field(name="fun", value="cat, earth2, meme", inline=True)
+            embed.add_field(name="Game-Stats", value="lol, osu, mc, coc", inline=True)
+            embed.add_field(name="Infos zum Bot", value="version, einladen, hosten, code, ping, list", inline=True)
             embed.set_footer(text='Bei sonstigen Fragen einfach DCGALAXY#9729 anschreiben')
             await ctx.send(embed=embed)
             return

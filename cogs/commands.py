@@ -1,6 +1,7 @@
 from discord.ext import commands
 import discord
 from botlibrary import constants
+import json
 
 
 class Commands(commands.Cog):
@@ -61,13 +62,25 @@ class Commands(commands.Cog):
     @commands.command(name="list")
     async def list_command(self, ctx):
         if str(len(self.client.guilds)) == 1:
-            await ctx.send("Der Bot ist zurzeit auf folgendem Server:")
+            await ctx.send("Der Bot ist zurzeit auf folgendem Servern:")
         else:
             await ctx.send("Der Bot ist zurzeit auf folgenden " + str(len(self.client.guilds)) + " Servern:")
         for guild in self.client.guilds:
             await ctx.send("- " + str(guild.name))
         await ctx.send(
             f"Auf diesen {str(len(self.client.guilds))} Servern sind insgesamt {len(set(self.client.get_all_members()))} Mitglieder")
+
+    @commands.command(name="changeprefix", aliases=["prefix"])
+    @commands.has_permissions(administrator=True)
+    async def change_prefix(self, ctx, prefix):
+        with open("config/prefixes.json", "r") as f:
+            prefixes = json.load(f)
+
+        prefixes[str(ctx.message.guild.id)] = prefix
+
+        with open("config/prefixes.json", "w") as f:
+            json.dump(prefixes, f, indent=2)
+        await ctx.send(f"Der Prefix ist jetzt {prefix}")
 
 
 def setup(client):

@@ -1,39 +1,34 @@
 from discord.ext import commands
 import discord
 import requests
-import urllib.parse
 from .errorstuff import basicerror
-
+from botlibrary import constants
 
 class Anime(commands.Cog):
     def __init__(self, client):
         self.client = client
+        self.anime_url = constants.anime
 
     @commands.command(name="anime")
     async def anime_command(self, ctx):
         channel = ctx.message.channel
-        try:
-            async with channel.typing():
-                base_url = "https://trace.moe/api/search?url="
+        async with channel.typing():
+            try:
                 attachment = ctx.message.attachments[0]
                 attachementurl = attachment.url
-                url = base_url + attachementurl
+                url = self.anime_url + attachementurl
                 abfrage = requests.post(url)
-                response = abfrage.json()["docs"][0]
+                response = abfrage.json()["result"][0]
+                anilist = response["anilist"]
                 if "Database is overloaded" in abfrage.text:
                     ctx.send("Die Datebank ist zu beschätigt, probiers gleich noch mal!")
                 else:
                     genauigkeit = response["similarity"]
-                    hentai = response["is_adult"]
-                    titel = response["title_english"]
-                    nativetitel = response["title_native"]
-                    anilist = response["anilist_id"]
-                    filename = response["filename"]
-                    at = response["at"]
-                    tokenthumb = response["tokenthumb"]
-                    filenameencoded = urllib.parse.quote(filename)
-                    imgrequest = "https://media.trace.moe/image/" + str(anilist) + "/" + filenameencoded + "?t=" + str(
-                        at) + "&token=" + tokenthumb + "&size=m"
+                    hentai = anilist["isAdult"]
+                    titel = anilist["title"]["english"]
+                    nativetitel = anilist["title"]["native"]
+                    anilist = anilist["id"]
+                    imgurl = response["image"]
                     if titel is not None:
                         embed = discord.Embed(title=f"{titel}")
                     else:
@@ -46,13 +41,13 @@ class Anime(commands.Cog):
                     else:
                         embed.add_field(name="Hentai?", value="Yess Sir")
                     if titel is not None:
-                        embed.add_field(name="Titel in Orginalsprache", value=f"{nativetitel}")
+                        embed.add_field(name="Titel in Originalsprache", value=f"{nativetitel}")
                     else:
                         pass
-                    embed.set_image(url=str(imgrequest))
+                    embed.set_image(url=str(imgurl))
                     await ctx.send(embed=embed)
-        except:
-            await basicerror(ctx)
+            except:
+                await basicerror(ctx)
 
 
 def setup(client):

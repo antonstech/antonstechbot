@@ -4,12 +4,13 @@ import json
 import mysql.connector
 import datetime
 import asyncio
-
+from botlibrary import constants
 
 class Events(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.use_mysql = False
+        self.default_prefix = constants.bot_prefix
         if os.path.exists("config/mysql.json"):
             with open('config/mysql.json', 'r') as f:
                 json_stuff = json.load(f)
@@ -49,6 +50,18 @@ class Events(commands.Cog):
             pass
         else:
             asyncio.ensure_future(self.sql_connection_stuff(message))
+
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        with open("config/prefixes.json", "r") as f:
+            prefixes = json.load(f)
+
+        prefixes[str(guild.id)] = self.default_prefix
+
+        with open("config/prefixes.json", "w") as f:
+            json.dump(prefixes, f, indent=2)
+
+
         
 
 def setup(client):

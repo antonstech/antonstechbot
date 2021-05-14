@@ -2,6 +2,7 @@ from discord.ext import commands
 import discord
 import requests
 import datetime
+import json
 from botlibrary import constants
 from .errorstuff import basicerror
 
@@ -10,10 +11,12 @@ class Mc(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.base_url = "https://api.mcsrvstat.us/2/"
-        self.prefix = constants.bot_prefix
 
     @commands.command(name="mc")
     async def mc_command(self, ctx, option=None, arg1=None):
+        with open("config/prefixes.json", "r") as f:
+            prefixes = json.load(f)
+
 
         if option is None:
             embed = discord.Embed(title="Der Mc Command kann dir viele Nützliche Dinge zum Thema Minecraft anzeigen")
@@ -171,7 +174,7 @@ class Mc(commands.Cog):
                 embed.add_field(name="Plugin", value=normal_end)
                 embed.add_field(name="Netzwerk", value=proxies_end)
                 embed.add_field(name="Bedrock", value=bedrock_end)
-                embed.set_author(name="Mache " + self.prefix + "mc jar (name) um mehr Infos zu einer Jar zu erhalten")
+                embed.set_author(name="Mache " + prefixes[str(ctx.message.guild.id)] + "mc jar (name) um mehr Infos zu einer Jar zu erhalten")
                 embed.set_footer(text="Quelle: ServerJars.com",
                                  icon_url="https://papermc.io/forums/uploads/default/optimized/2X/9/94d4bbaf78d05116b6bf42c8de86865d6b2cb2cf_2_500x500.png")
                 await ctx.send(embed=embed)

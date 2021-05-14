@@ -20,11 +20,19 @@ constants.assignVariables()
 
 VERSION = constants.VERSION
 
-bot_prefix = constants.bot_prefix
+default_prefix = constants.bot_prefix
 
-client = commands.Bot(command_prefix=bot_prefix, intents=discord.Intents.all())
+
+def get_default_prefix(client, message):
+    with open("config/prefixes.json", "r") as f:
+        prefixes = json.load(f)
+
+    return prefixes[str(message.guild.id)]
+
+
+
+client = commands.Bot(command_prefix=get_default_prefix, intents=discord.Intents.all())
 client.remove_command('help')
-
 
 
 def tokenchecker():
@@ -140,6 +148,13 @@ async def on_ready():
 
     with open("temp/guildlist.json", "w") as thejsonfile:
         json.dump(file, thejsonfile, indent=2)
+
+    if os.path.exists("config/prefixes.json"):
+        pass
+    else:
+        with open("config/prefixes.json", "w") as f:
+            prefixes = {guild.id : default_prefix}
+            json.dump(prefixes, f, indent=2)
     client.loop.create_task(status_task())
 
 
@@ -151,7 +166,7 @@ async def status_task():
         await client.change_presence(activity=discord.Game(f"antonstechbot auf Version {VERSION}"))
         await asyncio.sleep(60)
         await client.change_presence(
-            activity=discord.Game(bot_prefix + "hilfe auf " + str(len(client.guilds)) + " Servern"))
+            activity=discord.Game(default_prefix + "hilfe auf " + str(len(client.guilds)) + " Servern"))
         await asyncio.sleep(60)
         await client.change_presence(activity=discord.Game("ein heißes Spiel mit der Stiefschwester"))
         await asyncio.sleep(5)
@@ -183,13 +198,23 @@ def owner_only(func):
 
 
 @client.command(name="reload")
-@owner_only
 async def reload_cog(ctx, cogName):
-    try:
-        await unload_cog(ctx, cogName)
-        await load_cog(ctx, cogName)
-    except Exception as e:
-        await ctx.channel.send(f"Während dem versuch die Erweiterung {cogName} neu zu laden ist etwas schiefgelaufen!")
+    info = await client.application_info()
+    if ctx.author.id == info.owner.id:
+        if cogName == "*":
+            for cogreloadfilename in os.listdir("./cogs"):
+                if cogreloadfilename.endswith(".py") and cogreloadfilename not in ["errorstuff.py"]:
+                    client.reload_extension(f"cogs.{cogreloadfilename[:-3]}")
+            await ctx.send("Erfolgreich alle Erweiterungen neu geladen!")
+        else:
+            try:
+                client.reload_extension(f"cogs.{cogName}")
+                await ctx.send(f"Erfolgreich erweiterung {cogName} neu geladen!")
+            except:
+                await ctx.channel.send(f"Während dem versuch die Erweiterung {cogName} neu zu laden ist etwas schiefgelaufen!")
+    else:
+        await ctx.channel.send("Nur der Owner kann diesen Command benutzen!")
+
 
 
 @client.command(name="unload")
@@ -220,6 +245,7 @@ with open('config/config.json', 'r') as f:
 for filename in os.listdir("./cogs"):
     if filename.endswith(".py") and filename not in ["errorstuff.py"]:
         client.load_extension(f"cogs.{filename[:-3]}")
+print("Alle Commands geladen!")
 
 # run bot
 client.run(token)
