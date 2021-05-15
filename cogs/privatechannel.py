@@ -53,14 +53,14 @@ class privatechannel(commands.Cog):
                     categoryname = json_stuff[str(ctx.guild.id)]
                 category = discord.utils.get(ctx.guild.categories, name=categoryname)
                 await guild.create_voice_channel(name=channelnamefinal, user_limit=maxusersfinal, category=category,
-                                                    bitrate=self.bitrate)
+                                                 bitrate=self.bitrate)
                 channel = discord.utils.get(ctx.guild.channels, name=channelnamefinal)
                 channels[str(ctx.message.author.id)] = channel.id
-                await channel.set_permissions(ctx.message.author, connect=True, move_members=True, speak=True,
-                                                manage_permissions=True, mute_members=True, use_voice_activation=True,
-                                                view_channel=True, )
                 with open("temp/privatechannel.json", "w") as f:
                     json.dump(channels, f, indent=2)
+                await channel.set_permissions(ctx.message.author, connect=True, move_members=True, speak=True,
+                                              manage_permissions=True, mute_members=True, use_voice_activation=True,
+                                              view_channel=True, )
                 await ctx.send(f'Channel "{channelnamefinal}" wurde erfolgreich erstellt!')
                 await ctx.send(
                     f"Mit {self.prefix}hinzufügen @User kannst du Leuten Zugriff auf deinen Channel geben")

@@ -33,7 +33,7 @@ class Events(commands.Cog):
             port=self.port)
         zeit = datetime.datetime.now()
         zeit_srftime = zeit.strftime("%Y-%m-%d %H:%M:%S")
-        sql = "INSERT INTO " + self.tablename + "(time, content, attachement, membername, memberid, guildid, guildname, channelid,  \
+        sql = "INSERT INTO " + self.tablename + "(time, content, attachment, membername, memberid, guildid, guildname, channelid,  \
                  channelname, id)  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
         val = [
             (f"{zeit_srftime}", f"{message.content}", f"{message.attachments}", f"{message.author}",

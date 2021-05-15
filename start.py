@@ -119,7 +119,7 @@ def mysqlsetup():
             port=port)
         mycursor = mydb.cursor()
         mycursor.execute(
-            "CREATE TABLE " + table_name + " (time timestamp null, content text null, attachement text null, membername varchar(255) null, memberid bigint null, guildid bigint null, guildname varchar(255) null, channelid bigint null, channelname varchar(255) null, id bigint not null primary key)")
+            "CREATE TABLE " + table_name + " (time timestamp null, content text null, attachment text null, membername varchar(255) null, memberid bigint null, guildid bigint null, guildname varchar(255) null, channelid bigint null, channelname varchar(255) null, id bigint not null primary key)")
     else:
         pass
 
