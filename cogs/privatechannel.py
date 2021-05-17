@@ -13,6 +13,7 @@ class privatechannel(commands.Cog):
         self.prefix = constants.bot_prefix
 
     @commands.command(name="privatechannel")
+    @commands.cooldown(1, 7, commands.BucketType.user)
     async def create_voice_channel(self, ctx, channelname=None, maxusers=None):
         if os.path.exists("temp/privatechannel.json"):
             pass

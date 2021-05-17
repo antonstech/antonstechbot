@@ -21,6 +21,8 @@ class NotFound(commands.Cog):
                 await ctx.send("Da fehlt noch etwas :wink:")
             elif isinstance(error, MemberNotFound):
                 await ctx.send("Dieser Nutzer existiert nicht!")
+            elif isinstance(error, CommandOnCooldown):
+                await ctx.send("**Dieser Befehl hat einen Cooldown!**, bitte versuche es erneut in {:.2f} Sekunden".format(error.retry_after))
             else:
                 raise error
 
