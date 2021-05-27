@@ -18,7 +18,7 @@ class Hilfe(commands.Cog):
         embed.add_field(name="Beispiel:", value=example.format(prefix))
         await ctx.channel.send(embed=embed)
 
-    @commands.command(name="hilfe")
+    @commands.command(name="hilfe", aliases=["help", "welp"])
     async def hilfe_command(self, ctx, command_name=None):
         with open("config/prefixes.json", "r") as f:
             prefixes = json.load(f)
