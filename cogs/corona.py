@@ -27,9 +27,6 @@ class Corona(commands.Cog):
                 infor = response["r"]
                 rwert = infor["value"]
                 gesund = response["recovered"]
-                embed = discord.Embed(title="Impfen lassen", url="https://antonstech.de/impfung.html",
-                                      color=ctx.author.color)
-                await ctx.send(embed=embed)
                 embed = discord.Embed(title="Corona Virus Statistiken für Deutschland",
                                       color=ctx.author.color,
                                       timestamp=ctx.message.created_at)

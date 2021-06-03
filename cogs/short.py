@@ -14,13 +14,13 @@ class ShortUrl(commands.Cog):
     async def short_command(self, ctx, link2short=None, customlink=None):
 
         if link2short is None:
-            embed = discord.Embed(title="Mit der Short Funktion kannst du Links verkürzen")
-            embed.add_field(name="Benutzung:", value=f"{self.prefix}short (link) (kürzel)")
-            embed.set_author(name="Du musst das https:// mit angeben!")
-            embed.add_field(name="Beispiel:",
-                            value=f"{self.prefix}short https://www.amazon.de/abc cooles Produkt")
+            embed = discord.Embed(title="With the short function you can shorten links")
+            embed.add_field(name="Usage:", value=f"{self.prefix}short (link) (abbreviation)")
+            embed.set_author(name="You must include the https://!")
+            embed.add_field(name="Example:",
+                            value=f"{self.prefix}short https://www.amazon.de/abc productabc")
             embed.set_footer(
-                text="Wichtig: Das Kürzel ist NICHT notwendig, wenn keins angeben wird wird 1 Zufälliges erzeugt")
+                text="Important: The abbreviation is NOT necessary, if none is specified 1 random will be generated")
             await ctx.send(embed=embed)
 
         elif link2short is not None and customlink is not None:

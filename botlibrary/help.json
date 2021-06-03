@@ -1,61 +1,67 @@
 {
   "wetter": {
-    "description": "Mit {0}wetter kannst du dir das Wetter so wie einige Infos dazu anzeigen lassen",
-    "usage": "{0}wetter Stadt",
+    "description": "With {0}weather you can display the weather as well as some information about it.",
+    "usage": "{0}wetter (City)",
     "example": "{0}wetter München"
   },
 
   "clear": {
-    "description": "Mit {0}clear kannst du eine beliebige Anzahl an Nachrichten aus einem Channel löschen",
-    "usage": "{0}clear (Anzahl)",
+    "description": "With {0}clear you can delete any number of messages from a channel",
+    "usage": "{0}clear (Amount)",
     "example": "{0}clear 5"
   },
 
   "benutzerinfo":{
-    "description": "Mit {0}benutzerinfo kannst du dir einige Infos über einen Nutzer anzeigen lassen",
-    "usage": "{0}benutzerinfo (Benutzer)",
-    "example": "{0}benutzerinfo DCGALAXY"
+    "description": "With {0}benutzerinfo you can display some information about a user",
+    "usage": "{0}benutzerinfo (user)",
+    "example": "{0}benutzerinfo @DCGALAXY"
   },
 
   "ping": {
-    "description": "Mit {0}ping kannst du dir die Discord WebSocket protocol latency anzeigen lassen",
+    "description": "With {0}ping you can display the Discord WebSocket protocol latency",
     "usage": "{0}ping",
     "example": "{0}ping"
   },
 
-  "give": {
-    "description": "Mit {0}give wird eine Minecraft Konsole simuliert",
-    "usage": "{0}give (item) (spieler)",
-    "example": "{0}give diamonds DCGALAXY"
-  },
-
   "lol": {
-    "description": "Mit {0}lol kannst du dir eine League of Legends Stats anzeigen lassen",
-    "usage": "{0}lol (level/rang) (name)",
+    "description": "With {0}lol you can display a League of Legends Stats",
+    "usage": "{0}lol (level/rank) (name)",
     "example": "{0}lol rang Aftersh0ock"
   },
 
   "mc": {
-    "description": "Mit {0}mc (command) kannst du dir mehrere Interessante sachen zu Minecraft Anzeigen lassen",
-    "usage": "Mehr info gibt hier: {0}mc",
-    "example": "Mehr info gibt hier: {0}mc"
+    "description": "With {0}mc (command) you can view several interesting things about Minecraft",
+    "usage": "More info here: {0}mc",
+    "example": "More info here: {0}mc"
   },
 
   "osu": {
-    "description": "Mit {0}osu kannst du dir Osu Stats zu einem Spieler Anzeigen lassen",
+    "description": "With {0}osu you can display osu stats for a player",
     "usage": "{0}osu (name)",
     "example": "{0}osu Aftersh0ock"
   },
 
   "earth2": {
-    "description": "Mit {0}earth2 kannst du dir Earth2 Stats zu Deutschland Anzeigen lassen",
+    "description": "With {0}earth2 you can display Earth2 Stats about Germany",
     "usage": "{0}earth2",
     "example": "{0}earth2"
   },
 
   "anime": {
-    "description": "Sende ein Bild und als Beschreibung {0}anime und es sagt dir welcher anime es ist",
-    "usage": "Bild mit Kommentar {0}anime",
+    "description": "Send a picture and as description {0}anime and it will tell you which anime it is",
+    "usage": "Image with comment {0}anime",
     "example": "https://i.imgur.com/P43xKu4.png"
+  },
+
+  "ip": {
+    "description": "With {0}ip you can display information about an IP address",
+    "usage": "{0}ip (IP-Adresse)",
+    "example": "https://i.imgur.com/GaV5IRV.png"
+  },
+
+  "cat": {
+    "description": "With {0}cat you can display cat pictures",
+    "usage": "{0}cat",
+    "example": "https://i.imgur.com/WDacfAq.png"
   }
 }

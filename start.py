@@ -21,7 +21,7 @@ constants.assignVariables()
 
 def browser():
     webbrowser.open("https://git.io/antonsbot")
-    print("Kein Webbrowser gefunden, geh doch bitte auf https://git.io/antonsbot ")
+    print("No Webbrowser found please go to https://git.io/antonsbot ")
 
     time.sleep(5)
 
@@ -85,14 +85,14 @@ def tokenchecker():
 
 def mysqlsetup():
     print("MySql Setup")
-    print("Für Hilfe bitte das Wiki auf Github lesen")
-    print("WICHTIG!!!!")
+    print("For Help read the Wiki on Github")
+    print("IMPORTANT!!!!")
     yesorno = input(
-        "Es wird eine NEUE MySQL Datenbank UND Tabelle erzeugt, welche dann anschließend auch nach einem Neustarten vom Bot benutzt wird!!!  (j/n): ")
+        "A NEW MySQL database AND table is created, which is then also used by the bot after a restart!!!  (y/n): ")
     if yesorno == "j":
-        config = {"enable": True, "host": input("Host: "), "user": input("Benutzername: "),
-                  "passwort": input("Dein Passwort: "), "datenbank": input("Datenbank: "),
-                  "tablename": input("Name der Tablle: "), "port": input("Port: ")}
+        config = {"enable": True, "host": input("Host: "), "user": input("Username: "),
+                  "passwort": input("Passwort: "), "Database": input("Datenbank: "),
+                  "tablename": input("Name of the table: "), "port": input("Port: ")}
         with open("config/mysql.json", "w+") as file:
             json.dump(config, file, indent=2)
         with open('config/mysql.json', 'r') as f:
@@ -125,10 +125,10 @@ def mysqlsetup():
 
 
 def tokens():
-    print("Wichtig: Dieses Script erstellt eine neue config.json")
-    config = {'token': input("Dein Bot Token: "), 'default_prefix': input("Dein Bot Prefix: "),
-              "riotapi": input("Dein Riot Games Api Token: "), "osuapi": input("Dein Osu Api Token: "),
-              "ipdata": input("Dein ipdata.co Token: "), "cocapi": input("Dein ClashOfClans Api Token: ")}
+    print("Important: This Script creates a new config.json")
+    config = {'token': input("Your Bot Token: "), 'default_prefix': input("The default Bot Prefix: "),
+              "riotapi": input("Your Riot Games Api Token: "), "osuapi": input("Your Osu Api Token: "),
+              "ipdata": input("Your ipdata.co Token: "), "cocapi": input("Your ClashOfClans Api Token: ")}
     with open('config/config.json', 'w+') as file:
         json.dump(config, file, indent=2)
 
@@ -136,26 +136,26 @@ def tokens():
 def mysqldisable():
     if os.path.exists("config/mysql.json"):
         os.rename("config/mysql.json", "config/disabled_mysql.json")
-        print("MySQL ist nun DEAKTIVIEREN!")
-        print("Du musst den Bot 1x neustarten damit die Änderung wirksam wird!")
+        print("MySQL is now deactivated!")
+        print("You have to restart that Bot that the Changes are working!")
     else:
         if os.path.exists("config/disabled_mysql.json"):
-            print("MySQL ist bereits deaktiviert")
+            print("MySQL is already deactivated")
         else:
-            print("Iwas ist falsch gelaufen. Hier gibt es Hilfe:")
+            print("Something went wrong here but there is help:")
             print("https://github.com/antonstech/antonstechbot/wiki/Support")
 
 
 def mysqlenable():
     if os.path.exists("config/disabled_mysql.json"):
         os.rename("config/disabled_mysql.json", "config/mysql.json")
-        print("MySQL ist nun AKTIVIERT!")
-        print("Du musst den Bot 1x neustarten damit die Änderung wirksam wird!")
+        print("MySQL is now ACTIVATED!")
+        print("You have to restart that Bot that the Changes are working!")
     else:
         if os.path.exists("config/mysql.json"):
-            print("MySQL ist bereits aktiviert")
+            print("MySQL is already activated")
         else:
-            print("Iwas ist falsch gelaufen. Hier gibt es Hilfe:")
+            print("Something went wrong here but there is help:")
             print("https://github.com/antonstech/antonstechbot/wiki/Support")
 
 
@@ -176,19 +176,19 @@ def update_bot():
 menu = ConsoleMenu(f"antonstechbot Version {VERSION} by antonstech",
                    "https://git.io/antonsbot")
 
-starten = FunctionItem("Bot starten", run_bot)
-config = FunctionItem("Config bearbeiten", tokens)
+starten = FunctionItem("Start Bot", run_bot)
+config = FunctionItem("Edit Config", tokens)
 updaten = FunctionItem("Bot Updaten", update_bot)
 tokencheck = FunctionItem("Token-Checker", tokenchecker)
-infos = FunctionItem("Infos über den Bot&Code", browser)
+infos = FunctionItem("Information about the Bot & Code", browser)
 mysqlsetup = FunctionItem("MySQL Setup", mysqlsetup)
-mysqldisable = FunctionItem("MySQL deaktivieren", mysqldisable)
-mysqlenable = FunctionItem("MySQL aktivieren", mysqlenable)
-submenu = ConsoleMenu("MySQL Menü")
-mysqlmenu = SubmenuItem("MySQL Menü", submenu, menu)
-updatemenu = ConsoleMenu("Menü um Sachen zu updaten")
+mysqldisable = FunctionItem("Deactivate MySQL", mysqldisable)
+mysqlenable = FunctionItem("Activate MySQL", mysqlenable)
+submenu = ConsoleMenu("MySQL Menu")
+mysqlmenu = SubmenuItem("MySQL Menu", submenu, menu)
+updatemenu = ConsoleMenu("Menu to Update Things")
 updateeee = SubmenuItem("Updaten", updatemenu, menu)
-pipupdate = CommandItem("pip Module updaten", "pip3 install --upgrade --force-reinstall -r requirements.txt")
+pipupdate = CommandItem("Update pip Modules", "pip3 install --upgrade --force-reinstall -r requirements.txt")
 
 menu.append_item(starten)
 menu.append_item(config)

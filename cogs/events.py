@@ -5,6 +5,7 @@ import mysql.connector
 import datetime
 import asyncio
 from botlibrary import constants
+import logging
 
 class Events(commands.Cog):
     def __init__(self, client):
@@ -43,7 +44,7 @@ class Events(commands.Cog):
         mycursor = mydb.cursor()
         mycursor.executemany(sql, val)
         mydb.commit()
-        
+
     @commands.Cog.listener()
     async def on_message(self, message):
         if not message.guild:
@@ -56,13 +57,18 @@ class Events(commands.Cog):
         with open("config/prefixes.json", "r") as f:
             prefixes = json.load(f)
 
-        prefixes[str(guild.id)] = self.default_prefix
+        prefixes[str(guild.id)] = self.default_prefix.rel
 
         with open("config/prefixes.json", "w") as f:
             json.dump(prefixes, f, indent=2)
 
+    @commands.Cog.listener()
+    async def on_command_completion(self, ctx):
+        time = datetime.datetime.now().strftime("%d.%m.%Y")
+        logging.basicConfig(filename=f"temp/logfile-{time}.log", level=logging.INFO)
+        time = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+        logging.info(f'{ctx.message.author} used "{ctx.message.content}" at {time} on {ctx.guild.name}({ctx.guild.id})')
 
-        
 
 def setup(client):
     client.add_cog(Events(client))

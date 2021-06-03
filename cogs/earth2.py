@@ -16,11 +16,11 @@ class Earth2(commands.Cog):
         land = response["name"]
         wert = response["marketplace_tile_value"]
         verkauft = response["total_sold_tiles"]
-        embed = discord.Embed(title="Earth2 Statistiken für " + land, url=self.imgurl + land)
+        embed = discord.Embed(title="Earth2 Stats for " + land, url=self.imgurl + land)
         embed.set_thumbnail(
             url="https://static-cdn.jtvnw.net/jtv_user_pictures/99783da2-3f60-4aeb-92bd-83e953c03627-profile_image-70x70.png")
-        embed.add_field(name="Wert eines Tiles", value=f"{wert}E$")
-        embed.add_field(name="Insgesamt verkauft", value=f"{verkauft} Tiles")
+        embed.add_field(name="Value of one Tile", value=f"{wert}E$")
+        embed.add_field(name="Total sold", value=f"{verkauft} Tiles")
         await ctx.send(embed=embed)
         return
 

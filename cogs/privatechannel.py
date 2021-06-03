@@ -27,7 +27,7 @@ class privatechannel(commands.Cog):
                 channels = json.load(f)
             try:
                 channels[str(ctx.message.author.id)]
-                await ctx.send(f"{ctx.message.author.mention} Du hast schon einen Channel!")
+                await ctx.send(f"{ctx.message.author.mention} You already have a Channel!")
             except:
                 if channelname is None:
                     channelnamefinal = ctx.message.author.name + "'s Channel"
@@ -37,7 +37,7 @@ class privatechannel(commands.Cog):
                     maxusersfinal = 2
                 elif int(maxusers) > 99:
                     await ctx.send(
-                        f"{ctx.message.author.mention} es gehen nicht mehr als 99 Member! Member auf 99 gesetzt!")
+                        f"{ctx.message.author.mention} you cant do more than 99 Members!")
                     maxusersfinal = 99
                 else:
                     maxusersfinal = maxusers
@@ -47,8 +47,8 @@ class privatechannel(commands.Cog):
                         json_stuff = json.load(f)
                         test = json_stuff[str(ctx.guild.id)]
                 except:
-                    await ctx.send("Der Owner hat noch keine Kategorie für die Privatechannels eingerichtet")
-                    await ctx.send(f"Hierzu muss er nur {self.prefix}kategorie ausführen")
+                    await ctx.send("The owner has not yet created a category for the private channels")
+                    await ctx.send(f"For this he only has to execute {self.prefix}category")
                 with open("temp/categoryname.json", "r") as f:
                     json_stuff = json.load(f)
                     categoryname = json_stuff[str(ctx.guild.id)]
@@ -62,16 +62,16 @@ class privatechannel(commands.Cog):
                 await channel.set_permissions(ctx.message.author, connect=True, move_members=True, speak=True,
                                               manage_permissions=True, mute_members=True, use_voice_activation=True,
                                               view_channel=True, )
-                await ctx.send(f'Channel "{channelnamefinal}" wurde erfolgreich erstellt!')
+                await ctx.send(f'Channel "{channelnamefinal}" was successfully created!')
                 await ctx.send(
-                    f"Mit {self.prefix}hinzufügen @User kannst du Leuten Zugriff auf deinen Channel geben")
+                    f"With {self.prefix}add @User you can give people access to your channel")
                 await ctx.send(
-                    f"Mit {self.prefix}entfernen @User kannst du Leuten Zugriff auf deinen Channel wegnehmen")
-                await ctx.send(f"Mit {self.prefix}delchannel kannst du deinen Channel löschen!")
+                    f"With {self.prefix}remove @User you can take away people access to your channel")
+                await ctx.send(f"With {self.prefix}delchannel you can delete your channel!")
         else:
-            await ctx.send("Diese Funktion ist auf diesem Discord nicht aktiviert.")
-            await ctx.send(f"Kontaktiere doch {ctx.guild.owner.mention} wenn du es aktiviert haben willst")
-            await ctx.send(f" Dieser muss dann {self.prefix}pc machen!")
+            await ctx.send("This function is not enabled on this Discord.")
+            await ctx.send(f"Contact {ctx.guild.owner.mention} if you want to have it activated")
+            await ctx.send(f"This must then make {self.prefix}pc!")
 
     @commands.command(name="delchannel")
     async def delete_voice_channel(self, ctx):
@@ -84,16 +84,16 @@ class privatechannel(commands.Cog):
         with open("temp/privatechannel.json", "w") as f:
             json.dump(json_stuff, f, indent=2)
         await channel.delete()
-        await ctx.send(f"{channel.name} wurde gelöscht!")
+        await ctx.send(f"{channel.name} was deleted!")
 
     @commands.command(name="pc")
     async def enable_privatechannels(self, ctx, arg=None):
         if ctx.message.author.id is not ctx.guild.owner.id:
-            await ctx.send("Nur der Owner kann diesen Command benutzen!")
+            await ctx.send("Only the Owner can use this command!")
         else:
             if arg is None:
-                await ctx.send("Du musst eine Option angeben: an/aus")
-            elif arg == "an":
+                await ctx.send("You have to take an Option: on/off")
+            elif arg == "on":
                 with open("temp/guildlist.json") as thejsonfile:
                     file = json.load(thejsonfile)
                     guild = ctx.author.guild
@@ -101,8 +101,8 @@ class privatechannel(commands.Cog):
 
                 with open("temp/guildlist.json", "w") as thejsonfile:
                     json.dump(file, thejsonfile, indent=2)
-                await ctx.send("Private Channels sind jetzt aktiviert :)")
-            elif arg == "aus":
+                await ctx.send("Privatechannels are now activated :)")
+            elif arg == "off":
                 with open("temp/guildlist.json") as thejsonfile:
                     file = json.load(thejsonfile)
                     guild = ctx.author.guild
@@ -110,9 +110,9 @@ class privatechannel(commands.Cog):
 
                 with open("temp/guildlist.json", "w") as thejsonfile:
                     json.dump(file, thejsonfile, indent=2)
-                await ctx.send("Private Channels sind jetzt deaktiviert :(")
+                await ctx.send("Privatechannels are now deactivated :(")
 
-    @commands.command(name="kategorie")
+    @commands.command(name="kategorie", aliases=["category"])
     async def kategorie_command(self, ctx, kategorie=None):
         if os.path.exists("temp/categoryname.json"):
             pass
@@ -131,7 +131,7 @@ class privatechannel(commands.Cog):
                 with open("temp/categoryname.json", "w") as f:
                     json.dump(channels, f, indent=2)
 
-    @commands.command(name="hinzufügen", aliases=["zugriff", "addchannel"])
+    @commands.command(name="hinzufügen", aliases=["zugriff", "addchannel", "add"])
     async def add_member(self, ctx, member: discord.Member):
         with open("temp/privatechannel.json", "r") as f:
             json_stuff = json.load(f)
@@ -139,16 +139,16 @@ class privatechannel(commands.Cog):
         channel = self.client.get_channel(channel_id)
         await channel.set_permissions(member, connect=True, speak=True, use_voice_activation=True,
                                       view_channel=True, )
-        await ctx.send(f"{member.mention} kann jetzt auf den Channel zugreifen :)")
+        await ctx.send(f"{member.mention} can now access the Channel :)")
 
-    @commands.command(name="entfernen", aliases=["deny"])
+    @commands.command(name="entfernen", aliases=["deny", "remove"])
     async def remove_member(self, ctx, member: discord.Member):
         with open("temp/privatechannel.json", "r") as f:
             json_stuff = json.load(f)
         channel_id = json_stuff[str(ctx.message.author.id)]
         channel = self.client.get_channel(channel_id)
         await channel.set_permissions(member, connect=False)
-        await ctx.send(f"{member.mention} kann jetzt nicht mehr auf den Channel zugreifen")
+        await ctx.send(f"{member.mention} can't access The Channel anymore")
 
     @commands.command(name="removechannel")
     @commands.has_permissions(administrator=True)
@@ -158,7 +158,7 @@ class privatechannel(commands.Cog):
             try:
                 channel_id = json_stuff[str(member.id)]
             except KeyError:
-                await ctx.send("Dieser Nutzer hat keinen Channel!")
+                await ctx.send("This User does not have a Channel!")
             except:
                 await basicerror(ctx)
             try:
@@ -167,7 +167,7 @@ class privatechannel(commands.Cog):
                 with open("temp/privatechannel.json", "w") as f:
                     json.dump(json_stuff, f, indent=2)
                 await channel.delete()
-                await ctx.send(f'"{channel.name}" von {member.mention} wurde gelöscht!')
+                await ctx.send(f'"{channel.name}" from {member.mention} was deleted!')
             except:
                 pass
 

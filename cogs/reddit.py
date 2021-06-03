@@ -4,6 +4,8 @@ import requests
 from botlibrary import constants
 
 
+# Anton Rewrite that shit
+
 class reddit(commands.Cog):
     def __init__(self, client):
         self.client = client
@@ -29,33 +31,33 @@ class reddit(commands.Cog):
                 try:
                     embed = discord.Embed(title=f"{titel}")
                     embed.set_image(url=img)
-                    embed.set_footer(text=f"Gepostet von u/{acc} in r/{reddit} mit {votes} Upvotes")
-                    embed.add_field(name="Link zum Post", value=f"[{link}]({link})")
+                    embed.set_footer(text=f"Posted by u/{acc} in r/{reddit} with {votes} Upvotes")
+                    embed.add_field(name="Link to Post", value=f"[{link}]({link})")
                     await ctx.send(embed=embed)
                 except:
                     embed = discord.Embed(title=f"{titel}")
                     embed.set_image(url=img)
-                    embed.set_footer(text=f"Gepostet von u/{acc} in r/{reddit} mit {votes} Upvotes")
+                    embed.set_footer(text=f"Posted by u/{acc} in r/{reddit} with {votes} Upvotes")
                     await ctx.send(embed=embed)
             else:
                 if ctx.channel.is_nsfw():
                     try:
                         embed = discord.Embed(title=f"{titel}")
                         embed.set_image(url=img)
-                        embed.set_footer(text=f"Gepostet von u/{acc} in r/{reddit} mit {votes} Upvotes")
-                        embed.add_field(name="Link zum Post", value=f"[{link}]({link})")
+                        embed.set_footer(text=f"Posted by u/{acc} in r/{reddit} with {votes} Upvotes")
+                        embed.add_field(name="Link to Post", value=f"[{link}]({link})")
                     except:
                         embed = discord.Embed(title=f"{titel}")
                         embed.set_image(url=img)
-                        embed.set_footer(text=f"Gepostet von u/{acc} in r/{reddit} mit {votes} Upvotes")
-                        embed.add_field(name="Link zum Post", value=f"[{link}]({link})")
+                        embed.set_footer(text=f"Posted by u/{acc} in r/{reddit} with {votes} Upvotes")
+                        embed.add_field(name="Link to Post", value=f"[{link}]({link})")
                     await ctx.send(embed=embed)
                 else:
-                    await ctx.send("Dieser Channel ist nicht nsfw!")
+                    await ctx.send("This Channel is not nsfw!")
         except:
             errorcode = x["message"]
-            embed = discord.Embed(title="Fehler!")
-            embed.add_field(name="Fehlercode:", value=f"`{errorcode}`")
+            embed = discord.Embed(title="Error!")
+            embed.add_field(name="Errorcode:", value=f"`{errorcode}`")
             await ctx.send(embed=embed)
 
 

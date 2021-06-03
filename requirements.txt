@@ -5,3 +5,4 @@ requests
 console-menu
 colorama
 mysql-connector-python
+psutil

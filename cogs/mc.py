@@ -19,12 +19,12 @@ class Mc(commands.Cog):
 
 
         if option is None:
-            embed = discord.Embed(title="Der Mc Command kann dir viele Nützliche Dinge zum Thema Minecraft anzeigen")
-            embed.add_field(name="Funktionen:", value="skin, server, name, jar")
+            embed = discord.Embed(title="The Mc Command can show you useful Thigs about Minecraft")
+            embed.add_field(name="Functions:", value="skin, server, name, jar")
             await ctx.send(embed=embed)
 
         elif arg1 is None and option != "jar":
-            await ctx.send("Fehler: Gebe etwas an wonach du suchst!")
+            await ctx.send("Error, say what you want bro!")
 
         elif option == "server":
             complete_url = self.base_url + arg1
@@ -33,7 +33,7 @@ class Mc(commands.Cog):
             channel = ctx.message.channel
             async with channel.typing():
                 status = response["online"]
-                embed = discord.Embed(title="Minecraft Server Stats für " + arg1)
+                embed = discord.Embed(title="Minecraft Server Stats for " + arg1)
                 if status is True:
                     modt = response["motd"]
                     beschreibung = modt["clean"]
@@ -41,8 +41,8 @@ class Mc(commands.Cog):
                     spieler = response["players"]
                     spieleronline = spieler["online"]
                     slots = spieler["max"]
-                    embed.add_field(name="Beschreibung", value=f"{modtbeschreibung}")
-                    embed.add_field(name="Spieler", value=f"{spieleronline} / {slots}")
+                    embed.add_field(name="Description", value=f"{modtbeschreibung}")
+                    embed.add_field(name="Players", value=f"{spieleronline} / {slots}")
                     try:
                         version = response["version"]
                         software = response["software"]
@@ -53,14 +53,14 @@ class Mc(commands.Cog):
                         version = response["version"]
                         embed.add_field(name="Version", value=version)
                     except:
-                        embed.add_field(name="Version", value="Info nicht vorhanden")
+                        embed.add_field(name="Version", value="Unknown")
                     try:
                         mods = response["mods"]
                         modss = mods["names"]
                         if modss != "":
                             embed.set_author(name="Modlist",
                                                  url='https://mcsrvstat.us/server/' + arg1)
-                            embed.add_field(name="Modlist", value="Siehe oben links")
+                            embed.add_field(name="Modlist", value="See link above")
                         else:
                             pass
                     except:
@@ -69,8 +69,7 @@ class Mc(commands.Cog):
                     if response["debug"]["cachetime"] != 0:
                         unix_time = response["debug"]["cachetime"]
                         time = datetime.datetime.fromtimestamp(int(unix_time)).strftime("%H:%M:%S")
-                        embed.set_footer(text=f"Die Ergebnisse sind von {time}")
-                        print("Penis")
+                        embed.set_footer(text=f"The Results are from {time}")
                     else:
                         pass
                     if response["players"]["online"] < 10:
@@ -80,15 +79,14 @@ class Mc(commands.Cog):
                             characters_to_remove = "'[]"
                             for character in characters_to_remove:
                                 spielernamen = spielernamen.replace(character, "")
-                            embed.add_field(name="Spielernamen:", value=spielernamen)
+                            embed.add_field(name="Playernames:", value=spielernamen)
                         except:
                             pass
                     else:
-                        print("hee")
-
+                        pass
                     await ctx.send(embed=embed)
                 else:
-                    embed.set_footer(text="Der Server ist derzeit nicht online")
+                    embed.set_footer(text="The Server is not Online")
                     await ctx.send(embed=embed)
             return
 
@@ -97,6 +95,7 @@ class Mc(commands.Cog):
             response = requests.get(uuid)
             x = response.json()
             playeruuid = x["id"]
+            print(playeruuid)
             kopf = "https://crafatar.com/avatars/"
             body = "https://crafatar.com/renders/body/"
             embed = discord.Embed(title="Minecraft Skin von " + arg1)
@@ -104,10 +103,9 @@ class Mc(commands.Cog):
             embed.set_image(url=body + playeruuid + "?size=512")
             embed.set_author(name="Skin Download", url="https://minotar.net/download/" + arg1)
             await ctx.send(embed=embed)
-            return
 
         elif option == "name":
-            embed = discord.Embed(title="Minecraft Namehistory für " + arg1)
+            embed = discord.Embed(title="Namehistory for " + arg1)
             try:
                 uuid = "https://api.mojang.com/users/profiles/minecraft/" + arg1
                 response = requests.get(uuid).json()
@@ -116,13 +114,12 @@ class Mc(commands.Cog):
                 response2 = requests.get(namehistory).json()
                 try:
                     namen = response2[0]["name"]
-                    embed.add_field(name="Namensänderung:", value=f"**{namen}** --> **{arg1}**")
+                    embed.add_field(name="Namechanges:", value=f"**{namen}** --> **{arg1}**")
                 except:
                     pass
             except:
-                embed.add_field(name="Spieler Nicht gefunden",
-                                value="Schau mal nach ob du alles richtig geschrieben hast. Und falls es dann immernoch "
-                                      "nicht geht Kontaktier bitte den Entwickler des Bots")
+                embed.add_field(name="Player not Found",
+                                value="Look if you spelled him right")
             await ctx.send(embed=embed)
             return
 
@@ -135,20 +132,23 @@ class Mc(commands.Cog):
                 filename = x["file"]
                 md5sum = x["md5"]
                 date = x["built"]
-                date_normal = datetime.datetime.fromtimestamp(int(date)).strftime("%d.%m.%Y")
-                embed = discord.Embed(title="Informationen zu " + arg1)
-                embed.set_author(name="Download der neusten Version von " + arg1,
+                datestr = str(date)
+                datewithoutzero = datestr[:-3]
+                datefinallytf = float(datewithoutzero)
+                date_normal = datetime.datetime.utcfromtimestamp(datefinallytf).strftime("%d.%m.%Y")
+                embed = discord.Embed(title="Information about " + arg1)
+                embed.set_author(name="Download the Newest Version of " + arg1,
                                  url="https://serverjars.com/api/" + "fetchJar/" + arg1)
                 embed.add_field(name="Version", value=version)
                 embed.add_field(name="Release", value=date_normal)
-                embed.add_field(name="Dateiname", value=filename)
+                embed.add_field(name="Filename", value=filename)
                 embed.add_field(name="md5sum", value=md5sum)
                 await ctx.send(embed=embed)
             elif response["status"] == "error":
                 errorname = response["error"]["title"]
                 errorcode = response["error"]["message"]
-                embed = discord.Embed(title=f'Fehler "{errorname}" beim Suchen')
-                embed.add_field(name="Fehlercode:", value=errorcode)
+                embed = discord.Embed(title=f'Error "{errorname}" while Searching')
+                embed.add_field(name="Errorcode:", value=errorcode)
                 await ctx.send(embed=embed)
             else:
                 await basicerror(ctx)
@@ -170,12 +170,12 @@ class Mc(commands.Cog):
                 bedrock_end = str(bedrock)
                 for character in characters_to_remove:
                     bedrock_end = bedrock_end.replace(character, "")
-                embed = discord.Embed(title="Liste aller Minecraft Server Jars")
+                embed = discord.Embed(title="List of all Minecraft Jars")
                 embed.add_field(name="Plugin", value=normal_end)
                 embed.add_field(name="Netzwerk", value=proxies_end)
                 embed.add_field(name="Bedrock", value=bedrock_end)
-                embed.set_author(name="Mache " + prefixes[str(ctx.message.guild.id)] + "mc jar (name) um mehr Infos zu einer Jar zu erhalten")
-                embed.set_footer(text="Quelle: ServerJars.com",
+                embed.set_author(name="Do " + prefixes[str(ctx.message.guild.id)] + "mc jar (name) to get more Infos about a specific Jar")
+                embed.set_footer(text="Source: ServerJars.com",
                                  icon_url="https://papermc.io/forums/uploads/default/optimized/2X/9/94d4bbaf78d05116b6bf42c8de86865d6b2cb2cf_2_500x500.png")
                 await ctx.send(embed=embed)
             else:

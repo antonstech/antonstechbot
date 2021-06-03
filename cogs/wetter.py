@@ -8,12 +8,12 @@ class Wetter(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.api_key = "7d518678abe248fc7de360ba82f9375b"
-        self.base_url = "http://api.openweathermap.org/data/2.5/weather?"
+        self.base_url = "https://api.openweathermap.org/data/2.5/weather?"
 
-    @commands.command(name="wetter")
+    @commands.command(name="wetter", aliases=["weather"])
     async def wetter_command(self, ctx, city):
         try:
-            complete_url = self.base_url + "appid=" + self.api_key + "&q=" + city + "&lang=de"
+            complete_url = self.base_url + "appid=" + self.api_key + "&q=" + city + "&lang=en"
             response = requests.get(complete_url).json()
             channel = ctx.message.channel
             if response["cod"] != "404":
@@ -28,20 +28,22 @@ class Wetter(commands.Cog):
                     z = response["weather"]
                     symbol = z[0]["icon"]
                     wetter_beschreibung = z[0]["description"]
-                    embed = discord.Embed(title=f"Wetter in {city}",
+                    embed = discord.Embed(title=f"Weather in {city}",
                                           color=ctx.guild.me.top_role.color,
                                           timestamp=ctx.message.created_at, )
-                    embed.add_field(name="Beschreibung", value=f"**{wetter_beschreibung}**", inline=False)
+                    embed.add_field(name="Description", value=f"**{wetter_beschreibung}**", inline=False)
                     embed.add_field(name="Temperatur(C)", value=f"**{derzeitige_temperatur_celsius}°C**", inline=False)
-                    embed.add_field(name="Fühlt sich an wie(C)", value=f"**{fuehlt_sich_an_wie_celsius}°C**",
+                    embed.add_field(name="Feels like(C)", value=f"**{fuehlt_sich_an_wie_celsius}°C**",
                                     inline=False)
-                    embed.add_field(name="Luftfeuchtigkeit(%)", value=f"**{luftfeuchtigkeit}%**", inline=False)
-                    embed.add_field(name="Luftdruck(hPa)", value=f"**{druck}hPa**", inline=False)
-                    embed.set_thumbnail(url="http://openweathermap.org/img/wn/" + symbol + ".png")
-                    embed.set_footer(text=f"Angefragt von {ctx.author.name}")
+                    embed.add_field(name="Humidity(%)", value=f"**{luftfeuchtigkeit}%**", inline=False)
+                    embed.add_field(name="Air-Pressure(hPa)", value=f"**{druck}hPa**", inline=False)
+                    embed.set_thumbnail(url="https://openweathermap.org/img/wn/" + symbol + ".png")
+                    embed.set_footer(text=f"Requested by {ctx.author.name}")
                 await ctx.send(embed=embed)
+            elif response["cod"] == "401":
+                await ctx.send("The API Key of the Bot Owner is not Valid!")
             else:
-                await ctx.send("Stadt wurde nicht gefunden.")
+                await ctx.send("City was not found.")
         except:
             await basicerror(ctx)
 

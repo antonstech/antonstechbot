@@ -9,8 +9,8 @@ def owner_only(func):
         if ctx.author.id == info.owner.id:
             return await func(self, message, *args, **kwargs)
         else:
-            await ctx.channel.send("Das darfst du nicht Bro das weißt du ganz genau!")
-            print(f"{message.author} hat probiert den Bot herunterzufahren!")
+            await ctx.channel.send("You can't do that Bro you know that very well!")
+            print(f"{message.author} tried to shutdown the bot!")
 
     return wrapper
 
@@ -19,10 +19,10 @@ class shutdown(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command(name="shutdown")
+    @commands.command(name="shutdown", aliases=["off", "stop", "HAAALTSTOP", "ALARM!"])
     @owner_only
     async def shutdown_command(self, ctx):
-        await ctx.send("Bot wird heruntergefahren... ")
+        await ctx.send("Bot is shutting off... ")
         await self.client.close()
 
 

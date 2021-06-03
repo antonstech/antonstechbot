@@ -4,6 +4,7 @@ import requests
 from botlibrary import constants
 from .errorstuff import basicerror
 
+# Rewrite that shit
 
 class Memes(commands.Cog):
     def __init__(self, client):
@@ -23,8 +24,8 @@ class Memes(commands.Cog):
             votes = x["ups"]
             embed = discord.Embed(title=f"{titel}")
             embed.set_image(url=img)
-            embed.set_footer(text=f"Gepostet von u/{acc} in r/{reddit} mit {votes} Upvotes")
-            embed.add_field(name="Link zum Post", value=f"[{link}]({link})")
+            embed.set_footer(text=f"Posted by u/{acc} in r/{reddit} with {votes} Upvotes")
+            embed.add_field(name="Link to the Post", value=f"[{link}]({link})")
             await ctx.send(embed=embed)
         except:
             await basicerror(ctx)

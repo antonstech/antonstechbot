@@ -27,14 +27,14 @@ class Osu(commands.Cog):
             globalrank = response["pp_rank"]
             localrank = response["pp_country_rank"]
             land = response["country"]
-            embed = discord.Embed(title="Osu Stats für " + name)
+            embed = discord.Embed(title="Osu Stats for " + name)
             embed.set_thumbnail(url="http://s.ppy.sh/a/" + userid)
-            embed.add_field(name="Gespielte Spiele", value=f"{playedgames}")
+            embed.add_field(name="Played Games", value=f"{playedgames}")
             embed.add_field(name="Level", value=f"{levelgerundet}")
-            embed.add_field(name="Spielzeit", value=f"{(int(float(spielzeit_stunden)))} Stunden")
-            embed.add_field(name="Genauigkeit", value=f"{round(genauigkeit_int, 2)}%")
-            embed.add_field(name="Globaler Rang", value=f"{globalrank}")
-            embed.add_field(name="Rang in " + land, value=f"{localrank}")
+            embed.add_field(name="Playtime", value=f"{(int(float(spielzeit_stunden)))} Stunden")
+            embed.add_field(name="Accuracy", value=f"{round(genauigkeit_int, 2)}%")
+            embed.add_field(name="Global Rank", value=f"{globalrank}")
+            embed.add_field(name="Rank in " + land, value=f"{localrank}")
             await ctx.send(embed=embed)
         except:
             await basicerror(ctx)

@@ -4,6 +4,7 @@ from botlibrary import constants
 import requests
 from .errorstuff import basicerror
 
+
 class Ip(commands.Cog):
     def __init__(self, client):
         self.client = client
@@ -12,7 +13,7 @@ class Ip(commands.Cog):
 
     @commands.command(name="ip")
     async def ip_command(self, ctx, ip):
-        try:
+        #try:
             apiurl = "?api-key=" + self.ipdata
             resulturl = self.base_url + ip + apiurl
             response = requests.get(resulturl)
@@ -25,22 +26,28 @@ class Ip(commands.Cog):
             asntype = y["type"]
             postleitzahl = x["postal"]
             kontinent = x["continent_name"]
-            embed = discord.Embed(title="IP Informationen zu " + ip)
+            embed = discord.Embed(title="IP Information for " + ip)
             embed.set_thumbnail(url=flag)
-            embed.add_field(name="Land", value=f"{country}")
-            embed.add_field(name="Stadt", value=f"{city}")
-            embed.add_field(name="Kontinent", value=f"{kontinent}")
+            embed.add_field(name="Country", value=f"{country}")
+            embed.add_field(name="City", value=f"{city}")
+            embed.add_field(name="Continent", value=f"{kontinent}")
             if postleitzahl is None:
                 pass
             else:
-                embed.add_field(name="Postleitzahl", value=f"{postleitzahl}")
-            embed.add_field(name="Internetanbieter", value=f"{asn}")
-            embed.add_field(name="Anbiter-Type", value=f"{asntype}")
+                embed.add_field(name="Postal Code", value=f"{postleitzahl}")
+            embed.add_field(name="ISP", value=f"{asn}")
+            embed.add_field(name="ISP-Type", value=f"{asntype}")
             await ctx.send(embed=embed)
-            return
-        except:
-            await basicerror(ctx)
-
+            extra = x["threat"]
+            extra = {'is_tor': False, 'is_proxy': False, 'is_anonymous': False, 'is_known_attacker': True, 'is_known_abuser': False, 'is_threat': True, 'is_bogon': False}
+            print(extra)
+            ans = []
+            for i in extra:
+                if extra[i]:
+                    ans.append([i])
+            print(ans)
+        #except:
+           # await basicerror(ctx)
 
 
 def setup(client):

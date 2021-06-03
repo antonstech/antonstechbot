@@ -24,17 +24,17 @@ class Hilfe(commands.Cog):
             prefixes = json.load(f)
             prefix = prefixes[str(ctx.message.guild.id)]
         if command_name is None:
-            embed = discord.Embed(title="Hilfe",
-                                  description="Benutze " + prefix + "hilfe (command) für mehr Informationen zu einem Command.",
+            embed = discord.Embed(title="Help",
+                                  description="Use " + prefix + "help (command) for more Information about a Command.",
                                   color=ctx.author.color)
             embed.add_field(name="Admin Only:", value="clear, prefix")
-            embed.add_field(name="Privatechannel", value="privatechannel, hinzufügen, entfernen, pc, kategorie")
-            embed.add_field(name="nützlich:", value="wetter, benutzerinfo ,anime, corona, reddit", inline=True)
+            embed.add_field(name="Privatechannel", value="privatechannel, add, remove, pc, category")
+            embed.add_field(name="usefull:", value="weather, userinfo ,anime, corona, reddit", inline=True)
             embed.add_field(name="Nerd-Stuff", value="ip, short")
             embed.add_field(name="fun", value="cat, earth2, meme", inline=True)
             embed.add_field(name="Game-Stats", value="lol, osu, mc, coc", inline=True)
-            embed.add_field(name="Infos zum Bot", value="version, einladen, hosten, code, ping, list", inline=True)
-            embed.set_footer(text='Bei sonstigen Fragen einfach DCGALAXY#9729 anschreiben')
+            embed.add_field(name="Infos zum Bot", value="version, invite, host, code, ping, list", inline=True)
+            embed.set_footer(text='For other questions just write DCGALAXY#9729')
             await ctx.send(embed=embed)
             return
 

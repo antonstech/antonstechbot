@@ -21,7 +21,7 @@ class Anime(commands.Cog):
                 response = abfrage.json()["result"][0]
                 anilist = response["anilist"]
                 if "Database is overloaded" in abfrage.text:
-                    ctx.send("Die Datebank ist zu beschätigt, probiers gleich noch mal!")
+                    ctx.send("The database is too busy, try again in a moment!")
                 else:
                     genauigkeit = response["similarity"]
                     hentai = anilist["isAdult"]
@@ -35,13 +35,13 @@ class Anime(commands.Cog):
                         embed = discord.Embed(title=f"{nativetitel}")
                     anilisturl = "https://anilist.co/anime/" + str(anilist)
                     embed.set_author(name="Anilist Link", url=anilisturl)
-                    embed.add_field(name="Genauigkeit", value=f"{round(genauigkeit * 100, 2)}%")
+                    embed.add_field(name="Accuracy", value=f"{round(genauigkeit * 100, 2)}%")
                     if hentai is False:
                         embed.add_field(name="Hentai?", value="Nope :(")
                     else:
                         embed.add_field(name="Hentai?", value="Yess Sir")
                     if titel is not None:
-                        embed.add_field(name="Titel in Originalsprache", value=f"{nativetitel}")
+                        embed.add_field(name="Title in original language", value=f"{nativetitel}")
                     else:
                         pass
                     embed.set_image(url=str(imgurl))

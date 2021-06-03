@@ -18,12 +18,12 @@ class CoC(commands.Cog):
     async def coc_command(self, ctx, option=None, arg1=None):
 
         if option is None:
-            embed = discord.Embed(title="Der CoC Command kann dir viele Nützliche Dinge zum Thema Minecraft anzeigen")
-            embed.add_field(name="Funktionen:", value="clan, spieler")
+            embed = discord.Embed(title="The CoC Command can show you some stats about the Game COC")
+            embed.add_field(name="Funktionen:", value="clan, player")
             await ctx.send(embed=embed)
 
         if arg1 is None and option is not None:
-            await ctx.send("Fehler: Gebe etwas an wonach du suchst!")
+            await ctx.send("Error: say what you want bro!")
 
         elif option == "clan":
             clantag = urllib.parse.quote(arg1)
@@ -33,7 +33,7 @@ class CoC(commands.Cog):
             try:
                 try:
                     if response["reason"] == "notFound":
-                        await ctx.send("Clan nicht gefunden; du musst den Tag angeben also z.B #CG82U2QG")
+                        await ctx.send("Clan not Found, you have to take the tag for Example: #CG82U2QG")
                     else:
                         pass
                 except:
@@ -42,21 +42,21 @@ class CoC(commands.Cog):
                     try:
                         Standort = response["location"]["name"]
                     except:
-                        Standort = "Unbekannt"
+                        Standort = "Unknown"
                     name = response["name"]
                     mitglieder = response["members"]
                     warwins = response["warWins"]
-                    embed = discord.Embed(title="Clan Statistiken für " + name)
+                    embed = discord.Embed(title="Clan Stats for " + name)
                     embed.set_thumbnail(url=badge)
-                    embed.add_field(name="Pokale", value=f"{pokale} :trophy:")
-                    embed.add_field(name="Mitglieder", value=f"{mitglieder} / 50")
-                    embed.add_field(name="Standort", value=Standort)
-                    embed.add_field(name="gewonnene Clankriege", value=warwins)
+                    embed.add_field(name="Trophies", value=f"{pokale} :trophy:")
+                    embed.add_field(name="Members", value=f"{mitglieder} / 50")
+                    embed.add_field(name="Location", value=Standort)
+                    embed.add_field(name="won Clanwars", value=warwins)
                     await ctx.send(embed=embed)
             except:
                 await basicerror(ctx)
 
-        elif option == "spieler":
+        elif option == "player":
             playertag = urllib.parse.quote(arg1)
             playertagwithouthashtag = str(arg1).replace("#", "")
             complete_url = self.base_url + "players/" + playertag
@@ -65,7 +65,7 @@ class CoC(commands.Cog):
             try:
                 try:
                     if response["reason"] == "notFound":
-                        await ctx.send("Spieler nicht gefunden; du musst den Tag angeben also z.B #CG82U2QG")
+                        await ctx.send("Player not Found, you have to use the Tag for Example: #CG82U2QG")
                     else:
                         pass
                 except:
@@ -78,15 +78,15 @@ class CoC(commands.Cog):
                     nachtdorf = response["builderHallLevel"]
                     clanzeichen = response["clan"]["badgeUrls"]["small"]
                     clanname = response["clan"]["name"]
-                    embed = discord.Embed(title="Statistiken für " + name)
-                    embed.set_author(name="Mehr Infos", url="https://www.coc-stats.net/de/player/" + playertagwithouthashtag + "/")
+                    embed = discord.Embed(title="Stats for " + name)
+                    embed.set_author(name="More Information", url="https://www.coc-stats.net/de/player/" + playertagwithouthashtag + "/")
                     embed.set_thumbnail(url=clanzeichen)
-                    embed.add_field(name="Rathaus", value=f"Level {townhall}")
-                    embed.add_field(name="Spielerlevel", value=playerlvl)
-                    embed.add_field(name="Pokale", value=pokale)
-                    embed.add_field(name="Pokal-Rekord", value=maxpokale)
-                    embed.add_field(name="Kriegssterne", value=sterne)
-                    embed.add_field(name="Nachtdorf", value=f"Level {nachtdorf}")
+                    embed.add_field(name="Townhall", value=f"Level {townhall}")
+                    embed.add_field(name="Playerlevel", value=playerlvl)
+                    embed.add_field(name="Trophies", value=pokale)
+                    embed.add_field(name="Trophies-Records", value=maxpokale)
+                    embed.add_field(name="Warstars", value=sterne)
+                    embed.add_field(name="Builderbase", value=f"Level {nachtdorf}")
                     embed.add_field(name="Clan-Name", value=clanname)
                     await ctx.send(embed=embed)
             except:
