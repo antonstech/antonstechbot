@@ -3,7 +3,7 @@ import json
 import discord
 import discord.ext
 import requests
-from discord.ext import commands, ipc
+from discord.ext import commands
 import os
 from botlibrary.utils import get_variable
 from botlibrary import constants
