@@ -25,7 +25,7 @@ class Status(commands.Cog):
                        f"Bot Performance:\n"
                        f"RAM-Usage: {memoryuse.rss / 1024000} MB \n"
                        f'Running Since: {time.strftime("%d.%m.%Y %H:%M", time.localtime(process.create_time()))}\n'
-                       f"Ping: {round(self.client.latency * 1000)}m\n"
+                       f"Websocket Latency: {round(self.client.latency * 1000)}ms\n"
                        "-------\n"
                        f"System:\n"
                        f"CPU-Usage: {psutil.cpu_percent()}%\n"
