@@ -27,7 +27,7 @@ def get_default_prefix(client, message):
     return prefixes[str(message.guild.id)]
 
 
-client = commands.Bot(command_prefix=get_default_prefix, intents=discord.Intents.all())
+client = commands.AutoShardedBot(command_prefix=get_default_prefix, intents=discord.Intents.all())
 client.remove_command('help')
 
 

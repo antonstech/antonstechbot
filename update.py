@@ -10,7 +10,7 @@ except:
     time.sleep(25)
 
 
-print("Checke auf Updates...")
+print("Checking for Updates....")
 
 
 def updaten():
@@ -19,7 +19,7 @@ def updaten():
         print(f"The Bot is already on the newest Version({VERSION})!")
         time.sleep(5)
     else:
-        raise Exception("Der Bot wurde geupdatet.")
+        raise Exception("The bot was updated.")
 
 
 updaten()

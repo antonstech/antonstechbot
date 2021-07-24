@@ -14,8 +14,8 @@ from botlibrary import constants
 try:
     VERSION = subprocess.check_output(["git", "describe", "--tags", "--always"]).decode('ascii').strip()
 except:
-    VERSION = "7.1.1"
-    print("Bitte installiert dir GIT!!!")
+    VERSION = "8.1"
+    print("Please install GIT!!!")
 
 constants.assignVariables()
 

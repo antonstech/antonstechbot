@@ -1,15 +1,15 @@
 import subprocess
 import json
 
-global VERSION, bot_prefix, ipdata_token, ipdata_url, osu_token, osu_url, lol_token, lol_url, bot_token, reddit_url, coc_token, coc_url, bitrate, cat_api, anime, earth2, earth2landicon
+global VERSION, bot_prefix, ipdata_token, ipdata_url, osu_token, osu_url, lol_token, lol_url, bot_token, reddit_url, coc_token, coc_url, cat_api, anime, earth2, earth2landicon
 
 
 def assignVariables():
-    global VERSION, bot_prefix, ipdata_token, ipdata_url, osu_token, osu_url, lol_token, lol_url, bot_token, reddit_url, coc_token, coc_url, bitrate, cat_api, anime, earth2, earth2landicon
+    global VERSION, bot_prefix, ipdata_token, ipdata_url, osu_token, osu_url, lol_token, lol_url, bot_token, reddit_url, coc_token, coc_url, cat_api, anime, earth2, earth2landicon
     try:
         VERSION = subprocess.check_output(["git", "describe", "--tags", "--always"]).decode('ascii').strip()
     except:
-        VERSION = "7.1.1"
+        VERSION = "8.1"
 
 # Here are just the Urls of the APIs so i can switch them out fast if they change
 
@@ -19,8 +19,6 @@ def assignVariables():
     earth2 = "https://earth2stats.net/api/get_countries/199"
     earth2landicon = "https://earth2stats.net/country/"
 
-# Here is the Audio Bitrate for Creating new Voicechannels via the privatechannels Function
-    bitrate = 96000
 
 # And here i am reading out the API Tokens and other Stuff stored in json Files
 

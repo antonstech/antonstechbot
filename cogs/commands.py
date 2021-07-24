@@ -1,4 +1,5 @@
-﻿from discord.ext import commands
+﻿import requests
+from discord.ext import commands
 import discord
 from botlibrary import constants
 import json
@@ -58,6 +59,7 @@ class Commands(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def clear_command(self, ctx, amount=7):
         await ctx.channel.purge(limit=amount + 1, check=self.ist_gepinnt)
+        await ctx.send(f"{amount} Nachrichten wurden gelöscht :)")
 
     @commands.command(name="list")
     async def list_command(self, ctx):

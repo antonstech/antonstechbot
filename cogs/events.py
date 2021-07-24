@@ -52,6 +52,20 @@ class Events(commands.Cog):
         else:
             asyncio.ensure_future(self.sql_connection_stuff(message))
 
+        try:
+            if message.mentions[0] == self.client.user:
+                with open("config/prefixes.json", "r") as f:
+                    prefixes = json.load(f)
+
+                prefix = prefixes[str(message.guild.id)]
+                await message.channel.send(f"Hey {message.author.mention} :)")
+                await message.channel.send(f'My Prefix (on this Server) is "{prefix}"')
+
+        except IndexError:
+            pass
+
+
+
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
         with open("config/prefixes.json", "r") as f:

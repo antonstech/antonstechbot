@@ -9,7 +9,6 @@ from .errorstuff import basicerror
 class privatechannel(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.bitrate = constants.bitrate
         self.prefix = constants.bot_prefix
 
     @commands.command(name="privatechannel")
@@ -54,7 +53,7 @@ class privatechannel(commands.Cog):
                     categoryname = json_stuff[str(ctx.guild.id)]
                 category = discord.utils.get(ctx.guild.categories, name=categoryname)
                 await guild.create_voice_channel(name=channelnamefinal, user_limit=maxusersfinal, category=category,
-                                                 bitrate=self.bitrate)
+                                                 bitrate=guild.bitrate_limit)
                 channel = discord.utils.get(ctx.guild.channels, name=channelnamefinal)
                 channels[str(ctx.message.author.id)] = channel.id
                 with open("temp/privatechannel.json", "w") as f:
@@ -81,9 +80,9 @@ class privatechannel(commands.Cog):
         channel = self.client.get_channel(channel_id)
         del json_stuff[str(ctx.message.author.id)]
 
+        await channel.delete()
         with open("temp/privatechannel.json", "w") as f:
             json.dump(json_stuff, f, indent=2)
-        await channel.delete()
         await ctx.send(f"{channel.name} was deleted!")
 
     @commands.command(name="pc")
@@ -123,9 +122,9 @@ class privatechannel(commands.Cog):
             await ctx.send("Nur der Owner kann diesen Command benutzen!")
         else:
             if kategorie is None:
-                await ctx.send("Hier musst du eine Kategorie auswählen in welcher die Privatechannels erstellt werden")
+                await ctx.send("Here you have to choose a category in which the private channels will be created")
                 await ctx.send(
-                    'Du musst es so einstellten, das der "Standard-Nutzer" diese zwar sehen kann aber nicht darauf zugreifen kann')
+                    'You have to set it so that the "standard user" can see them but cannot access them.')
             else:
                 channels = {f"{str(ctx.guild.id)}": kategorie}
                 with open("temp/categoryname.json", "w") as f:

@@ -22,10 +22,11 @@ class Status(commands.Cog):
                        f"Servers: {len(self.client.guilds)}\n"
                        f"Users: {len(set(self.client.get_all_members()))}\n"
                        "-------\n"
-                       f"Bot Performance:\n"
+                       f"Bot Technical:\n"
                        f"RAM-Usage: {memoryuse.rss / 1024000} MB \n"
                        f'Running Since: {time.strftime("%d.%m.%Y %H:%M", time.localtime(process.create_time()))}\n'
                        f"Websocket Latency: {round(self.client.latency * 1000)}ms\n"
+                       f"Shard Count: {len(list(self.client.shards))}\n"
                        "-------\n"
                        f"System:\n"
                        f"CPU-Usage: {psutil.cpu_percent()}%\n"
