@@ -4,29 +4,20 @@ import discord
 from botlibrary import constants
 import psycopg2
 
-global prefix
+default_prefix = constants.bot_prefix
+database_connection = psycopg2.connect(
+    host=constants.host,
+    user=constants.user,
+    password=constants.password,
+    database=constants.database,
+    port=constants.port)
 
 class Hilfe(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    async def send(self, ctx, command_name, description, usage, example):
-        embed = discord.Embed(title=command_name,
-                              description=description.format(prefix),
-                              color=ctx.author.color)
-        embed.add_field(name="Benutzung:", value=usage.format(prefix))
-        embed.add_field(name="Beispiel:", value=example.format(prefix))
-        await ctx.channel.send(embed=embed)
-
     @commands.command(name="hilfe", aliases=["help", "welp"])
     async def hilfe_command(self, ctx, command_name=None):
-        default_prefix = constants.bot_prefix
-        database_connection = psycopg2.connect(
-            host=constants.host,
-            user=constants.user,
-            password=constants.password,
-            database=constants.database,
-            port=constants.port)
         try:
             code2execute = f"SELECT prefix FROM prefixes WHERE id = {ctx.message.guild.id}"
             mycursor = database_connection.cursor()
@@ -65,6 +56,22 @@ class Hilfe(commands.Cog):
         except KeyError:
             pass
 
+    async def send(self, ctx, command_name, description, usage, example):
+        try:
+            code2execute = f"SELECT prefix FROM prefixes WHERE id = {ctx.message.guild.id}"
+            mycursor = database_connection.cursor()
+            database_connection.commit()
+            mycursor.execute(code2execute)
+            result = mycursor.fetchone()
+            prefix = result[0]
+        except:
+            prefix = default_prefix
+        embed = discord.Embed(title=command_name,
+                              description=description.format(prefix),
+                              color=ctx.author.color)
+        embed.add_field(name="Benutzung:", value=usage.format(prefix))
+        embed.add_field(name="Beispiel:", value=example.format(prefix))
+        await ctx.channel.send(embed=embed)
 
 def setup(client):
     client.add_cog(Hilfe(client))
