@@ -1,9 +1,0 @@
-{
-  "enable": true,
-  "host": "somehost",
-  "user": "user123",
-  "passwort": "yoursupersecretpasswort",
-  "datenbank": "cooldatabase",
-  "tablename": "discordbotlog",
-  "port": "3306 (in 99,9% of the Cases)"
-}

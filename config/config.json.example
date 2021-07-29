@@ -1,8 +1,0 @@
-{
-  "token": "DiscordToken",
-  "default_prefix": "Prefix",
-  "riotapi": "RiotGamesAPIToken",
-  "osuapi": "OsuAPIToken"
-  "ipdata": "IPDataToken"
-  "cocapi": "COCAPIToken"
-}
