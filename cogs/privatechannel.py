@@ -117,7 +117,6 @@ class privatechannel(commands.Cog):
                     try:
                         mycursor.execute(code2execute)
                         result = mycursor.fetchone()
-                        justatestifitbreaks = result[0]
                     except:
                         await ctx.send("The category where the Channels should be created is not set")
                     categoryname = result[0]
@@ -163,14 +162,9 @@ class privatechannel(commands.Cog):
                 await ctx.send(f"This function is not enabled on this Discord.\n"
                                f"Please contact {ctx.guild.owner.mention} if you want to have it activated")
         elif arg1 == "category":
-            try:
-                code2execute = f"UPDATE categorynames SET name = '{arg2}' WHERE serverid = {ctx.guild.id}"
-                mycursor.execute(code2execute)
-                self.database_connection.commit()
-            except:
-                code2execute = f"INSERT INTO categorynames (serverid, name) VALUES {ctx.guild.id} {arg2}"
-                mycursor.execute(code2execute)
-                self.database_connection.commit()
+            code2execute = f"UPDATE categorynames SET name = '{arg2}' WHERE serverid = {ctx.guild.id}"
+            mycursor.execute(code2execute)
+            self.database_connection.commit()
             await ctx.send(f'The Category where custom user Channels will now be created will be "{arg2}"')
 
         elif arg1 == "remove":
