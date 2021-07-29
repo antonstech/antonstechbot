@@ -1,14 +1,16 @@
+import json
 from discord.ext import commands
 import discord
-import bot
+from botlibrary import constants
+import psycopg2
 
+global prefix
 
 class Hilfe(commands.Cog):
     def __init__(self, client):
         self.client = client
 
     async def send(self, ctx, command_name, description, usage, example):
-        prefix = bot.get_default_prefix(client=self.client, message=ctx.message)
         embed = discord.Embed(title=command_name,
                               description=description.format(prefix),
                               color=ctx.author.color)
@@ -18,7 +20,23 @@ class Hilfe(commands.Cog):
 
     @commands.command(name="hilfe", aliases=["help", "welp"])
     async def hilfe_command(self, ctx, command_name=None):
-        prefix = bot.get_default_prefix(client=self.client, message=ctx.message)
+        default_prefix = constants.bot_prefix
+        database_connection = psycopg2.connect(
+            host=constants.host,
+            user=constants.user,
+            password=constants.password,
+            database=constants.database,
+            port=constants.port)
+        try:
+            code2execute = f"SELECT prefix FROM prefixes WHERE id = {ctx.message.guild.id}"
+            mycursor = database_connection.cursor()
+            database_connection.commit()
+            mycursor.execute(code2execute)
+            result = mycursor.fetchone()
+            prefix = result[0]
+        except:
+            prefix = default_prefix
+
         if command_name is None:
             embed = discord.Embed(title="Help",
                                   description="Use " + prefix + "help (command) for more Information about a Command.",

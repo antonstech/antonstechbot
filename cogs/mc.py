@@ -1,9 +1,10 @@
+import psycopg2
 from discord.ext import commands
 import discord
 import requests
 import datetime
+from botlibrary import constants
 from .errorstuff import basicerror
-import bot
 
 
 class Mc(commands.Cog):
@@ -13,7 +14,22 @@ class Mc(commands.Cog):
 
     @commands.command(name="mc")
     async def mc_command(self, ctx, option=None, arg1=None):
-        prefixes = bot.get_default_prefix(client=self.client, message=ctx.message)
+        default_prefix = constants.bot_prefix
+        database_connection = psycopg2.connect(
+            host=constants.host,
+            user=constants.user,
+            password=constants.password,
+            database=constants.database,
+            port=constants.port)
+        try:
+            code2execute = f"SELECT prefix FROM prefixes WHERE id = {ctx.message.guild.id}"
+            mycursor = database_connection.cursor()
+            database_connection.commit()
+            mycursor.execute(code2execute)
+            result = mycursor.fetchone()
+            prefixes = result[0]
+        except:
+            prefixes = default_prefix
 
 
         if option is None:
