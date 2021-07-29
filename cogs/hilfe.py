@@ -1,6 +1,6 @@
 from discord.ext import commands
 import discord
-import json
+import bot
 
 
 class Hilfe(commands.Cog):
@@ -8,9 +8,7 @@ class Hilfe(commands.Cog):
         self.client = client
 
     async def send(self, ctx, command_name, description, usage, example):
-        with open("config/prefixes.json", "r") as f:
-            prefixes = json.load(f)
-        prefix = prefixes[str(ctx.message.guild.id)]
+        prefix = bot.get_default_prefix(client=self.client, message=ctx.message)
         embed = discord.Embed(title=command_name,
                               description=description.format(prefix),
                               color=ctx.author.color)
@@ -20,9 +18,7 @@ class Hilfe(commands.Cog):
 
     @commands.command(name="hilfe", aliases=["help", "welp"])
     async def hilfe_command(self, ctx, command_name=None):
-        with open("config/prefixes.json", "r") as f:
-            prefixes = json.load(f)
-            prefix = prefixes[str(ctx.message.guild.id)]
+        prefix = bot.get_default_prefix(client=self.client, message=ctx.message)
         if command_name is None:
             embed = discord.Embed(title="Help",
                                   description="Use " + prefix + "help (command) for more Information about a Command.",

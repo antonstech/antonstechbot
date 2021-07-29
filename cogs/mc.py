@@ -2,9 +2,8 @@ from discord.ext import commands
 import discord
 import requests
 import datetime
-import json
-from botlibrary import constants
 from .errorstuff import basicerror
+import bot
 
 
 class Mc(commands.Cog):
@@ -14,8 +13,7 @@ class Mc(commands.Cog):
 
     @commands.command(name="mc")
     async def mc_command(self, ctx, option=None, arg1=None):
-        with open("config/prefixes.json", "r") as f:
-            prefixes = json.load(f)
+        prefixes = bot.get_default_prefix(client=self.client, message=ctx.message)
 
 
         if option is None:
@@ -172,7 +170,7 @@ class Mc(commands.Cog):
                 embed.add_field(name="Plugin", value=normal_end)
                 embed.add_field(name="Netzwerk", value=proxies_end)
                 embed.add_field(name="Bedrock", value=bedrock_end)
-                embed.set_author(name="Do " + prefixes[str(ctx.message.guild.id)] + "mc jar (name) to get more Infos about a specific Jar")
+                embed.set_author(name="Do " + prefixes + "mc jar (name) to get more Infos about a specific Jar")
                 embed.set_footer(text="Source: ServerJars.com",
                                  icon_url="https://papermc.io/forums/uploads/default/optimized/2X/9/94d4bbaf78d05116b6bf42c8de86865d6b2cb2cf_2_500x500.png")
                 await ctx.send(embed=embed)
