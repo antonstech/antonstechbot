@@ -2,6 +2,7 @@
 from discord.ext.commands.errors import *
 import discord
 from botlibrary import constants
+from .errorstuff import basicerror
 
 
 class NotFound(commands.Cog):
@@ -24,6 +25,7 @@ class NotFound(commands.Cog):
             elif isinstance(error, CommandOnCooldown):
                 await ctx.send("**This Command has a Cooldown!**, please try again in {:.2f} Seconds".format(error.retry_after))
             else:
+                await basicerror(ctx)
                 raise error
 
 

@@ -45,7 +45,7 @@ class Lol(commands.Cog):
 
             return
 
-        if option == "rang":
+        if option == "rank":
             channel = ctx.message.channel
             try:
                 lol_watcher = LolWatcher(self.api_key)

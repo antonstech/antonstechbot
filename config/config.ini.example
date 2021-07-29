@@ -1,0 +1,21 @@
+[Discord-Bot]
+token = yourcooltokenherewhichyoushouldbtwsendmeondiscordforfreevbucks
+default_prefix = .
+
+[API-Tokens]
+riotapi = RGAPI-loooooooool
+osuapi = someSUPERsecuretoken
+ipdata = someSUPERsecuretoken
+cocapi = someSUPERsecuretoken
+
+[Database]
+enable = true
+host = 127.0.0.1
+user = usernameee
+passwort = hopefullyasecurepassword
+database = databasename
+logging-tablename = tablename
+port = 5432(in 99% of the Postgre Cases)
+
+[Other-Settings]
+tokenchecker = true

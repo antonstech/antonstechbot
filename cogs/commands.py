@@ -1,9 +1,14 @@
-﻿import requests
-from discord.ext import commands
+﻿from discord.ext import commands
 import discord
 from botlibrary import constants
-import json
+import psycopg2
 
+database_connection = psycopg2.connect(
+    host=constants.host,
+    user=constants.user,
+    password=constants.password,
+    database=constants.database,
+    port=constants.port)
 
 class Commands(commands.Cog):
     def __init__(self, client):
@@ -26,7 +31,7 @@ class Commands(commands.Cog):
     @commands.command(name="einladen", aliases=["invite", "ialsowantthatcoolbot"])
     async def einladen(self, ctx):
         embed = discord.Embed()
-        embed.set_author(name="Press the Link to Load it in",
+        embed.set_author(name="Press the Link to invite the bot",
                          url=discord.utils.oauth_url(self.client.user.id, permissions=discord.Permissions(8),
                                                      guild=ctx.guild))
         await ctx.channel.send(embed=embed)
@@ -35,7 +40,7 @@ class Commands(commands.Cog):
     async def hosten_command(self, ctx):
         embed = discord.Embed()
         embed.set_author(name="Press here for a Tutorial to selfhost the bot",
-                         url='https://github.com/antonstech/antonstechbot/wiki/Installation')
+                         url='https://github.com/antonstech/antonstechbot/wiki/Setup')
         await ctx.channel.send(embed=embed)
 
     @commands.command(name="code")
@@ -78,13 +83,10 @@ class Commands(commands.Cog):
         if prefix == "" or '':
             await ctx.send("Your Prefix cant be nothing Bro")
         else:
-            with open("config/prefixes.json", "r") as f:
-                prefixes = json.load(f)
-
-            prefixes[str(ctx.message.guild.id)] = prefix
-
-            with open("config/prefixes.json", "w") as f:
-                json.dump(prefixes, f, indent=2)
+            code2execute = f"UPDATE prefixes SET prefix = '{prefix}' WHERE id = {ctx.guild.id}"
+            mycursor = database_connection.cursor()
+            mycursor.execute(code2execute)
+            database_connection.commit()
             await ctx.send(f'The Prefix is now "{prefix}"')
 
     @commands.command(name="maxmembers")

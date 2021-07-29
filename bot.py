@@ -1,30 +1,42 @@
 import asyncio
-import json
+import configparser
 import discord
 import discord.ext
+import psycopg2
 import requests
 from discord.ext import commands
 import os
 from botlibrary.utils import get_variable
 from botlibrary import constants
 
-# Wichs Codierung
-# ä=Ã¼
-# ö=Ã¶
-
 # assign constant variables
 constants.assignVariables()
 
 VERSION = constants.VERSION
-
+token = constants.bot_token
 default_prefix = constants.bot_prefix
+config = configparser.ConfigParser()
+config.read("config/config.ini")
+
+# Read out the Database Stuff
+database_connection = psycopg2.connect(
+    host=constants.host,
+    user=constants.user,
+    password=constants.password,
+    database=constants.database,
+    port=constants.port)
 
 
 def get_default_prefix(client, message):
-    with open("config/prefixes.json", "r") as f:
-        prefixes = json.load(f)
-
-    return prefixes[str(message.guild.id)]
+    try:
+        code2execute = f"SELECT prefix FROM prefixes WHERE id = {message.guild.id}"
+        mycursor = database_connection.cursor()
+        database_connection.commit()
+        mycursor.execute(code2execute)
+        result = mycursor.fetchone()
+        return result[0]
+    except:
+        return default_prefix
 
 
 client = commands.AutoShardedBot(command_prefix=get_default_prefix, intents=discord.Intents.all())
@@ -110,54 +122,50 @@ tokenchecker()
 @client.event
 async def on_ready():
     global guild
-    print("Yess the Bot is running :)".format(client))
+    global database_connection
     print("You have installed Release " + str(VERSION))
     print("You are logged in as {0.user} via discord.py Version {1}".format(client, discord.__version__))
-    if os.path.exists("config/mysql.json"):
-        print("MySQL-Logging ist ACTIVATED")
-    else:
-        print("MySQL-Logging ist DEACTIVATED")
+    print(f"The Bot is running on {len(list(client.shards))} Shards")
     print("The Bot is on the following " + str(len(client.guilds)) + " Servers:")
     for guild in client.guilds:
         print("- " + str(guild.name))
-    if os.path.exists("temp/guildlist.json"):
-        pass
-    else:
+    for guild in client.guilds:
+        code2execute = "SELECT * FROM servers " + f"WHERE id = {guild.id}"
+        mycursor = database_connection.cursor()
+        mycursor.execute(code2execute)
+        result = mycursor.fetchone()
+        if result is None:
+            sql = "INSERT INTO servers (id, state)  VALUES (%s, %s)"
+            val = [
+                (f"{int(guild.id)}", False)
+            ]
+            mycursor = database_connection.cursor()
+            mycursor.executemany(sql, val)
+            database_connection.commit()
+    for guild in client.guilds:
+        # Okay so what this code does is setting every Server Prefix to the default prefix if it isnt already set to something
         try:
-            os.mkdir("temp")
+            database_connection = psycopg2.connect(
+                host=constants.host,
+                user=constants.user,
+                password=constants.password,
+                database=constants.database,
+                port=constants.port)
+            sql = "INSERT INTO prefixes (id, prefix)  VALUES (%s, %s)"
+            val = [
+                (f"{int(guild.id)}", default_prefix)
+            ]
+            mycursor = database_connection.cursor()
+            mycursor.executemany(sql, val)
+            database_connection.commit()
         except:
             pass
-        newjsonfile = open("temp/guildlist.json", "w")
-        newjsonfile.write("{}")
-        newjsonfile.close()
-    with open("temp/guildlist.json") as thejsonfile:
-        file = json.load(thejsonfile)
-
-    for guild in client.guilds:
-        try:
-            if file[str(guild.id)]:
-                continue
-        except KeyError:
-            pass
-
-        file[str(guild.id)] = False
-
-    with open("temp/guildlist.json", "w") as thejsonfile:
-        json.dump(file, thejsonfile, indent=2)
-
-    if os.path.exists("config/prefixes.json"):
-        pass
-    else:
-        with open("config/prefixes.json", "w") as f:
-            f.write("{}")
-        with open("config/prefixes.json") as thejsonfile:
-            prefixes = json.load(thejsonfile)
-
-        for guild in client.guilds:
-            prefixes[str(guild.id)] = default_prefix
-
-        with open("config/prefixes.json", "w") as thejsonfile:
-            json.dump(prefixes, thejsonfile, indent=2)
+    print("Database Stuff:")
+    if constants.logging_enable == "true":
+        print("Message Logging is enabled")
+    if constants.channel_enable == "true":
+        print("Private Channels are enabled")
+    print("Yess the Bot is running :)".format(client))
     client.loop.create_task(status_task())
 
 
@@ -206,8 +214,13 @@ async def reload_cog(ctx, cogName):
     if ctx.author.id == info.owner.id:
         if cogName == "*":
             for cogreloadfilename in os.listdir("./cogs"):
-                if cogreloadfilename.endswith(".py") and cogreloadfilename not in ["errorstuff.py"]:
-                    client.reload_extension(f"cogs.{cogreloadfilename[:-3]}")
+                if constants.channel_enable == "true":
+                    if cogreloadfilename.endswith(".py") and cogreloadfilename not in ["errorstuff.py"]:
+                        client.reload_extension(f"cogs.{cogreloadfilename[:-3]}")
+                else:
+                    if cogreloadfilename.endswith(".py") and cogreloadfilename not in [
+                        "errorstuff.py"] and cogreloadfilename not in ["privatechannel.py"]:
+                        client.reload_extension(f"cogs.{cogreloadfilename[:-3]}")
             await ctx.send("Successfully reloaded all extensions!")
         else:
             try:
@@ -240,15 +253,14 @@ async def load_cog(ctx, cogName):
         await ctx.channel.send(f"Error, either the extension is already loaded or it was not found.")
 
 
-with open('config/config.json', 'r') as f:
-    json_stuff = json.load(f)
-    token = json_stuff["token"]
-
 # load cogs
 for filename in os.listdir("./cogs"):
-    if filename.endswith(".py") and filename not in ["errorstuff.py"]:
-        client.load_extension(f"cogs.{filename[:-3]}")
-print("All Extensions loaded!")
-
+    if constants.channel_enable == "true":
+        if filename.endswith(".py") and filename not in ["errorstuff.py"]:
+            client.load_extension(f"cogs.{filename[:-3]}")
+    else:
+        if filename.endswith(".py") and filename not in ["errorstuff.py"] and filename not in ["privatechannel.py"]:
+            client.load_extension(f"cogs.{filename[:-3]}")
+print("All Extensions loaded")
 
 client.run(token)

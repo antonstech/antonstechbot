@@ -8,16 +8,16 @@ import time
 import requests
 import json
 from colorama import *
-import mysql.connector
 from botlibrary import constants
 
 try:
     VERSION = subprocess.check_output(["git", "describe", "--tags", "--always"]).decode('ascii').strip()
 except:
-    VERSION = "8.1"
+    VERSION = "9.0"
     print("Please install GIT!!!")
 
 constants.assignVariables()
+
 
 def browser():
     webbrowser.open("https://git.io/antonsbot")
@@ -78,85 +78,14 @@ def tokenchecker():
     if cocresponse.status_code == 200:
         print(Fore.GREEN + "CoC API Key ✅")
     else:
-       print(Fore.RED + "CoC API Key ❌")
+        print(Fore.RED + "CoC API Key ❌")
     print(Style.RESET_ALL)
     time.sleep(7)
 
 
-def mysqlsetup():
-    print("MySql Setup")
-    print("For Help read the Wiki on Github")
-    print("IMPORTANT!!!!")
-    yesorno = input(
-        "A NEW MySQL database AND table is created, which is then also used by the bot after a restart!!!  (y/n): ")
-    if yesorno == "j":
-        config = {"enable": True, "host": input("Host: "), "user": input("Username: "),
-                  "passwort": input("Passwort: "), "Database": input("Datenbank: "),
-                  "tablename": input("Name of the table: "), "port": input("Port: ")}
-        with open("config/mysql.json", "w+") as file:
-            json.dump(config, file, indent=2)
-        with open('config/mysql.json', 'r') as f:
-            json_stuff = json.load(f)
-            host = json_stuff["host"]
-            user = json_stuff["user"]
-            passwort = json_stuff["passwort"]
-            datenbank = json_stuff["datenbank"]
-            table_name = json_stuff["tablename"]
-            port = json_stuff["port"]
-        mydb = mysql.connector.connect(
-            host=host,
-            user=user,
-            password=passwort,
-            database="mysql",
-            port=port)
-        mycursor = mydb.cursor()
-        mycursor.execute("CREATE DATABASE " + datenbank)
-        mydb = mysql.connector.connect(
-            host=host,
-            user=user,
-            password=passwort,
-            database=datenbank,
-            port=port)
-        mycursor = mydb.cursor()
-        mycursor.execute(
-            "CREATE TABLE " + table_name + " (time timestamp null, content text null, attachment text null, membername varchar(255) null, memberid bigint null, guildid bigint null, guildname varchar(255) null, channelid bigint null, channelname varchar(255) null, id bigint not null primary key)")
-    else:
-        pass
-
-
-def tokens():
-    print("Important: This Script creates a new config.json")
-    config = {'token': input("Your Bot Token: "), 'default_prefix': input("The default Bot Prefix: "),
-              "riotapi": input("Your Riot Games Api Token: "), "osuapi": input("Your Osu Api Token: "),
-              "ipdata": input("Your ipdata.co Token: "), "cocapi": input("Your ClashOfClans Api Token: ")}
-    with open('config/config.json', 'w+') as file:
-        json.dump(config, file, indent=2)
-
-
-def mysqldisable():
-    if os.path.exists("config/mysql.json"):
-        os.rename("config/mysql.json", "config/disabled_mysql.json")
-        print("MySQL is now deactivated!")
-        print("You have to restart that Bot that the Changes are working!")
-    else:
-        if os.path.exists("config/disabled_mysql.json"):
-            print("MySQL is already deactivated")
-        else:
-            print("Something went wrong here but there is help:")
-            print("https://github.com/antonstech/antonstechbot/wiki/Support")
-
-
-def mysqlenable():
-    if os.path.exists("config/disabled_mysql.json"):
-        os.rename("config/disabled_mysql.json", "config/mysql.json")
-        print("MySQL is now ACTIVATED!")
-        print("You have to restart that Bot that the Changes are working!")
-    else:
-        if os.path.exists("config/mysql.json"):
-            print("MySQL is already activated")
-        else:
-            print("Something went wrong here but there is help:")
-            print("https://github.com/antonstech/antonstechbot/wiki/Support")
+def config():
+   print("Okay so to Edit the Config you just simply need to make a new file called 'config.ini' where you just copy the Things from config.ini.example in and then u Edit it")
+   print("I also made a Tutorial on Github")
 
 
 def run_bot():
@@ -177,28 +106,19 @@ menu = ConsoleMenu(f"antonstechbot Version {VERSION} by antonstech",
                    "https://git.io/antonsbot")
 
 starten = FunctionItem("Start Bot", run_bot)
-config = FunctionItem("Edit Config", tokens)
+config = FunctionItem("Edit Config", config)
 updaten = FunctionItem("Bot Updaten", update_bot)
 tokencheck = FunctionItem("Token-Checker", tokenchecker)
 infos = FunctionItem("Information about the Bot & Code", browser)
-mysqlsetup = FunctionItem("MySQL Setup", mysqlsetup)
-mysqldisable = FunctionItem("Deactivate MySQL", mysqldisable)
-mysqlenable = FunctionItem("Activate MySQL", mysqlenable)
-submenu = ConsoleMenu("MySQL Menu")
-mysqlmenu = SubmenuItem("MySQL Menu", submenu, menu)
 updatemenu = ConsoleMenu("Menu to Update Things")
 updateeee = SubmenuItem("Updaten", updatemenu, menu)
 pipupdate = CommandItem("Update pip Modules", "pip3 install --upgrade --force-reinstall -r requirements.txt")
 
 menu.append_item(starten)
 menu.append_item(config)
-menu.append_item(mysqlmenu)
 menu.append_item(updateeee)
 menu.append_item(tokencheck)
 menu.append_item(infos)
-submenu.append_item(mysqlsetup)
-submenu.append_item(mysqldisable)
-submenu.append_item(mysqlenable)
 updatemenu.append_item(updaten)
 updatemenu.append_item(pipupdate)
 

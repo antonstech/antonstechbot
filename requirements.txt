@@ -4,5 +4,5 @@ asyncio
 requests
 console-menu
 colorama
-mysql-connector-python
+psycopg2
 psutil

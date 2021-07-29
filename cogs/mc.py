@@ -29,7 +29,6 @@ class Mc(commands.Cog):
         elif option == "server":
             complete_url = self.base_url + arg1
             response = requests.get(complete_url).json()
-            print(response)
             channel = ctx.message.channel
             async with channel.typing():
                 status = response["online"]
@@ -95,7 +94,6 @@ class Mc(commands.Cog):
             response = requests.get(uuid)
             x = response.json()
             playeruuid = x["id"]
-            print(playeruuid)
             kopf = "https://crafatar.com/avatars/"
             body = "https://crafatar.com/renders/body/"
             embed = discord.Embed(title="Minecraft Skin von " + arg1)
