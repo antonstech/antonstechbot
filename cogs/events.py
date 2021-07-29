@@ -1,7 +1,6 @@
 import asyncio
 import configparser
 import datetime
-import logging
 
 import psycopg2
 from discord.ext import commands
@@ -94,11 +93,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):
-        time = datetime.datetime.now().strftime("%d.%m.%Y")
-        logging.basicConfig(filename=f"temp/logfile-{time}.log", level=logging.INFO)
-        time = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
-        logging.info(f'{ctx.message.author} used "{ctx.message.content}" at {time} on {ctx.guild.name}({ctx.guild.id})')
-
+        pass
 
 def setup(client):
     client.add_cog(Events(client))
