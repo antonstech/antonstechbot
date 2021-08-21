@@ -22,10 +22,9 @@ class Memes(commands.Cog):
             img = x["url"]
             acc = x["author"]
             votes = x["ups"]
-            embed = discord.Embed(title=f"{titel}")
+            embed = discord.Embed(url=link, title=titel)
             embed.set_image(url=img)
             embed.set_footer(text=f"Posted by u/{acc} in r/{reddit} with {votes} Upvotes")
-            embed.add_field(name="Link to the Post", value=f"[{link}]({link})")
             await ctx.send(embed=embed)
         except:
             await basicerror(ctx)

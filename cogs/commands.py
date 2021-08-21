@@ -50,21 +50,11 @@ class Commands(commands.Cog):
                          url='https://github.com/antonstech/antonstechbot')
         await ctx.channel.send(embed=embed)
 
-    @commands.command(name="nudes")
-    async def nudes_command(self, ctx):
-        if ctx.channel.is_nsfw():
-            embed = discord.Embed(title="Nudes")
-            embed.set_image(
-                url="https://www.nydailynews.com/resizer/OYta-jTp2D6Xt_Wj_o6zEUqWttE=/415x562/top/arc-anglerfish-arc2-prod-tronc.s3.amazonaws.com/public/7Y53KJVE7FGLZZPD44LTN4QB5I.jpg")
-            await ctx.channel.send(embed=embed)
-        else:
-            await ctx.channel.send("The Channel is not NSFW")
-
     @commands.command(name="clear")
     @commands.has_permissions(manage_messages=True)
     async def clear_command(self, ctx, amount=7):
         await ctx.channel.purge(limit=amount + 1, check=self.ist_gepinnt)
-        await ctx.send(f"{amount} Nachrichten wurden gelöscht :)")
+        await ctx.send(f"{amount} Messages were deleted by {ctx.author} :)", delete_after=7)
 
     @commands.command(name="list")
     async def list_command(self, ctx):

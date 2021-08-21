@@ -1,3 +1,4 @@
+import asyncio
 import configparser
 import datetime
 import discord
@@ -28,6 +29,7 @@ class privatechannel(commands.Cog):
     @commands.command(name="privatechannel", aliases=["channel", "privatchannel", "privatkanal", "kanal"])
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def privatechannel(self, ctx, arg1=None, arg2=None, arg3=None):
+        global categoryname
         if constants.channel_enable == "false":
             await ctx.send(f"{ctx.author.mention} this Function is not enabled by the bot hoster")
             return
@@ -89,7 +91,7 @@ class privatechannel(commands.Cog):
                     pass
                 await ctx.send("Custom User Channels are now **activated**")
             else:
-                await ctx.send(f"{ctx.author.mention} You are not an Administrator!")
+                raise MissingPermissions
 
         elif arg1 == "off":
             if ctx.message.author.guild_permissions.administrator:
@@ -99,7 +101,7 @@ class privatechannel(commands.Cog):
                 self.database_connection.commit()
                 await ctx.send("Custom User Channels are now **disabled**")
             else:
-                await ctx.send(f"{ctx.author.mention} You are not an Administrator!")
+                raise PermissionError
 
         elif arg1 == "create":
             code2execute = f"SELECT state FROM servers where id = {ctx.guild.id}"
@@ -163,32 +165,71 @@ class privatechannel(commands.Cog):
                 await ctx.send(f"This function is not enabled on this Discord.\n"
                                f"Please contact {ctx.guild.owner.mention} if you want to have it activated")
         elif arg1 == "category":
-            try:
-                self.database_connection.commit()
-                code2execute = f"INSERT INTO categorynames (serverid, name) VALUES ({ctx.guild.id}, '{arg2}')"
-                mycursor.execute(code2execute)
-                self.database_connection.commit()
-            except:
-                self.database_connection.commit()
-                code2execute = f"UPDATE categorynames SET name = '{arg2}' WHERE serverid = {ctx.guild.id}"
-                mycursor.execute(code2execute)
-                self.database_connection.commit()
-            await ctx.send(f'The Category where custom user Channels will now be created will be "{arg2}"')
+            if ctx.message.author.guild_permissions.administrator:
+                try:
+                    self.database_connection.commit()
+                    code2execute = f"INSERT INTO categorynames (serverid, name) VALUES ({ctx.guild.id}, '{arg2}')"
+                    mycursor.execute(code2execute)
+                    self.database_connection.commit()
+                except:
+                    self.database_connection.commit()
+                    code2execute = f"UPDATE categorynames SET name = '{arg2}' WHERE serverid = {ctx.guild.id}"
+                    mycursor.execute(code2execute)
+                    self.database_connection.commit()
+                await ctx.send(f'The Category where custom user Channels will now be created will be "{arg2}"')
+            else:
+                raise PermissionError
 
         elif arg1 == "remove":
-            converter = MemberConverter()
-            member = await converter.convert(ctx, arg2)
-            code2execute = "SELECT channelid FROM " + f'"{ctx.message.guild.id}"' + " WHERE memberid = " + f"'{member.id}'"
-            mycursor.execute(code2execute)
-            result = mycursor.fetchone()
-            self.database_connection.commit()
-            channelid = result[0]
-            channel = self.client.get_channel(channelid)
-            await channel.delete()
-            code2execute = "DELETE FROM " + f'"{ctx.message.guild.id}"' + " WHERE memberid = " + f"'{member.id}'"
-            mycursor.execute(code2execute)
-            self.database_connection.commit()
-            await ctx.send(f'"{channel.name}" from {member.mention} was removed!')
+            if ctx.message.author.guild_permissions.administrator:
+                converter = MemberConverter()
+                member = await converter.convert(ctx, arg2)
+                code2execute = "SELECT channelid FROM " + f'"{ctx.message.guild.id}"' + " WHERE memberid = " + f"'{member.id}'"
+                mycursor.execute(code2execute)
+                result = mycursor.fetchone()
+                self.database_connection.commit()
+                channelid = result[0]
+                channel = self.client.get_channel(channelid)
+                await channel.delete()
+                code2execute = "DELETE FROM " + f'"{ctx.message.guild.id}"' + " WHERE memberid = " + f"'{member.id}'"
+                mycursor.execute(code2execute)
+                self.database_connection.commit()
+                await ctx.send(f'"{channel.name}" from {member.mention} was removed!')
+            else:
+                raise PermissionError
+
+        elif arg1 == "setup":
+            if ctx.message.author.guild_permissions.administrator:
+                code2execute = f"UPDATE servers SET state = true WHERE id = {ctx.guild.id}"
+                self.database_connection.commit()
+                mycursor.execute(code2execute)
+                self.database_connection.commit()
+                try:
+                    code2execute = f'create table "{ctx.guild.id}"(memberid bigint not null constraint "{ctx.guild.id}_pkey" primary key,channelid bigint not null, creation_time timestamp not null)'
+                    mycursor.execute(code2execute)
+                    self.database_connection.commit()
+                except errors.lookup("42P07"):
+                    pass
+                await ctx.send("What is the Name of the Category?")
+                try:
+                    categoryname = await self.client.wait_for("message", timeout=15)
+                except asyncio.TimeoutError:
+                    await ctx.send(f"{ctx.author.mention} you needed too long to respond!")
+                    return
+                try:
+                    self.database_connection.commit()
+                    code2execute = f"INSERT INTO categorynames (serverid, name) VALUES ({ctx.guild.id}, '{categoryname.content}')"
+                    mycursor.execute(code2execute)
+                    self.database_connection.commit()
+                except:
+                    self.database_connection.commit()
+                    code2execute = f"UPDATE categorynames SET name = '{categoryname.content}' WHERE serverid = {ctx.guild.id}"
+                    mycursor.execute(code2execute)
+                    self.database_connection.commit()
+                await ctx.send(f'The Category where custom user Channels will be created is "{categoryname.content}"')
+            else:
+                raise PermissionError
+
 
         else:
             raise CommandNotFound
