@@ -8,9 +8,8 @@ def owner_only(func):
         info = await self.client.application_info()
         if ctx.author.id == info.owner.id:
             return await func(self, message, *args, **kwargs)
-        else:
-            await ctx.channel.send("You can't do that Bro you know that very well!")
-            print(f"{message.author} tried to shutdown the bot!")
+        await ctx.channel.send("You can't do that Bro you know that very well!")
+        print(f"{message.author} tried to shutdown the bot!")
 
     return wrapper
 
