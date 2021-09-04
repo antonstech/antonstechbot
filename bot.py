@@ -202,8 +202,7 @@ def owner_only(func):
         info = await client.application_info()
         if ctx.author.id == info.owner.id:
             return await func(self, *args, **kwargs)
-        else:
-            await ctx.channel.send("Only the Owner can use this Command!")
+        await ctx.channel.send("Only the Owner can use this Command!")
 
     return wrapper
 
